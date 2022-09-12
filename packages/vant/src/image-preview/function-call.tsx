@@ -1,7 +1,6 @@
-import { extend, inBrowser, withInstall, ComponentInstance } from '../utils';
+import { extend, inBrowser, ComponentInstance } from '../utils';
 import { mountComponent, usePopupState } from '../utils/mount-component';
 import VanImagePreview from './ImagePreview';
-import type { App } from 'vue';
 import type { ImagePreviewOptions } from './types';
 
 let instance: ComponentInstance;
@@ -22,6 +21,7 @@ const defaultConfig: ImagePreviewOptions = {
   transition: undefined,
   beforeClose: undefined,
   overlayStyle: undefined,
+  overlayClass: undefined,
   startPosition: 0,
   swipeDuration: 300,
   showIndicators: false,
@@ -48,7 +48,7 @@ function initInstance() {
   }));
 }
 
-const ImagePreview = (
+export const showImagePreview = (
   options: string[] | ImagePreviewOptions,
   startPosition = 0
 ) => {
@@ -69,11 +69,3 @@ const ImagePreview = (
 
   return instance;
 };
-
-ImagePreview.Component = withInstall(VanImagePreview);
-
-ImagePreview.install = (app: App) => {
-  app.use(ImagePreview.Component);
-};
-
-export { ImagePreview };

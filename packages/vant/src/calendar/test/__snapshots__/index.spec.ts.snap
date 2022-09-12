@@ -66,7 +66,7 @@ exports[`color prop when type is range 1`] = `
   </div>
   <div class="van-calendar__footer van-safe-area-bottom">
     <button type="button"
-            class="van-button van-button--danger van-button--normal van-button--block van-button--round van-calendar__confirm"
+            class="van-button van-button--primary van-button--normal van-button--block van-button--round van-calendar__confirm"
             style="color: white; background: blue; border-color: blue;"
     >
       <div class="van-button__content">
@@ -251,41 +251,49 @@ exports[`color prop when type is single 1`] = `
           23
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           24
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           25
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           26
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           27
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           28
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           29
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           30
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           31
@@ -295,7 +303,7 @@ exports[`color prop when type is single 1`] = `
   </div>
   <div class="van-calendar__footer van-safe-area-bottom">
     <button type="button"
-            class="van-button van-button--danger van-button--normal van-button--block van-button--round van-calendar__confirm"
+            class="van-button van-button--primary van-button--normal van-button--block van-button--round van-calendar__confirm"
             style="color: white; background: blue; border-color: blue;"
     >
       <div class="van-button__content">
@@ -484,41 +492,49 @@ exports[`formatter prop 1`] = `
           23
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           24
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           25
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           26
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           27
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           28
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           29
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           30
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           31
@@ -528,7 +544,7 @@ exports[`formatter prop 1`] = `
   </div>
   <div class="van-calendar__footer van-safe-area-bottom">
     <button type="button"
-            class="van-button van-button--danger van-button--normal van-button--block van-button--round van-calendar__confirm"
+            class="van-button van-button--primary van-button--normal van-button--block van-button--round van-calendar__confirm"
     >
       <div class="van-button__content">
         <span class="van-button__text">
@@ -541,14 +557,18 @@ exports[`formatter prop 1`] = `
 `;
 
 exports[`popup wrapper 1`] = `
-<transition-stub>
+<transition-stub role="button"
+                 tabindex="0"
+>
 </transition-stub>
 <transition-stub>
 </transition-stub>
 `;
 
 exports[`popup wrapper 2`] = `
-<transition-stub>
+<transition-stub role="button"
+                 tabindex="0"
+>
   <div style="z-index: 2001;"
        class="van-overlay"
   >
@@ -556,6 +576,8 @@ exports[`popup wrapper 2`] = `
 </transition-stub>
 <transition-stub>
   <div style="z-index: 2001;"
+       role="dialog"
+       tabindex="0"
        class="van-popup van-popup--round van-popup--bottom van-calendar__popup"
   >
     <div class="van-calendar">
@@ -623,7 +645,7 @@ exports[`popup wrapper 2`] = `
       </div>
       <div class="van-calendar__footer van-safe-area-bottom">
         <button type="button"
-                class="van-button van-button--danger van-button--normal van-button--block van-button--round van-calendar__confirm"
+                class="van-button van-button--primary van-button--normal van-button--block van-button--round van-calendar__confirm"
         >
           <div class="van-button__content">
             <span class="van-button__text">
@@ -633,7 +655,7 @@ exports[`popup wrapper 2`] = `
         </button>
       </div>
     </div>
-    <i class="van-badge__wrapper van-icon van-icon-cross van-popup__close-icon van-popup__close-icon--top-right"
+    <i class="van-badge__wrapper van-icon van-icon-cross van-popup__close-icon van-popup__close-icon--top-right van-haptics-feedback"
        role="button"
        tabindex="0"
     >
@@ -836,49 +858,49 @@ exports[`row-height prop 1`] = `
           23
         </div>
         <div role="gridcell"
-             style="height: 50px;"
+             style="height: 50px; margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           24
         </div>
         <div role="gridcell"
-             style="height: 50px;"
+             style="height: 50px; margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           25
         </div>
         <div role="gridcell"
-             style="height: 50px;"
+             style="height: 50px; margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           26
         </div>
         <div role="gridcell"
-             style="height: 50px;"
+             style="height: 50px; margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           27
         </div>
         <div role="gridcell"
-             style="height: 50px;"
+             style="height: 50px; margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           28
         </div>
         <div role="gridcell"
-             style="height: 50px;"
+             style="height: 50px; margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           29
         </div>
         <div role="gridcell"
-             style="height: 50px;"
+             style="height: 50px; margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           30
         </div>
         <div role="gridcell"
-             style="height: 50px;"
+             style="height: 50px; margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           31
@@ -888,7 +910,7 @@ exports[`row-height prop 1`] = `
   </div>
   <div class="van-calendar__footer van-safe-area-bottom">
     <button type="button"
-            class="van-button van-button--danger van-button--normal van-button--block van-button--round van-calendar__confirm"
+            class="van-button van-button--primary van-button--normal van-button--block van-button--round van-calendar__confirm"
     >
       <div class="van-button__content">
         <span class="van-button__text">
@@ -898,6 +920,18 @@ exports[`row-height prop 1`] = `
     </button>
   </div>
 </div>
+`;
+
+exports[`should render confirm-text slot correctly 1`] = `
+<button type="button"
+        class="van-button van-button--primary van-button--normal van-button--block van-button--round van-calendar__confirm"
+>
+  <div class="van-button__content">
+    <span class="van-button__text">
+      Custom confirm text false
+    </span>
+  </div>
+</button>
 `;
 
 exports[`should render title、footer、subtitle slot correctly 1`] = `
@@ -1071,41 +1105,49 @@ exports[`should render title、footer、subtitle slot correctly 1`] = `
           23
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           24
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           25
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           26
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           27
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           28
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           29
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           30
         </div>
         <div role="gridcell"
+             style="margin-bottom: 0px;"
              class="van-calendar__day van-calendar__day--disabled"
         >
           31

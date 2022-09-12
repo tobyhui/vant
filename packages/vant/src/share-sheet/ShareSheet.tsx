@@ -1,4 +1,4 @@
-import { defineComponent } from 'vue';
+import { defineComponent, type ExtractPropTypes } from 'vue';
 
 // Utils
 import {
@@ -7,10 +7,12 @@ import {
   truthProp,
   makeArrayProp,
   createNamespace,
+  HAPTICS_FEEDBACK,
 } from '../utils';
 import { popupSharedProps, popupSharedPropKeys } from '../popup/shared';
 
 // Components
+import { Icon } from '../icon';
 import { Popup } from '../popup';
 
 export type ShareSheetOption = {
@@ -22,45 +24,42 @@ export type ShareSheetOption = {
 
 export type ShareSheetOptions = ShareSheetOption[] | ShareSheetOption[][];
 
-const PRESET_ICONS = [
-  'qq',
-  'link',
-  'weibo',
-  'wechat',
-  'poster',
-  'qrcode',
-  'weapp-qrcode',
-  'wechat-moments',
-];
-
-const popupKeys = [
+const popupInheritKeys = [
   ...popupSharedPropKeys,
   'round',
   'closeOnPopstate',
   'safeAreaInsetBottom',
 ] as const;
 
-function getIconURL(icon: string) {
-  if (PRESET_ICONS.includes(icon)) {
-    return `https://img.yzcdn.cn/vant/share-sheet-${icon}.png`;
-  }
-  return icon;
-}
+const iconMap: Record<string, string> = {
+  qq: 'qq',
+  link: 'link-o',
+  weibo: 'weibo',
+  qrcode: 'qr',
+  poster: 'photo-o',
+  wechat: 'wechat',
+  'weapp-qrcode': 'miniprogram-o',
+  'wechat-moments': 'wechat-moments',
+};
 
 const [name, bem, t] = createNamespace('share-sheet');
+
+export const shareSheetProps = extend({}, popupSharedProps, {
+  title: String,
+  round: truthProp,
+  options: makeArrayProp<ShareSheetOption | ShareSheetOption[]>(),
+  cancelText: String,
+  description: String,
+  closeOnPopstate: truthProp,
+  safeAreaInsetBottom: truthProp,
+});
+
+export type ShareSheetProps = ExtractPropTypes<typeof shareSheetProps>;
 
 export default defineComponent({
   name,
 
-  props: extend({}, popupSharedProps, {
-    title: String,
-    round: truthProp,
-    options: makeArrayProp<ShareSheetOption | ShareSheetOption[]>(),
-    cancelText: String,
-    description: String,
-    closeOnPopstate: truthProp,
-    safeAreaInsetBottom: truthProp,
-  }),
+  props: shareSheetProps,
 
   emits: ['cancel', 'select', 'update:show'],
 
@@ -93,16 +92,27 @@ export default defineComponent({
       }
     };
 
+    const renderIcon = (icon: string) => {
+      if (iconMap[icon]) {
+        return (
+          <div class={bem('icon', [icon])}>
+            <Icon name={iconMap[icon] || icon} />
+          </div>
+        );
+      }
+      return <img src={icon} class={bem('image-icon')} />;
+    };
+
     const renderOption = (option: ShareSheetOption, index: number) => {
       const { name, icon, className, description } = option;
       return (
         <div
           role="button"
           tabindex={0}
-          class={[bem('option'), className]}
+          class={[bem('option'), className, HAPTICS_FEEDBACK]}
           onClick={() => onSelect(option, index)}
         >
-          <img src={getIconURL(icon)} class={bem('icon')} />
+          {renderIcon(icon)}
           {name && <span class={bem('name')}>{name}</span>}
           {description && (
             <span class={bem('option-description')}>{description}</span>
@@ -141,7 +151,7 @@ export default defineComponent({
         class={bem()}
         position="bottom"
         onUpdate:show={updateShow}
-        {...pick(props, popupKeys)}
+        {...pick(props, popupInheritKeys)}
       >
         {renderHeader()}
         {renderRows()}

@@ -71,7 +71,6 @@ exports[`should render demo and match snapshot 1`] = `
   >
     <div role="radio"
          class="van-radio van-radio--disabled"
-         tabindex="-1"
          aria-checked="false"
     >
       <div class="van-radio__icon van-radio__icon--round van-radio__icon--disabled">
@@ -84,7 +83,6 @@ exports[`should render demo and match snapshot 1`] = `
     </div>
     <div role="radio"
          class="van-radio van-radio--disabled"
-         tabindex="-1"
          aria-checked="true"
     >
       <div class="van-radio__icon van-radio__icon--round van-radio__icon--disabled van-radio__icon--checked">
@@ -209,7 +207,7 @@ exports[`should render demo and match snapshot 1`] = `
          aria-checked="true"
     >
       <div class="van-radio__icon van-radio__icon--round van-radio__icon--checked">
-        <img src="https://img.yzcdn.cn/vant/user-active.png">
+        <img src="https://fastly.jsdelivr.net/npm/@vant/assets/user-active.png">
       </div>
       <span class="van-radio__label">
         Radio 1
@@ -221,7 +219,7 @@ exports[`should render demo and match snapshot 1`] = `
          aria-checked="false"
     >
       <div class="van-radio__icon van-radio__icon--round">
-        <img src="https://img.yzcdn.cn/vant/user-inactive.png">
+        <img src="https://fastly.jsdelivr.net/npm/@vant/assets/user-inactive.png">
       </div>
       <span class="van-radio__label">
         Radio 2
@@ -265,7 +263,7 @@ exports[`should render demo and match snapshot 1`] = `
   <div class="van-radio-group"
        role="radiogroup"
   >
-    <div class="van-cell-group van-hairline--top-bottom">
+    <div class="van-cell-group van-cell-group--inset">
       <div class="van-cell van-cell--clickable"
            role="button"
            tabindex="0"

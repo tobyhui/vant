@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import VanRow from '../../row';
 import VanCol from '..';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -70,8 +70,6 @@ const t = useTranslate({
 
 <style lang="less">
 .demo-col {
-  background: var(--van-white);
-
   .van-doc-demo-block {
     padding: 0 var(--van-padding-md);
   }

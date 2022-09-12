@@ -1,4 +1,10 @@
-import { watch, reactive, PropType, defineComponent } from 'vue';
+import {
+  watch,
+  reactive,
+  defineComponent,
+  type PropType,
+  type ExtractPropTypes,
+} from 'vue';
 
 // Utils
 import { isMobile, createNamespace, extend } from '../utils';
@@ -23,26 +29,30 @@ const DEFAULT_CONTACT: ContactEditInfo = {
   name: '',
 };
 
+export const contactEditProps = {
+  isEdit: Boolean,
+  isSaving: Boolean,
+  isDeleting: Boolean,
+  showSetDefault: Boolean,
+  setDefaultLabel: String,
+  contactInfo: {
+    type: Object as PropType<ContactEditInfo>,
+    default: () => extend({}, DEFAULT_CONTACT),
+  },
+  telValidator: {
+    type: Function as PropType<(val: string) => boolean>,
+    default: isMobile,
+  },
+};
+
+export type ContactEditProps = ExtractPropTypes<typeof contactEditProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    isEdit: Boolean,
-    isSaving: Boolean,
-    isDeleting: Boolean,
-    showSetDefault: Boolean,
-    setDefaultLabel: String,
-    contactInfo: {
-      type: Object as PropType<ContactEditInfo>,
-      default: () => extend({}, DEFAULT_CONTACT),
-    },
-    telValidator: {
-      type: Function as PropType<(val: string) => boolean>,
-      default: isMobile,
-    },
-  },
+  props: contactEditProps,
 
-  emits: ['save', 'delete', 'change-default'],
+  emits: ['save', 'delete', 'changeDefault'],
 
   setup(props, { emit }) {
     const contact = reactive(extend({}, DEFAULT_CONTACT, props.contactInfo));
@@ -60,7 +70,7 @@ export default defineComponent({
         <Button
           block
           round
-          type="danger"
+          type="primary"
           text={t('save')}
           class={bem('button')}
           loading={props.isSaving}
@@ -82,8 +92,7 @@ export default defineComponent({
     const renderSwitch = () => (
       <Switch
         v-model={contact.isDefault}
-        size={24}
-        onChange={(checked: boolean) => emit('change-default', checked)}
+        onChange={(checked: boolean) => emit('changeDefault', checked)}
       />
     );
 

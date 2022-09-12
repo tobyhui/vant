@@ -117,13 +117,13 @@ export default {
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { closeToast, showLoadingToast } from 'vant';
 
 export default {
   setup() {
     const value1 = ref('');
     const value2 = ref('');
-    const value3 = ref('');
+    const value3 = ref('abc');
     const value4 = ref('');
     const pattern = /\d{6}/;
 
@@ -136,11 +136,11 @@ export default {
     // 校验函数可以返回 Promise，实现异步校验
     const asyncValidator = (val) =>
       new Promise((resolve) => {
-        Toast.loading('验证中...');
+        showLoadingToast('验证中...');
 
         setTimeout(() => {
-          Toast.clear();
-          resolve(/\d{6}/.test(val));
+          closeToast();
+          resolve(val === '1234');
         }, 1000);
       });
 
@@ -169,7 +169,7 @@ export default {
 ```html
 <van-field name="switch" label="开关">
   <template #input>
-    <van-switch v-model="checked" size="20" />
+    <van-switch v-model="checked" />
   </template>
 </van-field>
 ```
@@ -332,7 +332,9 @@ import { ref } from 'vue';
 
 export default {
   setup() {
-    const value = ref([{ url: 'https://img.yzcdn.cn/vant/leaf.jpg' }]);
+    const value = ref([
+      { url: 'https://fastly.jsdelivr.net/npm/@vant/assets/leaf.jpeg' },
+    ]);
     return { value };
   },
 };
@@ -368,10 +370,16 @@ export default {
   setup() {
     const result = ref('');
     const showPicker = ref(false);
-    const columns = ['杭州', '宁波', '温州', '嘉兴', '湖州'];
+    const columns = [
+      { text: '杭州', value: 'Hangzhou' },
+      { text: '宁波', value: 'Ningbo' },
+      { text: '温州', value: 'Wenzhou' },
+      { text: '绍兴', value: 'Shaoxing' },
+      { text: '湖州', value: 'Huzhou' },
+    ];
 
     const onConfirm = (value) => {
-      result.value = value;
+      result.value = selectedOptions[0]?.text;
       showPicker.value = false;
     };
 
@@ -385,26 +393,22 @@ export default {
 };
 ```
 
-### 表单项类型 - 时间选择器
+### 表单项类型 - 日期选择器
 
-在表单中使用 [DatetimePicker 组件](#/zh-CN/datetime-picker)。
+在表单中使用 [DatePicker 组件](#/zh-CN/date-picker)。
 
 ```html
 <van-field
   v-model="result"
   is-link
   readonly
-  name="datetimePicker"
+  name="datePicker"
   label="时间选择"
   placeholder="点击选择时间"
   @click="showPicker = true"
 />
 <van-popup v-model:show="showPicker" position="bottom">
-  <van-datetime-picker
-    type="time"
-    @confirm="onConfirm"
-    @cancel="showPicker = false"
-  />
+  <van-date-picker @confirm="onConfirm" @cancel="showPicker = false" />
 </van-popup>
 ```
 
@@ -415,9 +419,8 @@ export default {
   setup() {
     const result = ref('');
     const showPicker = ref(false);
-
     const onConfirm = (value) => {
-      result.value = value;
+      result.value = selectedValues.join('/');
       showPicker.value = false;
     };
 
@@ -461,12 +464,9 @@ export default {
   setup() {
     const result = ref('');
     const showArea = ref(false);
-    const onConfirm = (value) => {
+    const onConfirm = ({ selectedOptions }) => {
       showArea.value = false;
-      result.value = values
-        .filter((item) => !!item)
-        .map((item) => item.name)
-        .join('/');
+      areaCode.value = selectedOptions.map((item) => item.text).join('/');
     };
 
     return {
@@ -524,10 +524,10 @@ export default {
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | label-width | 表单项 label 宽度，默认单位为`px` | _number \| string_ | `6.2em` |
-| label-align |  表单项 label 对齐方式，可选值为 `center` `right` | _string_ | `left` |
+| label-align | 表单项 label 对齐方式，可选值为 `center` `right` | _string_ | `left` |
 | input-align | 输入框对齐方式，可选值为 `center` `right` | _string_ | `left` |
 | error-message-align | 错误提示文案对齐方式，可选值为 `center` `right` | _string_ | `left` |
-| validate-trigger | 表单校验触发时机，可选值为 `onChange`、`onSubmit`，详见下表 | _string_ | `onBlur` |
+| validate-trigger | 表单校验触发时机，可选值为 `onChange`、`onSubmit`，支持通过数组同时设置多个值，具体用法见下方表格 | _string \| string[]_ | `onBlur` |
 | colon | 是否在 label 后面添加冒号 | _boolean_ | `false` |
 | disabled | 是否禁用表单中的所有输入框 | _boolean_ | `false` |
 | readonly | 是否将表单中的所有输入框设置为只读状态 | _boolean_ | `false` |
@@ -541,18 +541,19 @@ export default {
 
 ### Rule 数据结构
 
-使用 Field 的`rules`属性可以定义校验规则，可选属性如下:
+使用 Field 的 `rules` 属性可以定义校验规则，可选属性如下:
 
 | 键名 | 说明 | 类型 |
 | --- | --- | --- |
-| required | 是否为必选字段 | _boolean_ |
-| message | 错误提示文案 | _string \| (value, rule) => string_ |
-| validator | 通过函数进行校验 | _(value, rule) => boolean \| string \| Promise_ |
-| pattern | 通过正则表达式进行校验 | _RegExp_ |
-| trigger | 本项规则的触发时机，可选值为 `onChange`、`onBlur` | _string_ |
+| required | 是否为必选字段，当值为空值时（空字符串、空数组、`false`、`undefined`、`null` ），校验不通过 | _boolean_ |
+| message | 错误提示文案，可以设置为一个函数来返回动态的文案内容 | _string \| (value, rule) => string_ |
+| validator | 通过函数进行校验，可以返回一个 Promise 来进行异步校验 | _(value, rule) => boolean \| string \| Promise_ |
+| pattern | 通过正则表达式进行校验，正则无法匹配表示校验不通过 | _RegExp_ |
+| trigger | 设置本项规则的触发时机，优先级高于 Form 组件设置的 `validate-trigger` 属性，可选值为 `onChange`、`onBlur`、`onSubmit` | _string \| string[]_ |
 | formatter | 格式化函数，将表单项的值转换后进行校验 | _(value, rule) => any_ |
+| validateEmpty `v3.6.0` | 设置 `validator` 和 `pattern` 是否要对空值进行校验，默认值为 `true`，可以设置为 `false` 来禁用该行为 | _boolean_ |
 
-### validate-trigger  可选值
+### validate-trigger 可选值
 
 通过 `validate-trigger` 属性可以自定义表单校验的触发时机。
 
@@ -576,8 +577,10 @@ export default {
 | 方法名 | 说明 | 参数 | 返回值 |
 | --- | --- | --- | --- |
 | submit | 提交表单，与点击提交按钮的效果等价 | - | - |
-| validate | 验证表单，支持传入 `name` 来验证单个或部分表单项 | _name?: string \| string[]_ | _Promise_ |
-| resetValidation | 重置表单项的验证提示，支持传入 `name` 来重置单个或部分表单项 | _name?: string \| string[]_ | - |
+| getValues `v3.4.8` | 获取所有表单项当前的值 | - | _Record<string, unknown>_ |
+| validate | 验证表单，支持传入一个或多个 `name` 来验证单个或部分表单项，不传入 `name` 时，会验证所有表单项 | _name?: string \| string[]_ | _Promise\<void\>_ |
+| resetValidation | 重置表单项的验证提示，支持传入一个或多个 `name` 来重置单个或部分表单项，不传入 `name` 时，会重置所有表单项 | _name?: string \| string[]_ | - |
+| getValidationStatus `v3.5.0` | 获取所有表单项的校验状态，状态包括 `passed`、`failed`、`unvalidated` | - | _Record\<string, FieldValidationStatus\>_ |
 | scrollToField | 滚动到对应表单项的位置，默认滚动到顶部，第二个参数传 false 可滚动至底部 | _name: string, alignToTop: boolean_ | - |
 
 ### 类型定义

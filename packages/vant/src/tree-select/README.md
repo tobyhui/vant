@@ -115,11 +115,11 @@ export default {
   <template #content>
     <van-image
       v-if="activeIndex === 0"
-      src="https://img.yzcdn.cn/vant/apple-1.jpg"
+      src="https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg"
     />
     <van-image
       v-if="activeIndex === 1"
-      src="https://img.yzcdn.cn/vant/apple-2.jpg"
+      src="https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg"
     />
   </template>
 </van-tree-select>
@@ -233,7 +233,7 @@ In every tree object, `text` property defines `id` stands for the unique key whi
 The component exports the following type definitions:
 
 ```ts
-import type { TreeSelectItem, TreeSelectChild } from 'vant';
+import type { TreeSelectItem, TreeSelectChild, TreeSelectProps } from 'vant';
 ```
 
 ## Theming
@@ -245,10 +245,10 @@ The component provides the following CSS variables, which can be used to customi
 | Name | Default Value | Description |
 | --- | --- | --- |
 | --van-tree-select-font-size | _var(--van-font-size-md)_ | - |
-| --van-tree-select-nav-background-color | _var(--van-background-color)_ | - |
-| --van-tree-select-content-background-color | _var(--van-white)_ | - |
+| --van-tree-select-nav-background | _var(--van-background)_ | - |
+| --van-tree-select-content-background | _var(--van-background-2)_ | - |
 | --van-tree-select-nav-item-padding | _14px var(--van-padding-sm)_ | - |
 | --van-tree-select-item-height | _48px_ | - |
-| --van-tree-select-item-active-color | _var(--van-danger-color)_ | - |
+| --van-tree-select-item-active-color | _var(--van-primary-color)_ | - |
 | --van-tree-select-item-disabled-color | _var(--van-gray-5)_ | - |
 | --van-tree-select-item-selected-size | _16px_ | - |

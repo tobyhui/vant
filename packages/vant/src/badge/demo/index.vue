@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import VanBadge from '..';
 import VanIcon from '../../icon';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -9,12 +9,14 @@ const t = useTranslate({
     standalone: '独立展示',
     customColor: '自定义颜色',
     customContent: '自定义徽标内容',
+    customPosition: '自定义徽标位置',
   },
   'en-US': {
     max: 'Max',
     standalone: 'Standalone',
     customColor: 'Custom Color',
     customContent: 'Custom Content',
+    customPosition: 'Custom Position',
   },
 });
 </script>
@@ -80,6 +82,18 @@ const t = useTranslate({
     </van-badge>
   </demo-block>
 
+  <demo-block :title="t('customPosition')">
+    <van-badge content="10" position="top-left">
+      <div class="child" />
+    </van-badge>
+    <van-badge content="10" position="bottom-left">
+      <div class="child" />
+    </van-badge>
+    <van-badge content="10" position="bottom-right">
+      <div class="child" />
+    </van-badge>
+  </demo-block>
+
   <demo-block :title="t('standalone')">
     <van-badge content="20" style="margin-left: 16px" />
     <van-badge content="200" max="99" style="margin-left: 16px" />
@@ -88,7 +102,7 @@ const t = useTranslate({
 
 <style lang="less">
 .demo-badge {
-  background-color: var(--van-white);
+  background-color: var(--van-background-2);
 
   .van-badge__wrapper {
     margin-left: var(--van-padding-md);

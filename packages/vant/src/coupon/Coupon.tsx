@@ -1,14 +1,15 @@
-import { computed, PropType, defineComponent } from 'vue';
+import { computed, defineComponent, type PropType } from 'vue';
 import {
-  padZero,
   makeStringProp,
   createNamespace,
   makeRequiredProp,
+  type Numeric,
 } from '../utils';
+import { getDate, formatAmount, formatDiscount } from './utils';
 import { Checkbox } from '../checkbox';
 
 export type CouponInfo = {
-  id: string | number;
+  id: Numeric;
   name: string;
   endAt: number;
   value: number;
@@ -24,19 +25,6 @@ export type CouponInfo = {
 };
 
 const [name, bem, t] = createNamespace('coupon');
-
-function getDate(timeStamp: number) {
-  const date = new Date(timeStamp * 1000);
-  return `${date.getFullYear()}.${padZero(date.getMonth() + 1)}.${padZero(
-    date.getDate()
-  )}`;
-}
-
-const formatDiscount = (discount: number) =>
-  (discount / 10).toFixed(discount % 10 === 0 ? 0 : 1);
-
-const formatAmount = (amount: number) =>
-  (amount / 100).toFixed(amount % 100 === 0 ? 0 : amount % 10 === 0 ? 1 : 2);
 
 export default defineComponent({
   name,

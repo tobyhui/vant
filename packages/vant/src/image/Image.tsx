@@ -1,13 +1,15 @@
 import {
   ref,
-  Slot,
   watch,
   computed,
-  PropType,
-  CSSProperties,
+  nextTick,
   onBeforeUnmount,
   defineComponent,
   getCurrentInstance,
+  type Slot,
+  type PropType,
+  type CSSProperties,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
@@ -28,25 +30,39 @@ const [name, bem] = createNamespace('image');
 
 export type ImageFit = 'contain' | 'cover' | 'fill' | 'none' | 'scale-down';
 
+export type ImagePosition =
+  | 'center'
+  | 'top'
+  | 'right'
+  | 'bottom'
+  | 'left'
+  | string;
+
+export const imageProps = {
+  src: String,
+  alt: String,
+  fit: String as PropType<ImageFit>,
+  position: String as PropType<ImagePosition>,
+  round: Boolean,
+  block: Boolean,
+  width: numericProp,
+  height: numericProp,
+  radius: numericProp,
+  lazyLoad: Boolean,
+  iconSize: numericProp,
+  showError: truthProp,
+  errorIcon: makeStringProp('photo-fail'),
+  iconPrefix: String,
+  showLoading: truthProp,
+  loadingIcon: makeStringProp('photo'),
+};
+
+export type ImageProps = ExtractPropTypes<typeof imageProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    src: String,
-    alt: String,
-    fit: String as PropType<ImageFit>,
-    round: Boolean,
-    width: numericProp,
-    height: numericProp,
-    radius: numericProp,
-    lazyLoad: Boolean,
-    iconSize: numericProp,
-    showError: truthProp,
-    errorIcon: makeStringProp('photo-fail'),
-    iconPrefix: String,
-    showLoading: truthProp,
-    loadingIcon: makeStringProp('photo'),
-  },
+  props: imageProps,
 
   emits: ['load', 'error'],
 
@@ -58,15 +74,10 @@ export default defineComponent({
     const { $Lazyload } = getCurrentInstance()!.proxy!;
 
     const style = computed(() => {
-      const style: CSSProperties = {};
-
-      if (isDef(props.width)) {
-        style.width = addUnit(props.width);
-      }
-
-      if (isDef(props.height)) {
-        style.height = addUnit(props.height);
-      }
+      const style: CSSProperties = {
+        width: addUnit(props.width),
+        height: addUnit(props.height),
+      };
 
       if (isDef(props.radius)) {
         style.overflow = 'hidden';
@@ -136,6 +147,7 @@ export default defineComponent({
         class: bem('img'),
         style: {
           objectFit: props.fit,
+          objectPosition: props.position,
         },
       };
 
@@ -149,8 +161,17 @@ export default defineComponent({
     };
 
     const onLazyLoaded = ({ el }: { el: HTMLElement }) => {
-      if (el === imageRef.value && loading.value) {
-        onLoad();
+      const check = () => {
+        if (el === imageRef.value && loading.value) {
+          onLoad();
+        }
+      };
+      if (imageRef.value) {
+        check();
+      } else {
+        // LazyLoad may trigger loaded event before Image mounted
+        // https://github.com/vant-ui/vant/issues/10046
+        nextTick(check);
       }
     };
 
@@ -171,7 +192,10 @@ export default defineComponent({
     }
 
     return () => (
-      <div class={bem({ round: props.round })} style={style.value}>
+      <div
+        class={bem({ round: props.round, block: props.block })}
+        style={style.value}
+      >
         {renderImage()}
         {renderPlaceholder()}
         {slots.default?.()}

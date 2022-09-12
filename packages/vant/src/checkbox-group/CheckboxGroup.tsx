@@ -1,9 +1,9 @@
 import {
   watch,
-  PropType,
-  InjectionKey,
   defineComponent,
-  ExtractPropTypes,
+  type PropType,
+  type InjectionKey,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
@@ -23,7 +23,7 @@ import type {
 
 const [name, bem] = createNamespace('checkbox-group');
 
-const props = {
+export const checkboxGroupProps = {
   max: numericProp,
   disabled: Boolean,
   iconSize: numericProp,
@@ -32,7 +32,7 @@ const props = {
   checkedColor: String,
 };
 
-export type CheckboxGroupProps = ExtractPropTypes<typeof props>;
+export type CheckboxGroupProps = ExtractPropTypes<typeof checkboxGroupProps>;
 
 export const CHECKBOX_GROUP_KEY: InjectionKey<CheckboxGroupProvide> =
   Symbol(name);
@@ -40,7 +40,7 @@ export const CHECKBOX_GROUP_KEY: InjectionKey<CheckboxGroupProvide> =
 export default defineComponent({
   name,
 
-  props,
+  props: checkboxGroupProps,
 
   emits: ['change', 'update:modelValue'],
 

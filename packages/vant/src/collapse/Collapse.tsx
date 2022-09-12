@@ -1,18 +1,52 @@
-import { PropType, defineComponent, InjectionKey } from 'vue';
-import { truthProp, createNamespace, BORDER_TOP_BOTTOM } from '../utils';
+import {
+  defineComponent,
+  type PropType,
+  type InjectionKey,
+  type ExtractPropTypes,
+  type ComponentPublicInstance,
+} from 'vue';
+import {
+  truthProp,
+  createNamespace,
+  BORDER_TOP_BOTTOM,
+  type Numeric,
+} from '../utils';
 import { useChildren } from '@vant/use';
+import { useExpose } from '../composables/use-expose';
 
 const [name, bem] = createNamespace('collapse');
 
 export type CollapseProvide = {
-  toggle: (name: number | string, expanded: boolean) => void;
-  isExpanded: (name: number | string) => boolean;
+  toggle: (name: Numeric, expanded: boolean) => void;
+  isExpanded: (name: Numeric) => boolean;
 };
+
+export type CollapseToggleAllOptions =
+  | boolean
+  | {
+      expanded?: boolean;
+      skipDisabled?: boolean;
+    };
 
 export const COLLAPSE_KEY: InjectionKey<CollapseProvide> = Symbol(name);
 
+export const collapseProps = {
+  border: truthProp,
+  accordion: Boolean,
+  modelValue: {
+    type: [String, Number, Array] as PropType<Numeric | Numeric[]>,
+    default: '',
+  },
+};
+
+export type CollapseProps = ExtractPropTypes<typeof collapseProps>;
+
+export type CollapseInstance = ComponentPublicInstance<{
+  toggleAll: (options?: boolean | CollapseToggleAllOptions) => void;
+}>;
+
 function validateModelValue(
-  modelValue: string | number | Array<string | number>,
+  modelValue: Numeric | Numeric[],
   accordion: boolean
 ) {
   if (accordion && Array.isArray(modelValue)) {
@@ -33,44 +67,53 @@ function validateModelValue(
 export default defineComponent({
   name,
 
-  props: {
-    border: truthProp,
-    accordion: Boolean,
-    modelValue: {
-      type: [String, Number, Array] as PropType<
-        string | number | Array<string | number>
-      >,
-      default: '',
-    },
-  },
+  props: collapseProps,
 
   emits: ['change', 'update:modelValue'],
 
   setup(props, { emit, slots }) {
-    const { linkChildren } = useChildren(COLLAPSE_KEY);
+    const { linkChildren, children } = useChildren(COLLAPSE_KEY);
 
-    const updateName = (name: number | string | Array<number | string>) => {
+    const updateName = (name: Numeric | Numeric[]) => {
       emit('change', name);
       emit('update:modelValue', name);
     };
 
-    const toggle = (name: number | string, expanded: boolean) => {
+    const toggle = (name: Numeric, expanded: boolean) => {
       const { accordion, modelValue } = props;
-
       if (accordion) {
         updateName(name === modelValue ? '' : name);
       } else if (expanded) {
-        updateName((modelValue as Array<number | string>).concat(name));
+        updateName((modelValue as Numeric[]).concat(name));
       } else {
         updateName(
-          (modelValue as Array<number | string>).filter(
-            (activeName) => activeName !== name
-          )
+          (modelValue as Numeric[]).filter((activeName) => activeName !== name)
         );
       }
     };
 
-    const isExpanded = (name: number | string) => {
+    const toggleAll = (options: boolean | CollapseToggleAllOptions = {}) => {
+      if (props.accordion) {
+        return;
+      }
+
+      if (typeof options === 'boolean') {
+        options = { expanded: options };
+      }
+
+      const { expanded, skipDisabled } = options!;
+      const expandedChildren = children.filter((item: any) => {
+        if (item.disabled && skipDisabled) {
+          return item.expanded.value;
+        }
+        return expanded ?? !item.expanded.value;
+      });
+
+      const names = expandedChildren.map((item) => item.itemName.value);
+      updateName(names);
+    };
+
+    const isExpanded = (name: Numeric) => {
       const { accordion, modelValue } = props;
 
       if (
@@ -82,9 +125,9 @@ export default defineComponent({
 
       return accordion
         ? modelValue === name
-        : (modelValue as Array<number | string>).includes(name);
+        : (modelValue as Numeric[]).includes(name);
     };
-
+    useExpose({ toggleAll });
     linkChildren({ toggle, isExpanded });
 
     return () => (

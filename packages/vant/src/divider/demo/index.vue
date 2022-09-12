@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import VanDivider from '..';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -58,7 +58,7 @@ const t = useTranslate({
 
 <style lang="less">
 .demo-divider {
-  background-color: var(--van-white);
+  background-color: var(--van-background-2);
 
   .van-doc-demo-block__title {
     padding-top: var(--van-padding-md);

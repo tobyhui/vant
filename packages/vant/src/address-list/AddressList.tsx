@@ -1,4 +1,4 @@
-import { defineComponent } from 'vue';
+import { defineComponent, type ExtractPropTypes } from 'vue';
 
 // Utils
 import {
@@ -15,26 +15,30 @@ import AddressListItem, { AddressListAddress } from './AddressListItem';
 
 const [name, bem, t] = createNamespace('address-list');
 
+export const addressListProps = {
+  list: makeArrayProp<AddressListAddress>(),
+  modelValue: numericProp,
+  switchable: truthProp,
+  disabledText: String,
+  disabledList: makeArrayProp<AddressListAddress>(),
+  addButtonText: String,
+  defaultTagText: String,
+};
+
+export type AddressListProps = ExtractPropTypes<typeof addressListProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    list: makeArrayProp<AddressListAddress>(),
-    modelValue: numericProp,
-    switchable: truthProp,
-    disabledText: String,
-    disabledList: makeArrayProp<AddressListAddress>(),
-    addButtonText: String,
-    defaultTagText: String,
-  },
+  props: addressListProps,
 
   emits: [
     'add',
     'edit',
     'select',
-    'click-item',
-    'edit-disabled',
-    'select-disabled',
+    'clickItem',
+    'editDisabled',
+    'selectDisabled',
     'update:modelValue',
   ],
 
@@ -45,12 +49,12 @@ export default defineComponent({
       disabled?: boolean
     ) => {
       const onEdit = () =>
-        emit(disabled ? 'edit-disabled' : 'edit', item, index);
+        emit(disabled ? 'editDisabled' : 'edit', item, index);
 
-      const onClick = () => emit('click-item', item, index);
+      const onClick = () => emit('clickItem', item, index);
 
       const onSelect = () => {
-        emit(disabled ? 'select-disabled' : 'select', item, index);
+        emit(disabled ? 'selectDisabled' : 'select', item, index);
 
         if (!disabled) {
           emit('update:modelValue', item.id);
@@ -86,7 +90,7 @@ export default defineComponent({
         <Button
           round
           block
-          type="danger"
+          type="primary"
           text={props.addButtonText || t('add')}
           class={bem('add')}
           onClick={() => emit('add')}

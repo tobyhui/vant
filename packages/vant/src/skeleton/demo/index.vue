@@ -2,7 +2,7 @@
 import VanSkeleton from '..';
 import VanSwitch from '../../switch';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { cdnURL, useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -32,10 +32,10 @@ const show = ref(false);
   </demo-block>
 
   <demo-block :title="t('showChildren')">
-    <van-switch v-model="show" size="24px" />
+    <van-switch v-model="show" />
     <van-skeleton title avatar :row="3" :loading="!show">
       <div class="demo-preview">
-        <img src="https://img.yzcdn.cn/vant/logo.png" />
+        <img :src="cdnURL('logo.png')" />
         <div class="demo-content">
           <h3>{{ t('title') }}</h3>
           <p>{{ t('desc') }}</p>
@@ -47,7 +47,7 @@ const show = ref(false);
 
 <style lang="less">
 .demo-skeleton {
-  background-color: var(--van-white);
+  background-color: var(--van-background-2);
 
   .van-switch {
     margin: 0 var(--van-padding-md) var(--van-padding-xs);

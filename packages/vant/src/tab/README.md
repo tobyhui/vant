@@ -36,7 +36,7 @@ import { ref } from 'vue';
 
 export default {
   setup() {
-    const active = ref(2);
+    const active = ref(0);
     return { active };
   },
 };
@@ -110,11 +110,11 @@ Tabs styled as cards.
 ```
 
 ```js
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
-    const onClickTab = ({ title }) => Toast(title);
+    const onClickTab = ({ title }) => showToast(title);
     return {
       onClickTab,
     };
@@ -124,10 +124,22 @@ export default {
 
 ### Sticky
 
-In sticky mode, the tab will be fixed to top when scroll to top.
+In sticky mode, the tab nav will be fixed to top when scroll to top.
 
 ```html
 <van-tabs v-model:active="active" sticky>
+  <van-tab v-for="index in 4" :title="'tab ' + index">
+    content {{ index }}
+  </van-tab>
+</van-tabs>
+```
+
+### Shrink
+
+In shrink mode, the tabs will be shrinked to the left.
+
+```html
+<van-tabs v-model:active="active" shrink>
   <van-tab v-for="index in 4" :title="'tab ' + index">
     content {{ index }}
   </van-tab>
@@ -227,7 +239,7 @@ export default {
 | --- | --- | --- | --- |
 | v-model:active | Index of active tab | _number \| string_ | `0` |
 | type | Can be set to `line` `card` | _string_ | `line` |
-| color | Tab color | _string_ | `#ee0a24` |
+| color | Tab color | _string_ | `#1989fa` |
 | background | Background color | _string_ | `white` |
 | duration | Toggle tab's animation time | _number \| string_ | `0.3` |
 | line-width | Width of tab line | _number \| string_ | `40px` |
@@ -236,6 +248,7 @@ export default {
 | border | Whether to show border when `type="line"` | _boolean_ | `false` |
 | ellipsis | Whether to ellipsis too long title | _boolean_ | `true` |
 | sticky | Whether to use sticky mode | _boolean_ | `false` |
+| shrink `v3.2.8` | Whether to shrink the the tabs to the left | _boolean_ | `false` |
 | swipeable | Whether to enable gestures to slide left and right | _boolean_ | `false` |
 | lazy-render | Whether to enable tab content lazy render | _boolean_ | `true` |
 | scrollspy | Whether to use scrollspy mode | _boolean_ | `false` |
@@ -243,7 +256,7 @@ export default {
 | swipe-threshold | Set swipe tabs threshold | _number \| string_ | `5` |
 | title-active-color | Title active color | _string_ | - |
 | title-inactive-color | Title inactive color | _string_ | - |
-| before-change | Callback function before changing tabs，return `false` to prevent change，support return Promise | _(name: number \| string) => boolean \| Promise\<boolean\>_ | - |
+| before-change | Callback function before changing tabs, return `false` to prevent change, support return Promise | _(name: number \| string) => boolean \| Promise\<boolean\>_ | - |
 
 ### Tab Props
 
@@ -270,8 +283,6 @@ export default {
 | rendered | Emitted when content first rendered in lazy-render mode | _name: string \| number, title: string_ |
 | scroll | Emitted when tab scrolling in sticky mode | _{ scrollTop: number, isFixed: boolean }_ |
 
-> Tips：click and disabled event is deprecated，place use click-tab event instead.
-
 ### Tabs Methods
 
 Use [ref](https://v3.vuejs.org/guide/component-template-refs.html) to get Tabs instance and call instance methods.
@@ -286,7 +297,7 @@ Use [ref](https://v3.vuejs.org/guide/component-template-refs.html) to get Tabs i
 The component exports the following type definitions:
 
 ```ts
-import type { TabsType, TabsProps, TabsInstance } from 'vant';
+import type { TabProps, TabsType, TabsProps, TabsInstance } from 'vant';
 ```
 
 `TabsInstance` is the type of component instance:
@@ -321,17 +332,17 @@ tabsRef.value?.scrollTo(0);
 
 The component provides the following CSS variables, which can be used to customize styles. Please refer to [ConfigProvider component](#/en-US/config-provider).
 
-| Name                            | Default Value               | Description |
-| ------------------------------- | --------------------------- | ----------- |
-| --van-tab-text-color            | _var(--van-gray-7)_         | -           |
-| --van-tab-active-text-color     | _var(--van-text-color)_     | -           |
-| --van-tab-disabled-text-color   | _var(--van-gray-5)_         | -           |
-| --van-tab-font-size             | _var(--van-font-size-md)_   | -           |
-| --van-tab-line-height           | _var(--van-line-height-md)_ | -           |
-| --van-tabs-default-color        | _var(--van-danger-color)_   | -           |
-| --van-tabs-line-height          | _44px_                      | -           |
-| --van-tabs-card-height          | _30px_                      | -           |
-| --van-tabs-nav-background-color | _var(--van-white)_          | -           |
-| --van-tabs-bottom-bar-width     | _40px_                      | -           |
-| --van-tabs-bottom-bar-height    | _3px_                       | -           |
-| --van-tabs-bottom-bar-color     | _var(--van-danger-color)_   | -           |
+| Name                          | Default Value               | Description |
+| ----------------------------- | --------------------------- | ----------- |
+| --van-tab-text-color          | _var(--van-gray-7)_         | -           |
+| --van-tab-active-text-color   | _var(--van-text-color)_     | -           |
+| --van-tab-disabled-text-color | _var(--van-text-color-3)_   | -           |
+| --van-tab-font-size           | _var(--van-font-size-md)_   | -           |
+| --van-tab-line-height         | _var(--van-line-height-md)_ | -           |
+| --van-tabs-default-color      | _var(--van-primary-color)_  | -           |
+| --van-tabs-line-height        | _44px_                      | -           |
+| --van-tabs-card-height        | _30px_                      | -           |
+| --van-tabs-nav-background     | _var(--van-background-2)_   | -           |
+| --van-tabs-bottom-bar-width   | _40px_                      | -           |
+| --van-tabs-bottom-bar-height  | _3px_                       | -           |
+| --van-tabs-bottom-bar-color   | _var(--van-primary-color)_  | -           |

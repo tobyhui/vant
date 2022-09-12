@@ -113,12 +113,12 @@ export default {
 
 ```javascript
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
     const value = ref(3);
-    const onChange = (value) => Toast('current value:' + value);
+    const onChange = (value) => showToast('current value:' + value);
     return {
       value,
       onChange,
@@ -150,9 +150,17 @@ export default {
 
 ### Events
 
-| Event  | Description               | Parameters   |
-| ------ | ------------------------- | ------------ |
-| change | Emitted when rate changed | current rate |
+| Event  | Description               | Parameters             |
+| ------ | ------------------------- | ---------------------- |
+| change | Emitted when rate changed | _currentValue: number_ |
+
+### Types
+
+The component exports the following type definitions:
+
+```ts
+import type { RateProps } from 'vant';
+```
 
 ## Theming
 

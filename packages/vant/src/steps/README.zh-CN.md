@@ -48,7 +48,7 @@ export default {
 可以通过 `active-icon` 和 `active-color` 属性设置激活状态下的图标和颜色。
 
 ```html
-<van-steps :active="active" active-icon="success" active-color="#38f">
+<van-steps :active="active" active-icon="success" active-color="#07c160">
   <van-step>买家下单</van-step>
   <van-step>商家接单</van-step>
   <van-step>买家提货</van-step>
@@ -112,7 +112,7 @@ export default {
 组件导出以下类型定义：
 
 ```ts
-import type { StepsDirection } from 'vant';
+import type { StepsProps, StepsDirection } from 'vant';
 ```
 
 ## 主题定制
@@ -123,15 +123,15 @@ import type { StepsDirection } from 'vant';
 
 | 名称                                  | 默认值                     | 描述 |
 | ------------------------------------- | -------------------------- | ---- |
-| --van-step-text-color                 | _var(--van-gray-6)_        | -    |
-| --van-step-active-color               | _var(--van-success-color)_ | -    |
+| --van-step-text-color                 | _var(--van-text-color-2)_  | -    |
+| --van-step-active-color               | _var(--van-primary-color)_ | -    |
 | --van-step-process-text-color         | _var(--van-text-color)_    | -    |
 | --van-step-font-size                  | _var(--van-font-size-md)_  | -    |
 | --van-step-line-color                 | _var(--van-border-color)_  | -    |
-| --van-step-finish-line-color          | _var(--van-success-color)_ | -    |
+| --van-step-finish-line-color          | _var(--van-primary-color)_ | -    |
 | --van-step-finish-text-color          | _var(--van-text-color)_    | -    |
 | --van-step-icon-size                  | _12px_                     | -    |
 | --van-step-circle-size                | _5px_                      | -    |
 | --van-step-circle-color               | _var(--van-gray-6)_        | -    |
 | --van-step-horizontal-title-font-size | _var(--van-font-size-sm)_  | -    |
-| --van-steps-background-color          | _var(--van-white)_         | -    |
+| --van-steps-background                | _var(--van-background-2)_  | -    |

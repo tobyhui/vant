@@ -1,10 +1,12 @@
 import {
   watch,
-  PropType,
   onMounted,
   onUnmounted,
-  CSSProperties,
   defineComponent,
+  type PropType,
+  type TeleportProps,
+  type CSSProperties,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
@@ -29,41 +31,47 @@ import type { ToastType, ToastPosition } from './types';
 
 const [name, bem] = createNamespace('toast');
 
-const popupProps = [
+const popupInheritProps = [
   'show',
   'overlay',
+  'teleport',
   'transition',
   'overlayClass',
   'overlayStyle',
   'closeOnClickOverlay',
 ] as const;
 
+export const toastProps = {
+  icon: String,
+  show: Boolean,
+  type: makeStringProp<ToastType>('text'),
+  overlay: Boolean,
+  message: numericProp,
+  iconSize: numericProp,
+  duration: makeNumberProp(2000),
+  position: makeStringProp<ToastPosition>('middle'),
+  teleport: [String, Object] as PropType<TeleportProps['to']>,
+  className: unknownProp,
+  iconPrefix: String,
+  transition: makeStringProp('van-fade'),
+  loadingType: String as PropType<LoadingType>,
+  forbidClick: Boolean,
+  overlayClass: unknownProp,
+  overlayStyle: Object as PropType<CSSProperties>,
+  closeOnClick: Boolean,
+  closeOnClickOverlay: Boolean,
+};
+
+export type ToastProps = ExtractPropTypes<typeof toastProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    icon: String,
-    show: Boolean,
-    type: makeStringProp<ToastType>('text'),
-    overlay: Boolean,
-    message: numericProp,
-    iconSize: numericProp,
-    duration: makeNumberProp(2000),
-    position: makeStringProp<ToastPosition>('middle'),
-    className: unknownProp,
-    iconPrefix: String,
-    transition: makeStringProp('van-fade'),
-    loadingType: String as PropType<LoadingType>,
-    forbidClick: Boolean,
-    overlayClass: unknownProp,
-    overlayStyle: Object as PropType<CSSProperties>,
-    closeOnClick: Boolean,
-    closeOnClickOverlay: Boolean,
-  },
+  props: toastProps,
 
   emits: ['update:show'],
 
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     let timer: NodeJS.Timeout;
     let clickable = false;
 
@@ -110,9 +118,13 @@ export default defineComponent({
     const renderMessage = () => {
       const { type, message } = props;
 
+      if (slots.message) {
+        return <div class={bem('text')}>{slots.message()}</div>;
+      }
+
       if (isDef(message) && message !== '') {
         return type === 'html' ? (
-          <div class={bem('text')} innerHTML={String(message)} />
+          <div key={0} class={bem('text')} innerHTML={String(message)} />
         ) : (
           <div class={bem('text')}>{message}</div>
         );
@@ -146,7 +158,7 @@ export default defineComponent({
         onClick={onClick}
         onClosed={clearTimer}
         onUpdate:show={updateShow}
-        {...pick(props, popupProps)}
+        {...pick(props, popupInheritProps)}
       >
         {renderIcon()}
         {renderMessage()}

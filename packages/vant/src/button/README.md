@@ -31,22 +31,22 @@ app.use(Button);
 ### Plain
 
 ```html
-<van-button plain type="primary">Primary</van-button>
-<van-button plain type="primary">Danger</van-button>
+<van-button plain type="primary">Plain</van-button>
+<van-button plain type="success">Plain</van-button>
 ```
 
 ### Hairline
 
 ```html
 <van-button plain hairline type="primary">Hairline</van-button>
-<van-button plain hairline type="primary">Hairline</van-button>
+<van-button plain hairline type="success">Hairline</van-button>
 ```
 
 ### Disabled
 
 ```html
 <van-button disabled type="primary">Disabled</van-button>
-<van-button disabled type="primary">Disabled</van-button>
+<van-button disabled type="success">Disabled</van-button>
 ```
 
 ### Loading
@@ -54,14 +54,14 @@ app.use(Button);
 ```html
 <van-button loading type="primary" />
 <van-button loading type="primary" loading-type="spinner" />
-<van-button loading type="primary" loading-text="Loading..." />
+<van-button loading type="success" loading-text="Loading..." />
 ```
 
 ### Shape
 
 ```html
 <van-button square type="primary">Square</van-button>
-<van-button round type="primary">Round</van-button>
+<van-button round type="success">Round</van-button>
 ```
 
 ### Icon
@@ -69,7 +69,10 @@ app.use(Button);
 ```html
 <van-button icon="plus" type="primary" />
 <van-button icon="plus" type="primary">Button</van-button>
-<van-button icon="https://img.yzcdn.cn/vant/user-active.png" type="primary">
+<van-button
+  icon="https://fastly.jsdelivr.net/npm/@vant/assets/user-active.png"
+  type="primary"
+>
   Button
 </van-button>
 ```
@@ -92,7 +95,7 @@ app.use(Button);
 ### Route
 
 ```html
-<van-button type="primary" url="/vant/mobile.html">URL</van-button>
+<van-button type="primary" url="https://github.com">URL</van-button>
 <van-button type="primary" to="index">Vue Router</van-button>
 ```
 
@@ -126,7 +129,7 @@ app.use(Button);
 | round | Whether to be round button | _boolean_ | `false` |
 | square | Whether to be square button | _boolean_ | `false` |
 | disabled | Whether to disable button | _boolean_ | `false` |
-| loading | Whether show loading status | _boolean_ | `false` |
+| loading | Whether to show loading status | _boolean_ | `false` |
 | loading-text | Loading text | _string_ | - |
 | loading-type | Loading type, can be set to `spinner` | _string_ | `circular` |
 | loading-size | Loading icon size | _number \| string_ | `20px` |
@@ -157,6 +160,7 @@ The component exports the following type definitions:
 import type {
   ButtonType,
   ButtonSize,
+  ButtonProps,
   ButtonNativeType,
   ButtonIconPosition,
 } from 'vant';
@@ -183,24 +187,24 @@ The component provides the following CSS variables, which can be used to customi
 | --van-button-default-line-height | _1.2_ | - |
 | --van-button-default-font-size | _var(--van-font-size-lg)_ | - |
 | --van-button-default-color | _var(--van-text-color)_ | - |
-| --van-button-default-background-color | _var(--van-white)_ | - |
-| --van-button-default-border-color | _var(--van-border-color)_ | - |
+| --van-button-default-background | _var(--van-background-2)_ | - |
+| --van-button-default-border-color | _var(--van-gray-4)_ | - |
 | --van-button-primary-color | _var(--van-white)_ | - |
-| --van-button-primary-background-color | _var(--van-primary-color)_ | - |
+| --van-button-primary-background | _var(--van-primary-color)_ | - |
 | --van-button-primary-border-color | _var(--van-primary-color)_ | - |
 | --van-button-success-color | _var(--van-white)_ | - |
-| --van-button-success-background-color | _var(--van-success-color)_ | - |
+| --van-button-success-background | _var(--van-success-color)_ | - |
 | --van-button-success-border-color | _var(--van-success-color)_ | - |
 | --van-button-danger-color | _var(--van-white)_ | - |
-| --van-button-danger-background-color | _var(--van-danger-color)_ | - |
+| --van-button-danger-background | _var(--van-danger-color)_ | - |
 | --van-button-danger-border-color | _var(--van-danger-color)_ | - |
 | --van-button-warning-color | _var(--van-white)_ | - |
-| --van-button-warning-background-color | _var(--van-warning-color)_ | - |
+| --van-button-warning-background | _var(--van-warning-color)_ | - |
 | --van-button-warning-border-color | _var(--van-warning-color)_ | - |
-| --van-button-border-width | _var(--van-border-width-base)_ | - |
-| --van-button-border-radius | _var(--van-border-radius-sm)_ | - |
-| --van-button-round-border-radius | _var(--van-border-radius-max)_ | - |
-| --van-button-plain-background-color | _var(--van-white)_ | - |
+| --van-button-border-width | _var(--van-border-width)_ | - |
+| --van-button-radius | _var(--van-radius-md)_ | - |
+| --van-button-round-radius | _var(--van-radius-max)_ | - |
+| --van-button-plain-background | _var(--van-white)_ | - |
 | --van-button-disabled-opacity | _var(--van-disabled-opacity)_ | - |
 | --van-button-icon-size | _1.2em_ | - |
 | --van-button-loading-icon-size | _20px_ | - |

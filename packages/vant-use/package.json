@@ -1,31 +1,46 @@
 {
   "name": "@vant/use",
-  "version": "1.3.2",
+  "version": "1.4.2",
   "description": "Vant Composition API",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "typings": "dist/types/index.d.ts",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.mjs",
+  "typings": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.mjs",
+      "require": "./dist/index.cjs.js"
+    }
+  },
   "sideEffects": false,
   "files": [
     "dist"
   ],
   "scripts": {
-    "clean": "rm -rf ./dist",
-    "build:lib": "node ./scripts/build.js",
+    "clean": "rimraf ./dist",
+    "dev": "node ./build.js -w",
     "build:types": "tsc -p ./tsconfig.json --emitDeclarationOnly",
-    "build": "yarn build:lib && yarn build:types",
-    "release": "yarn build && release-it"
+    "build:bundle": "node ./build.js",
+    "build": "pnpm clean && pnpm build:bundle && pnpm build:types",
+    "release": "pnpm build && release-it",
+    "prepare": "pnpm build"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vant-ui/vant.git",
+    "directory": "packages/vant-use"
+  },
+  "bugs": "https://github.com/vant-ui/vant/issues",
+  "author": "chenjiahan",
   "license": "MIT",
-  "repository": "https://github.com/youzan/vant/tree/dev/packages/vant-use",
   "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "release-it": "^14.0.2",
-    "typescript": "^4.0.2"
+    "esbuild": "^0.14.54",
+    "release-it": "^15.4.1",
+    "typescript": "^4.8.2",
+    "vue": "^3.2.38"
   },
   "release-it": {
     "git": {

@@ -33,13 +33,16 @@ app.use(ContactEdit);
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
-    const editingContact = ref({});
-    const onSave = (contactInfo) => Toast('保存');
-    const onDelete = (contactInfo) => Toast('删除');
+    const editingContact = ref({
+      tel: '',
+      name: '',
+    });
+    const onSave = (contactInfo) => showToast('保存');
+    const onDelete = (contactInfo) => showToast('删除');
     return {
       onSave,
       onDelete,
@@ -82,7 +85,7 @@ export default {
 组件导出以下类型定义：
 
 ```ts
-import type { ContactEditInfo } from 'vant';
+import type { ContactEditInfo, ContactEditProps } from 'vant';
 ```
 
 ## 主题定制
@@ -91,11 +94,11 @@ import type { ContactEditInfo } from 'vant';
 
 组件提供了下列 CSS 变量，可用于自定义样式，使用方法请参考 [ConfigProvider 组件](#/zh-CN/config-provider)。
 
-| 名称 | 默认值 | 描述 |
-| --- | --- | --- |
-| --van-contact-edit-padding | _var(--van-padding-md)_ | - |
-| --van-contact-edit-fields-radius | _var(--van-border-radius-md)_ | - |
-| --van-contact-edit-buttons-padding | _var(--van-padding-xl) 0_ | - |
-| --van-contact-edit-button-margin-bottom | _var(--van-padding-sm)_ | - |
-| --van-contact-edit-button-font-size | _var(--van-font-size-lg)_ | - |
-| --van-contact-edit-field-label-width | _4.1em_ | - |
+| 名称                                    | 默认值                    | 描述 |
+| --------------------------------------- | ------------------------- | ---- |
+| --van-contact-edit-padding              | _var(--van-padding-md)_   | -    |
+| --van-contact-edit-fields-radius        | _var(--van-radius-md)_    | -    |
+| --van-contact-edit-buttons-padding      | _var(--van-padding-xl) 0_ | -    |
+| --van-contact-edit-button-margin-bottom | _var(--van-padding-sm)_   | -    |
+| --van-contact-edit-button-font-size     | _var(--van-font-size-lg)_ | -    |
+| --van-contact-edit-field-label-width    | _4.1em_                   | -    |

@@ -1,11 +1,11 @@
-import { PropType, defineComponent, ExtractPropTypes } from 'vue';
+import { defineComponent, type PropType, type ExtractPropTypes } from 'vue';
 
 // Utils
 import {
   FORM_KEY,
   truthProp,
   numericProp,
-  makeStringProp,
+  preventDefault,
   createNamespace,
 } from '../utils';
 
@@ -18,12 +18,13 @@ import type {
   FieldTextAlign,
   FieldValidateError,
   FieldValidateTrigger,
+  FieldValidationStatus,
 } from '../field/types';
 import type { FormExpose } from './types';
 
 const [name, bem] = createNamespace('form');
 
-const props = {
+export const formProps = {
   colon: Boolean,
   disabled: Boolean,
   readonly: Boolean,
@@ -34,17 +35,22 @@ const props = {
   scrollToError: Boolean,
   validateFirst: Boolean,
   submitOnEnter: truthProp,
-  validateTrigger: makeStringProp<FieldValidateTrigger>('onBlur'),
   showErrorMessage: truthProp,
   errorMessageAlign: String as PropType<FieldTextAlign>,
+  validateTrigger: {
+    type: [String, Array] as PropType<
+      FieldValidateTrigger | FieldValidateTrigger[]
+    >,
+    default: 'onBlur',
+  },
 };
 
-export type FormProps = ExtractPropTypes<typeof props>;
+export type FormProps = ExtractPropTypes<typeof formProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: formProps,
 
   emits: ['submit', 'failed'],
 
@@ -136,6 +142,12 @@ export default defineComponent({
       });
     };
 
+    const getValidationStatus = () =>
+      children.reduce<Record<string, FieldValidationStatus>>((form, field) => {
+        form[field.name] = field.getValidationStatus();
+        return form;
+      }, {});
+
     const scrollToField = (
       name: string,
       options?: boolean | ScrollIntoViewOptions
@@ -150,10 +162,10 @@ export default defineComponent({
     };
 
     const getValues = () =>
-      children.reduce((form, field) => {
+      children.reduce<Record<string, unknown>>((form, field) => {
         form[field.name] = field.formValue.value;
         return form;
-      }, {} as Record<string, unknown>);
+      }, {});
 
     const submit = () => {
       const values = getValues();
@@ -170,7 +182,7 @@ export default defineComponent({
     };
 
     const onSubmit = (event: Event) => {
-      event.preventDefault();
+      preventDefault(event);
       submit();
     };
 
@@ -178,8 +190,10 @@ export default defineComponent({
     useExpose<FormExpose>({
       submit,
       validate,
+      getValues,
       scrollToField,
       resetValidation,
+      getValidationStatus,
     });
 
     return () => (

@@ -157,9 +157,9 @@ export default {
 | speed | Animate speed（rate/s） | _number \| string_ | `0` |
 | text | Text | _string_ | - |
 | stroke-width | Stroke width | _number \| string_ | `40` |
-| stroke-linecap | Stroke linecap，can be set to `square` `butt` | _string_ | `round` |
+| stroke-linecap | Stroke linecap, can be set to `square` `butt` | _string_ | `round` |
 | clockwise | Whether to be clockwise | _boolean_ | `true` |
-| start-position `v3.2.1` | Progress start position，can be set to `left`、`right`、`bottom` | _CircleStartPosition_ | `top` |
+| start-position `v3.2.1` | Progress start position, can be set to `left`、`right`、`bottom` | _CircleStartPosition_ | `top` |
 
 ### Slots
 
@@ -172,7 +172,7 @@ export default {
 The component exports the following type definitions:
 
 ```ts
-import type { CircleStartPosition } from 'vant';
+import type { CircleProps, CircleStartPosition } from 'vant';
 ```
 
 ## Theming
@@ -181,12 +181,12 @@ import type { CircleStartPosition } from 'vant';
 
 The component provides the following CSS variables, which can be used to customize styles. Please refer to [ConfigProvider component](#/en-US/config-provider).
 
-| Name                          | Default Value                 | Description |
-| ----------------------------- | ----------------------------- | ----------- |
-| --van-circle-size             | _100px_                       | -           |
-| --van-circle-color            | _var(--van-primary-color)_    | -           |
-| --van-circle-layer-color      | _var(--van-white)_            | -           |
-| --van-circle-text-color       | _var(--van-text-color)_       | -           |
-| --van-circle-text-font-weight | _var(--van-font-weight-bold)_ | -           |
-| --van-circle-text-font-size   | _var(--van-font-size-md)_     | -           |
-| --van-circle-text-line-height | _var(--van-line-height-md)_   | -           |
+| Name                          | Default Value               | Description |
+| ----------------------------- | --------------------------- | ----------- |
+| --van-circle-size             | _100px_                     | -           |
+| --van-circle-color            | _var(--van-primary-color)_  | -           |
+| --van-circle-layer-color      | _var(--van-white)_          | -           |
+| --van-circle-text-color       | _var(--van-text-color)_     | -           |
+| --van-circle-text-font-weight | _var(--van-font-bold)_      | -           |
+| --van-circle-text-font-size   | _var(--van-font-size-md)_   | -           |
+| --van-circle-text-line-height | _var(--van-line-height-md)_ | -           |

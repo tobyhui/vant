@@ -1,4 +1,9 @@
-import { PropType, CSSProperties, defineComponent } from 'vue';
+import {
+  ref,
+  defineComponent,
+  type PropType,
+  type ExtractPropTypes,
+} from 'vue';
 import {
   truthProp,
   makeStringProp,
@@ -9,32 +14,43 @@ import {
 // Components
 import { Icon } from '../icon';
 import { Button, ButtonType } from '../button';
+import { usePlaceholder } from '../composables/use-placeholder';
 
 const [name, bem, t] = createNamespace('submit-bar');
+
+export type SubmitBarTextAlign = 'left' | 'right';
+
+export const submitBarProps = {
+  tip: String,
+  label: String,
+  price: Number,
+  tipIcon: String,
+  loading: Boolean,
+  currency: makeStringProp('¥'),
+  disabled: Boolean,
+  textAlign: String as PropType<SubmitBarTextAlign>,
+  buttonText: String,
+  buttonType: makeStringProp<ButtonType>('danger'),
+  buttonColor: String,
+  suffixLabel: String,
+  placeholder: Boolean,
+  decimalLength: makeNumericProp(2),
+  safeAreaInsetBottom: truthProp,
+};
+
+export type SubmitBarProps = ExtractPropTypes<typeof submitBarProps>;
 
 export default defineComponent({
   name,
 
-  props: {
-    tip: String,
-    label: String,
-    price: Number,
-    tipIcon: String,
-    loading: Boolean,
-    currency: makeStringProp('¥'),
-    disabled: Boolean,
-    textAlign: String as PropType<CSSProperties['textAlign']>,
-    buttonText: String,
-    buttonType: makeStringProp<ButtonType>('danger'),
-    buttonColor: String,
-    suffixLabel: String,
-    decimalLength: makeNumericProp(2),
-    safeAreaInsetBottom: truthProp,
-  },
+  props: submitBarProps,
 
   emits: ['submit'],
 
   setup(props, { emit, slots }) {
+    const root = ref<HTMLElement>();
+    const renderPlaceholder = usePlaceholder(root, bem);
+
     const renderText = () => {
       const { price, label, currency, textAlign, suffixLabel, decimalLength } =
         props;
@@ -93,8 +109,9 @@ export default defineComponent({
       );
     };
 
-    return () => (
+    const renderSubmitBar = () => (
       <div
+        ref={root}
         class={[bem(), { 'van-safe-area-bottom': props.safeAreaInsetBottom }]}
       >
         {slots.top?.()}
@@ -106,5 +123,12 @@ export default defineComponent({
         </div>
       </div>
     );
+
+    return () => {
+      if (props.placeholder) {
+        return renderPlaceholder(renderSubmitBar);
+      }
+      return renderSubmitBar();
+    };
   },
 });

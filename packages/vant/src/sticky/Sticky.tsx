@@ -2,10 +2,11 @@ import {
   ref,
   watch,
   computed,
-  PropType,
   reactive,
-  CSSProperties,
   defineComponent,
+  type PropType,
+  type CSSProperties,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
@@ -29,16 +30,20 @@ const [name, bem] = createNamespace('sticky');
 
 export type StickyPosition = 'top' | 'bottom';
 
+export const stickyProps = {
+  zIndex: numericProp,
+  position: makeStringProp<StickyPosition>('top'),
+  container: Object as PropType<Element>,
+  offsetTop: makeNumericProp(0),
+  offsetBottom: makeNumericProp(0),
+};
+
+export type StickyProps = ExtractPropTypes<typeof stickyProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    zIndex: numericProp,
-    position: makeStringProp<StickyPosition>('top'),
-    container: Object as PropType<Element>,
-    offsetTop: makeNumericProp(0),
-    offsetBottom: makeNumericProp(0),
-  },
+  props: stickyProps,
 
   emits: ['scroll', 'change'],
 
@@ -135,7 +140,10 @@ export default defineComponent({
       (value) => emit('change', value)
     );
 
-    useEventListener('scroll', onScroll, { target: scrollParent });
+    useEventListener('scroll', onScroll, {
+      target: scrollParent,
+      passive: true,
+    });
     useVisibilityChange(root, onScroll);
 
     return () => (

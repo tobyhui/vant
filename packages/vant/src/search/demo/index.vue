@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import VanSearch from '..';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
-import { Toast } from '../../toast';
+import { useTranslate } from '../../../docs/site';
+import { showToast } from '../../toast';
 
 const t = useTranslate({
   'zh-CN': {
@@ -32,8 +32,9 @@ const value4 = ref('');
 const value5 = ref('');
 const value6 = ref('');
 
-const onSearch = (val: string) => Toast(val);
-const onCancel = () => Toast(t('cancel'));
+const onSearch = (val: string) => showToast(val);
+const onCancel = () => showToast(t('cancel'));
+const onClickButton = () => showToast(value6.value);
 </script>
 
 <template>
@@ -83,7 +84,7 @@ const onCancel = () => Toast(t('cancel'));
       @search="onSearch"
     >
       <template #action>
-        <div @click="onSearch">{{ t('search') }}</div>
+        <div @click="onClickButton">{{ t('search') }}</div>
       </template>
     </van-search>
   </demo-block>

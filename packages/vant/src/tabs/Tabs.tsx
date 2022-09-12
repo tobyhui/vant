@@ -4,14 +4,13 @@ import {
   computed,
   reactive,
   nextTick,
-  PropType,
   onActivated,
-  InjectionKey,
-  CSSProperties,
   defineComponent,
-  ExtractPropTypes,
-  getCurrentInstance,
-  ComponentPublicInstance,
+  type PropType,
+  type InjectionKey,
+  type CSSProperties,
+  type ExtractPropTypes,
+  type ComponentPublicInstance,
 } from 'vue';
 
 // Utils
@@ -23,15 +22,17 @@ import {
   unitToPx,
   truthProp,
   numericProp,
-  Interceptor,
+  windowWidth,
   getElementTop,
   makeStringProp,
   callInterceptor,
   createNamespace,
   makeNumericProp,
   setRootScrollTop,
-  ComponentInstance,
   BORDER_TOP_BOTTOM,
+  type Numeric,
+  type Interceptor,
+  type ComponentInstance,
 } from '../utils';
 import { scrollLeftTo, scrollTopTo } from './utils';
 
@@ -39,11 +40,11 @@ import { scrollLeftTo, scrollTopTo } from './utils';
 import {
   useRect,
   useChildren,
-  useWindowSize,
   useScrollParent,
   useEventListener,
   onMountedOrActivated,
 } from '@vant/use';
+import { useId } from '../composables/use-id';
 import { route, RouteProps } from '../composables/use-route';
 import { useRefs } from '../composables/use-refs';
 import { useExpose } from '../composables/use-expose';
@@ -59,11 +60,12 @@ import type { TabsProvide, TabsType } from './types';
 
 const [name, bem] = createNamespace('tabs');
 
-const props = {
+export const tabsProps = {
   type: makeStringProp<TabsType>('line'),
   color: String,
   border: Boolean,
   sticky: Boolean,
+  shrink: Boolean,
   active: makeNumericProp(0),
   duration: makeNumericProp(0.3),
   animated: Boolean,
@@ -81,40 +83,18 @@ const props = {
   titleInactiveColor: String,
 };
 
-export type TabsProps = ExtractPropTypes<typeof props>;
+export type TabsProps = ExtractPropTypes<typeof tabsProps>;
 
 export const TABS_KEY: InjectionKey<TabsProvide> = Symbol(name);
 
 export default defineComponent({
   name,
 
-  props,
+  props: tabsProps,
 
-  emits: [
-    'click',
-    'change',
-    'scroll',
-    'disabled',
-    'rendered',
-    'click-tab',
-    'update:active',
-  ],
+  emits: ['change', 'scroll', 'rendered', 'clickTab', 'update:active'],
 
   setup(props, { emit, slots }) {
-    if (process.env.NODE_ENV !== 'production') {
-      const props = getCurrentInstance()?.vnode?.props;
-      if (props && 'onClick' in props) {
-        console.warn(
-          '[Vant] Tabs: "click" event is deprecated, using "click-tab" instead.'
-        );
-      }
-      if (props && 'onDisabled' in props) {
-        console.warn(
-          '[Vant] Tabs: "disabled" event is deprecated, using "click-tab" instead.'
-        );
-      }
-    }
-
     let tabHeight: number;
     let lockScroll: boolean;
     let stickyFixed: boolean;
@@ -122,8 +102,9 @@ export default defineComponent({
     const root = ref<HTMLElement>();
     const navRef = ref<HTMLElement>();
     const wrapRef = ref<HTMLElement>();
+    const contentRef = ref<ComponentInstance>();
 
-    const windowSize = useWindowSize();
+    const id = useId();
     const scroller = useScrollParent(root);
     const [titleRefs, setTitleRefs] = useRefs<ComponentInstance>();
     const { children, linkChildren } = useChildren(TABS_KEY);
@@ -137,7 +118,10 @@ export default defineComponent({
 
     // whether the nav is scrollable
     const scrollable = computed(
-      () => children.length > props.swipeThreshold || !props.ellipsis
+      () =>
+        children.length > props.swipeThreshold ||
+        !props.ellipsis ||
+        props.shrink
     );
 
     const navStyle = computed(() => ({
@@ -145,10 +129,8 @@ export default defineComponent({
       background: props.background,
     }));
 
-    const getTabName = (
-      tab: ComponentInstance,
-      index: number
-    ): number | string => tab.name ?? index;
+    const getTabName = (tab: ComponentInstance, index: number): Numeric =>
+      tab.name ?? index;
 
     const currentName = computed(() => {
       const activeTab = children[state.currentIndex];
@@ -257,7 +239,7 @@ export default defineComponent({
     };
 
     // correct the index of active tab
-    const setCurrentIndexByName = (name: number | string) => {
+    const setCurrentIndexByName = (name: Numeric) => {
       const matched = children.find(
         (tab, index) => getTabName(tab, index) === name
       );
@@ -295,18 +277,7 @@ export default defineComponent({
       const { title, disabled } = children[index];
       const name = getTabName(children[index], index);
 
-      emit('click-tab', {
-        name,
-        title,
-        event,
-        disabled,
-      });
-
-      if (disabled) {
-        // @deprecated
-        // should be removed in next major version
-        emit('disabled', name, title);
-      } else {
+      if (!disabled) {
         callInterceptor(props.beforeChange, {
           args: [name],
           done: () => {
@@ -315,12 +286,15 @@ export default defineComponent({
           },
         });
 
-        // @deprecated
-        // should be removed in next major version
-        emit('click', name, title);
-
         route(item as ComponentPublicInstance<RouteProps>);
       }
+
+      emit('clickTab', {
+        name,
+        title,
+        event,
+        disabled,
+      });
     };
 
     const onStickyScroll = (params: {
@@ -331,7 +305,7 @@ export default defineComponent({
       emit('scroll', params);
     };
 
-    const scrollTo = (name: number | string) => {
+    const scrollTo = (name: Numeric) => {
       nextTick(() => {
         setCurrentIndexByName(name);
         scrollToCurrentContent(true);
@@ -360,14 +334,18 @@ export default defineComponent({
     const renderNav = () =>
       children.map((item, index) => (
         <TabsTitle
+          key={item.id}
+          v-slots={{ title: item.$slots.title }}
+          id={`${id}-${index}`}
           ref={setTitleRefs(index)}
           type={props.type}
           color={props.color}
           style={item.titleStyle}
           class={item.titleClass}
+          shrink={props.shrink}
           isActive={index === state.currentIndex}
+          controls={item.id}
           scrollable={scrollable.value}
-          renderTitle={item.$slots.title}
           activeColor={props.titleActiveColor}
           inactiveColor={props.titleInactiveColor}
           onClick={(event: MouseEvent) => onClickTab(item, index, event)}
@@ -381,34 +359,42 @@ export default defineComponent({
         />
       ));
 
+    const renderLine = () => {
+      if (props.type === 'line' && children.length) {
+        return <div class={bem('line')} style={state.lineStyle} />;
+      }
+    };
+
     const renderHeader = () => {
       const { type, border } = props;
       return (
         <div
           ref={wrapRef}
           class={[
-            bem('wrap', { scrollable: scrollable.value }),
+            bem('wrap'),
             { [BORDER_TOP_BOTTOM]: type === 'line' && border },
           ]}
         >
           <div
             ref={navRef}
             role="tablist"
-            class={bem('nav', [type, { complete: scrollable.value }])}
+            class={bem('nav', [
+              type,
+              { shrink: props.shrink, complete: scrollable.value },
+            ])}
             style={navStyle.value}
+            aria-orientation="horizontal"
           >
             {slots['nav-left']?.()}
             {renderNav()}
-            {type === 'line' && (
-              <div class={bem('line')} style={state.lineStyle} />
-            )}
+            {renderLine()}
             {slots['nav-right']?.()}
           </div>
         </div>
       );
     };
 
-    watch([() => props.color, windowSize.width], setLine);
+    watch([() => props.color, windowWidth], setLine);
 
     watch(
       () => props.active,
@@ -458,20 +444,29 @@ export default defineComponent({
       });
     };
 
-    const onRendered = (name: string | number, title?: string) =>
+    const onRendered = (name: Numeric, title?: string) =>
       emit('rendered', name, title);
 
+    const resize = () => {
+      setLine();
+      nextTick(() => contentRef.value?.swipeRef.value?.resize());
+    };
+
     useExpose({
-      resize: setLine,
+      resize,
       scrollTo,
     });
 
     onActivated(setLine);
     onPopupReopen(setLine);
     onMountedOrActivated(init);
-    useEventListener('scroll', onScroll, { target: scroller });
+    useEventListener('scroll', onScroll, {
+      target: scroller,
+      passive: true,
+    });
 
     linkChildren({
+      id,
       props,
       setLine,
       onRendered,
@@ -494,6 +489,7 @@ export default defineComponent({
           [renderHeader(), slots['nav-bottom']?.()]
         )}
         <TabsContent
+          ref={contentRef}
           count={children.length}
           inited={state.inited}
           animated={props.animated}

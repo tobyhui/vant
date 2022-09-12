@@ -1,33 +1,37 @@
-import { defineComponent } from 'vue';
+import { defineComponent, type ExtractPropTypes } from 'vue';
 import { addUnit, numericProp, unknownProp, createNamespace } from '../utils';
 import { useCustomFieldValue } from '@vant/use';
 import { Loading } from '../loading';
 
 const [name, bem] = createNamespace('switch');
 
+export const switchProps = {
+  size: numericProp,
+  loading: Boolean,
+  disabled: Boolean,
+  modelValue: unknownProp,
+  activeColor: String,
+  inactiveColor: String,
+  activeValue: {
+    type: unknownProp,
+    default: true as unknown,
+  },
+  inactiveValue: {
+    type: unknownProp,
+    default: false as unknown,
+  },
+};
+
+export type SwitchProps = ExtractPropTypes<typeof switchProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    size: numericProp,
-    loading: Boolean,
-    disabled: Boolean,
-    modelValue: unknownProp,
-    activeColor: String,
-    inactiveColor: String,
-    activeValue: {
-      type: unknownProp,
-      default: true as unknown,
-    },
-    inactiveValue: {
-      type: unknownProp,
-      default: false as unknown,
-    },
-  },
+  props: switchProps,
 
   emits: ['change', 'update:modelValue'],
 
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     const isChecked = () => props.modelValue === props.activeValue;
 
     const onClick = () => {
@@ -42,6 +46,9 @@ export default defineComponent({
       if (props.loading) {
         const color = isChecked() ? props.activeColor : props.inactiveColor;
         return <Loading class={bem('loading')} color={color} />;
+      }
+      if (slots.node) {
+        return slots.node();
       }
     };
 
@@ -64,10 +71,12 @@ export default defineComponent({
             disabled,
           })}
           style={style}
+          tabindex={disabled ? undefined : 0}
           aria-checked={checked}
           onClick={onClick}
         >
           <div class={bem('node')}>{renderLoading()}</div>
+          {slots.background?.()}
         </div>
       );
     };

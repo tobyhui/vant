@@ -555,7 +555,7 @@ test('should render top-info and bottom-info slot correctly', async () => {
   expect(wrapper.find('.van-calendar__day').html()).toMatchSnapshot();
 });
 
-test('should emit click-subtitle event when clicking the subtitle', async () => {
+test('should emit clickSubtitle event when clicking the subtitle', async () => {
   const wrapper = mount(Calendar, {
     props: {
       minDate,
@@ -567,5 +567,21 @@ test('should emit click-subtitle event when clicking the subtitle', async () => 
 
   await later();
   wrapper.find('.van-calendar__header-subtitle').trigger('click');
-  expect(wrapper.emitted('click-subtitle')).toBeTruthy();
+  expect(wrapper.emitted('clickSubtitle')).toBeTruthy();
+});
+
+test('should render confirm-text slot correctly', async () => {
+  const wrapper = mount(Calendar, {
+    props: {
+      poppable: false,
+      lazyRender: false,
+    },
+    slots: {
+      'confirm-text': ({ disabled }) => `Custom confirm text ${disabled}`,
+    },
+  });
+
+  await later();
+
+  expect(wrapper.find('.van-calendar__confirm').html()).toMatchSnapshot();
 });

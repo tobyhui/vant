@@ -20,6 +20,40 @@ app.use(NavBar);
 
 ### 基础用法
 
+通过 `title` 属性设置导航栏标题。
+
+```html
+<van-nav-bar title="标题" />
+```
+
+### 返回上级
+
+在导航栏实现返回上级功能。
+
+```html
+<van-nav-bar
+  title="标题"
+  left-text="返回"
+  left-arrow
+  @click-left="onClickLeft"
+/>
+```
+
+```js
+export default {
+  setup() {
+    const onClickLeft = () => history.back();
+    return {
+      onClickLeft,
+    };
+  },
+};
+```
+
+### 右侧按钮
+
+在导航栏右侧添加可点击的按钮。
+
 ```html
 <van-nav-bar
   title="标题"
@@ -32,12 +66,12 @@ app.use(NavBar);
 ```
 
 ```js
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
-    const onClickLeft = () => Toast('返回');
-    const onClickRight = () => Toast('按钮');
+    const onClickLeft = () => history.back();
+    const onClickRight = () => showToast('按钮');
     return {
       onClickLeft,
       onClickRight,
@@ -48,7 +82,7 @@ export default {
 
 ### 使用插槽
 
-通过插槽自定义导航栏两侧的内容。
+可以通过插槽自定义导航栏两侧的内容。
 
 ```html
 <van-nav-bar title="标题" left-text="返回" left-arrow>
@@ -89,6 +123,14 @@ export default {
 | click-left  | 点击左侧按钮时触发 | _event: MouseEvent_ |
 | click-right | 点击右侧按钮时触发 | _event: MouseEvent_ |
 
+### 类型定义
+
+组件导出以下类型定义：
+
+```ts
+import type { NavBarProps } from 'vant';
+```
+
 ## 主题定制
 
 ### 样式变量
@@ -98,7 +140,7 @@ export default {
 | 名称                           | 默认值                     | 描述 |
 | ------------------------------ | -------------------------- | ---- |
 | --van-nav-bar-height           | _46px_                     | -    |
-| --van-nav-bar-background-color | _var(--van-white)_         | -    |
+| --van-nav-bar-background       | _var(--van-background-2)_  | -    |
 | --van-nav-bar-arrow-size       | _16px_                     | -    |
 | --van-nav-bar-icon-color       | _var(--van-primary-color)_ | -    |
 | --van-nav-bar-text-color       | _var(--van-primary-color)_ | -    |

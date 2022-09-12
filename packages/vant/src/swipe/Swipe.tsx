@@ -5,12 +5,13 @@ import {
   computed,
   onMounted,
   onActivated,
-  InjectionKey,
-  CSSProperties,
   onDeactivated,
   onBeforeUnmount,
   defineComponent,
-  ExtractPropTypes,
+  nextTick,
+  type ExtractPropTypes,
+  type CSSProperties,
+  type InjectionKey,
 } from 'vue';
 
 // Utils
@@ -19,6 +20,8 @@ import {
   isHidden,
   truthProp,
   numericProp,
+  windowWidth,
+  windowHeight,
   preventDefault,
   createNamespace,
   makeNumericProp,
@@ -28,7 +31,7 @@ import {
 import {
   doubleRaf,
   useChildren,
-  useWindowSize,
+  useEventListener,
   usePageVisibility,
 } from '@vant/use';
 import { useTouch } from '../composables/use-touch';
@@ -40,7 +43,7 @@ import { SwipeState, SwipeExpose, SwipeProvide, SwipeToOptions } from './types';
 
 const [name, bem] = createNamespace('swipe');
 
-const props = {
+export const swipeProps = {
   loop: truthProp,
   width: numericProp,
   height: numericProp,
@@ -55,19 +58,20 @@ const props = {
   stopPropagation: truthProp,
 };
 
-export type SwipeProps = ExtractPropTypes<typeof props>;
+export type SwipeProps = ExtractPropTypes<typeof swipeProps>;
 
 export const SWIPE_KEY: InjectionKey<SwipeProvide> = Symbol(name);
 
 export default defineComponent({
   name,
 
-  props,
+  props: swipeProps,
 
   emits: ['change'],
 
   setup(props, { emit, slots }) {
     const root = ref<HTMLElement>();
+    const track = ref<HTMLElement>();
     const state = reactive<SwipeState>({
       rect: null,
       width: 0,
@@ -78,7 +82,6 @@ export default defineComponent({
     });
 
     const touch = useTouch();
-    const windowSize = useWindowSize();
     const { children, linkChildren } = useChildren(SWIPE_KEY);
 
     const count = computed(() => children.length);
@@ -252,28 +255,37 @@ export default defineComponent({
         return;
       }
 
-      if (!isHidden(root)) {
-        const rect = {
-          width: root.value.offsetWidth,
-          height: root.value.offsetHeight,
-        };
-        state.rect = rect;
-        state.width = +(props.width ?? rect.width);
-        state.height = +(props.height ?? rect.height);
+      const cb = () => {
+        if (!isHidden(root)) {
+          const rect = {
+            width: root.value!.offsetWidth,
+            height: root.value!.offsetHeight,
+          };
+          state.rect = rect;
+          state.width = +(props.width ?? rect.width);
+          state.height = +(props.height ?? rect.height);
+        }
+
+        if (count.value) {
+          active = Math.min(count.value - 1, active);
+        }
+
+        state.active = active;
+        state.swiping = true;
+        state.offset = getTargetOffset(active);
+        children.forEach((swipe) => {
+          swipe.setOffset(0);
+        });
+
+        autoplay();
+      };
+
+      // issue: https://github.com/vant-ui/vant/issues/10052
+      if (isHidden(root)) {
+        nextTick().then(cb);
+      } else {
+        cb();
       }
-
-      if (count.value) {
-        active = Math.min(count.value - 1, active);
-      }
-
-      state.active = active;
-      state.swiping = true;
-      state.offset = getTargetOffset(active);
-      children.forEach((swipe) => {
-        swipe.setOffset(0);
-      });
-
-      autoplay();
     };
 
     const resize = () => initialize(state.active);
@@ -295,8 +307,15 @@ export default defineComponent({
         touch.move(event);
 
         if (isCorrectDirection.value) {
-          preventDefault(event, props.stopPropagation);
-          move({ offset: delta.value });
+          const isEdgeTouch =
+            !props.loop &&
+            ((state.active === 0 && delta.value > 0) ||
+              (state.active === count.value - 1 && delta.value < 0));
+
+          if (!isEdgeTouch) {
+            preventDefault(event, props.stopPropagation);
+            move({ offset: delta.value });
+          }
         }
       }
     };
@@ -380,6 +399,7 @@ export default defineComponent({
       if (slots.indicator) {
         return slots.indicator({
           active: activeIndicator.value,
+          total: count.value,
         });
       }
       if (props.showIndicators && count.value > 1) {
@@ -413,7 +433,7 @@ export default defineComponent({
 
     watch(count, () => initialize(state.active));
     watch(() => props.autoplay, autoplay);
-    watch([windowSize.width, windowSize.height], resize);
+    watch([windowWidth, windowHeight], resize);
     watch(usePageVisibility(), (visible) => {
       if (visible === 'visible') {
         autoplay();
@@ -428,13 +448,18 @@ export default defineComponent({
     onDeactivated(stopAutoplay);
     onBeforeUnmount(stopAutoplay);
 
+    // useEventListener will set passive to `false` to eliminate the warning of Chrome
+    useEventListener('touchmove', onTouchMove, {
+      target: track,
+    });
+
     return () => (
       <div ref={root} class={bem()}>
         <div
+          ref={track}
           style={trackStyle.value}
           class={bem('track', { vertical: props.vertical })}
-          onTouchstart={onTouchStart}
-          onTouchmove={onTouchMove}
+          onTouchstartPassive={onTouchStart}
           onTouchend={onTouchEnd}
           onTouchcancel={onTouchEnd}
         >

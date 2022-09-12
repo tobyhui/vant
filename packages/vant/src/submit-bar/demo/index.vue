@@ -2,13 +2,13 @@
 import VanSubmitBar from '..';
 import VanCheckbox from '../../checkbox';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
-import { Toast } from '../../toast';
+import { useTranslate } from '../../../docs/site';
+import { showToast } from '../../toast';
 
 const t = useTranslate({
   'zh-CN': {
-    tip1: '你的收货地址不支持同城送, 我们已为你推荐快递',
-    tip2: '你的收货地址不支持同城送, ',
+    tip1: '你的收货地址不支持配送',
+    tip2: '你的收货地址不支持配送, ',
     tip3: '修改地址',
     check: '全选',
     submit: '提交订单',
@@ -28,8 +28,8 @@ const t = useTranslate({
 
 const checked = ref(true);
 
-const onSubmit = () => Toast(t('clickButton'));
-const onClickLink = () => Toast(t('clickLink'));
+const onSubmit = () => showToast(t('clickButton'));
+const onClickLink = () => showToast(t('clickLink'));
 </script>
 
 <template>
@@ -73,7 +73,6 @@ const onClickLink = () => Toast(t('clickLink'));
     </van-submit-bar>
   </demo-block>
 </template>
-Ï
 
 <style lang="less">
 .demo-submit-bar {

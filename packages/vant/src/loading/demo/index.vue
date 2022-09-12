@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import VanLoading from '..';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -62,8 +62,6 @@ const t = useTranslate({
 
 <style lang="less">
 .demo-loading {
-  background: var(--van-white);
-
   .van-loading {
     display: inline-block;
     margin: 5px 0 5px 20px;

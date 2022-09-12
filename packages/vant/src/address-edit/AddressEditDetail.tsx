@@ -1,4 +1,4 @@
-import { PropType, ref, defineComponent } from 'vue';
+import { ref, defineComponent, type PropType } from 'vue';
 
 // Utils
 import { createNamespace, numericProp } from '../utils';
@@ -9,25 +9,26 @@ import { Field } from '../field';
 
 // Types
 import type { AddressEditSearchItem } from './types';
-import type { FieldInstance } from '../field/types';
+import type { FieldRule, FieldInstance } from '../field/types';
 
-const [name, bem, t] = createNamespace('address-edit-detail');
+const [name, bem] = createNamespace('address-edit-detail');
+const t = createNamespace('address-edit')[2];
 
 export default defineComponent({
   name,
 
   props: {
     show: Boolean,
+    rows: numericProp,
     value: String,
+    rules: Array as PropType<FieldRule[]>,
     focused: Boolean,
-    detailRows: numericProp,
+    maxlength: numericProp,
     searchResult: Array as PropType<AddressEditSearchItem[]>,
-    errorMessage: String,
-    detailMaxlength: numericProp,
     showSearchResult: Boolean,
   },
 
-  emits: ['blur', 'focus', 'input', 'select-search'],
+  emits: ['blur', 'focus', 'input', 'selectSearch'],
 
   setup(props, { emit }) {
     const field = ref<FieldInstance>();
@@ -36,19 +37,8 @@ export default defineComponent({
       props.focused && props.searchResult && props.showSearchResult;
 
     const onSelect = (express: AddressEditSearchItem) => {
-      emit('select-search', express);
+      emit('selectSearch', express);
       emit('input', `${express.address || ''} ${express.name || ''}`.trim());
-    };
-
-    const renderSearchTitle = (express: AddressEditSearchItem) => {
-      if (express.name) {
-        const text = express.name.replace(
-          props.value!,
-          `<span class=${bem('keyword')}>${props.value}</span>`
-        );
-
-        return <div innerHTML={text} />;
-      }
     };
 
     const renderSearchResult = () => {
@@ -59,12 +49,10 @@ export default defineComponent({
       const { searchResult } = props;
       return searchResult!.map((express) => (
         <Cell
-          v-slots={{
-            title: () => renderSearchTitle(express),
-          }}
           clickable
-          key={express.name + express.address}
+          key={(express.name || '') + (express.address || '')}
           icon="location-o"
+          title={express.name}
           label={express.address}
           class={bem('search-item')}
           border={false}
@@ -86,14 +74,14 @@ export default defineComponent({
               clearable
               ref={field}
               class={bem()}
-              rows={props.detailRows}
+              rows={props.rows}
               type="textarea"
-              label={t('label')}
+              rules={props.rules}
+              label={t('addressDetail')}
               border={!showSearchResult()}
-              maxlength={props.detailMaxlength}
+              maxlength={props.maxlength}
               modelValue={props.value}
-              placeholder={t('placeholder')}
-              errorMessage={props.errorMessage}
+              placeholder={t('addressDetail')}
               onBlur={onBlur}
               onFocus={onFocus}
               onUpdate:modelValue={onInput}

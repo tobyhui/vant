@@ -2,7 +2,7 @@
 import VanProgress from '..';
 import VanButton from '../../button';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -57,7 +57,7 @@ const reduce = () => {
   </demo-block>
 
   <demo-block :title="t('transition')">
-    <van-progress inactive :percentage="percentage" />
+    <van-progress :percentage="percentage" />
     <div style="margin-top: 15px">
       <van-button :text="t('add')" type="primary" size="small" @click="add" />
       <van-button
@@ -72,8 +72,6 @@ const reduce = () => {
 
 <style lang="less">
 .demo-progress {
-  background: var(--van-white);
-
   .van-progress {
     margin: 20px 16px;
 

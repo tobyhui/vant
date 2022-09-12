@@ -21,6 +21,7 @@ export type ImagePreviewOptions = {
   transition?: string;
   beforeClose?: Interceptor;
   overlayStyle?: CSSProperties;
+  overlayClass?: unknown;
   swipeDuration?: number;
   startPosition?: number;
   showIndicators?: boolean;
@@ -44,3 +45,15 @@ export type ImagePreviewInstance = ComponentPublicInstance<
   ImagePreviewProps,
   ImagePreviewExpose
 >;
+
+export type ImagePreviewThemeVars = {
+  imagePreviewIndexTextColor?: string;
+  imagePreviewIndexFontSize?: string;
+  imagePreviewIndexLineHeight?: number | string;
+  imagePreviewIndexTextShadow?: string;
+  imagePreviewOverlayBackground?: string;
+  imagePreviewCloseIconSize?: string;
+  imagePreviewCloseIconColor?: string;
+  imagePreviewCloseIconMargin?: string;
+  imagePreviewCloseIconZIndex?: number | string;
+};

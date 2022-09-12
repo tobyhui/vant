@@ -111,6 +111,22 @@ app.use(Badge);
 }
 ```
 
+### 自定义徽标位置
+
+通过 `position` 属性来设置徽标的位置。
+
+```html
+<van-badge :content="10" position="top-left">
+  <div class="child" />
+</van-badge>
+<van-badge :content="10" position="bottom-left">
+  <div class="child" />
+</van-badge>
+<van-badge :content="10" position="bottom-right">
+  <div class="child" />
+</van-badge>
+```
+
 ### 独立展示
 
 当 Badge 没有子元素时，会作为一个独立的元素进行展示。
@@ -132,7 +148,8 @@ app.use(Badge);
 | dot | 是否展示为小红点 | _boolean_ | `false` |
 | max | 最大值，超过最大值会显示 `{max}+`，仅当 content 为数字时有效 | _number \| string_ | - |
 | offset `v3.0.5` | 设置徽标的偏移量，数组的两项分别对应水平和垂直方向的偏移量，默认单位为 `px` | _[number \| string, number \| string]_ | - |
-| show-zero `v3.0.10` | 当 content 为数字 0 时，是否展示徽标 | _boolean_ | `true` |
+| show-zero `v3.0.10` | 当 content 为数字 0 或字符串 '0' 时，是否展示徽标 | _boolean_ | `true` |
+| position `v3.2.7` | 徽标位置，可选值为 `top-left` `bottom-left` `bottom-right` | _string_ | `top-right` |
 
 ### Slots
 
@@ -140,6 +157,14 @@ app.use(Badge);
 | ------- | ---------------- |
 | default | 徽标包裹的子元素 |
 | content | 自定义徽标内容   |
+
+### 类型定义
+
+组件导出以下类型定义：
+
+```ts
+import type { BadgeProps, BadgePosition } from 'vant';
+```
 
 ## 主题定制
 
@@ -153,9 +178,9 @@ app.use(Badge);
 | --van-badge-color | _var(--van-white)_ | - |
 | --van-badge-padding | _0 3px_ | - |
 | --van-badge-font-size | _var(--van-font-size-sm)_ | - |
-| --van-badge-font-weight | _var(--van-font-weight-bold)_ | - |
-| --van-badge-border-width | _var(--van-border-width-base)_ | - |
-| --van-badge-background-color | _var(--van-danger-color)_ | - |
+| --van-badge-font-weight | _var(--van-font-bold)_ | - |
+| --van-badge-border-width | _var(--van-border-width)_ | - |
+| --van-badge-background | _var(--van-danger-color)_ | - |
 | --van-badge-dot-color | _var(--van-danger-color)_ | - |
 | --van-badge-dot-size | _8px_ | - |
-| --van-badge-font-family | _-apple-system-font, Helvetica Neue, Arial, sans-serif_ | - |
+| --van-badge-font | _-apple-system-font, Helvetica Neue, Arial, sans-serif_ | - |

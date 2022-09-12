@@ -1,4 +1,4 @@
-import { useRect } from '@vant/use';
+import { useRect, useWindowSize } from '@vant/use';
 import { unref, Ref } from 'vue';
 import { isIOS as checkIsIOS } from './validate';
 
@@ -66,12 +66,6 @@ export function preventDefault(event: Event, isStopPropagation?: boolean) {
   }
 }
 
-export function trigger(target: Element, type: string) {
-  const inputEvent = document.createEvent('HTMLEvents');
-  inputEvent.initEvent(type, true, true);
-  target.dispatchEvent(inputEvent);
-}
-
 export function isHidden(
   elementRef: HTMLElement | Ref<HTMLElement | undefined>
 ) {
@@ -90,3 +84,5 @@ export function isHidden(
 
   return hidden || parentHidden;
 }
+
+export const { width: windowWidth, height: windowHeight } = useWindowSize();

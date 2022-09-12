@@ -1,15 +1,14 @@
-import releaseIt from 'release-it';
-import { build } from '../commands/build';
-import { changelog } from '../commands/changelog';
+import { Plugin } from 'release-it';
+import { execSync } from 'child_process';
 
-class VantCliReleasePlugin extends releaseIt.Plugin {
+class VantCliReleasePlugin extends Plugin {
   async beforeRelease() {
     // log an empty line
     console.log('');
 
-    await build();
-    await changelog();
+    execSync('vant-cli build', { stdio: 'inherit' });
+    execSync('vant-cli changelog', { stdio: 'inherit' });
   }
 }
 
-module.exports = VantCliReleasePlugin;
+export default VantCliReleasePlugin;

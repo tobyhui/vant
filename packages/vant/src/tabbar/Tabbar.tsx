@@ -1,21 +1,22 @@
 import {
   ref,
-  PropType,
-  InjectionKey,
   defineComponent,
-  ExtractPropTypes,
+  type PropType,
+  type InjectionKey,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
 import {
   truthProp,
-  Interceptor,
   numericProp,
   getZIndexStyle,
   createNamespace,
   callInterceptor,
   makeNumericProp,
   BORDER_TOP_BOTTOM,
+  type Numeric,
+  type Interceptor,
 } from '../utils';
 
 // Composables
@@ -24,7 +25,7 @@ import { usePlaceholder } from '../composables/use-placeholder';
 
 const [name, bem] = createNamespace('tabbar');
 
-const props = {
+export const tabbarProps = {
   route: Boolean,
   fixed: truthProp,
   border: truthProp,
@@ -40,9 +41,11 @@ const props = {
   },
 };
 
+export type TabbarProps = ExtractPropTypes<typeof tabbarProps>;
+
 export type TabbarProvide = {
-  props: ExtractPropTypes<typeof props>;
-  setActive: (active: number | string) => void;
+  props: TabbarProps;
+  setActive: (active: Numeric, afterChange: () => void) => void;
 };
 
 export const TABBAR_KEY: InjectionKey<TabbarProvide> = Symbol(name);
@@ -50,7 +53,7 @@ export const TABBAR_KEY: InjectionKey<TabbarProvide> = Symbol(name);
 export default defineComponent({
   name,
 
-  props,
+  props: tabbarProps,
 
   emits: ['change', 'update:modelValue'],
 
@@ -67,6 +70,7 @@ export default defineComponent({
       return (
         <div
           ref={root}
+          role="tablist"
           style={getZIndexStyle(zIndex)}
           class={[
             bem({ fixed }),
@@ -81,16 +85,15 @@ export default defineComponent({
       );
     };
 
-    const setActive = (active: number | string) => {
-      if (active !== props.modelValue) {
-        callInterceptor(props.beforeChange, {
-          args: [active],
-          done() {
-            emit('update:modelValue', active);
-            emit('change', active);
-          },
-        });
-      }
+    const setActive = (active: Numeric, afterChange: () => void) => {
+      callInterceptor(props.beforeChange, {
+        args: [active],
+        done() {
+          emit('update:modelValue', active);
+          emit('change', active);
+          afterChange();
+        },
+      });
     };
 
     linkChildren({ props, setActive });

@@ -25,11 +25,11 @@ app.use(SubmitBar);
 ```
 
 ```js
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
-    const onSubmit = () => Toast('点击按钮');
+    const onSubmit = () => showToast('点击按钮');
     return {
       onSubmit,
     };
@@ -46,7 +46,7 @@ export default {
   disabled
   :price="3050"
   button-text="提交订单"
-  tip="你的收货地址不支持同城送, 我们已为你推荐快递"
+  tip="你的收货地址不支持配送"
   tip-icon="info-o"
   @submit="onSubmit"
 />
@@ -73,18 +73,18 @@ export default {
 <van-submit-bar :price="3050" button-text="提交订单" @submit="onSubmit">
   <van-checkbox v-model="checked">全选</van-checkbox>
   <template #tip>
-    你的收货地址不支持同城送, <span @click="onClickLink">修改地址</span>
+    你的收货地址不支持配送, <span @click="onClickLink">修改地址</span>
   </template>
 </van-submit-bar>
 ```
 
 ```js
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
-    const onSubmit = () => Toast('点击按钮');
-    const onClickLink = () => Toast('修改地址');
+    const onSubmit = () => showToast('点击按钮');
+    const onClickLink = () => showToast('修改地址');
     return {
       onSubmit,
       onClickLink,
@@ -108,11 +108,12 @@ export default {
 | button-type | 按钮类型 | _string_ | `danger` |
 | button-color | 自定义按钮颜色 | _string_ | - |
 | tip | 在订单栏上方的提示文案 | _string_ | - |
-| tip-icon | 提示文案左侧的[图标名称](#/zh-CN/icon)或图片链接 | _string_ | - |
+| tip-icon | 提示文案左侧的图标名称或图片链接，等同于 Icon 组件的 [name 属性](#/zh-CN/icon#props) | _string_ | - |
 | currency | 货币符号 | _string_ | `¥` |
 | disabled | 是否禁用按钮 | _boolean_ | `false` |
 | loading | 是否显示将按钮显示为加载中状态 | _boolean_ | `false` |
 | safe-area-inset-bottom | 是否开启[底部安全区适配](#/zh-CN/advanced-usage#di-bu-an-quan-qu-gua-pei) | _boolean_ | `true` |
+| placeholder `v3.5.1` | 是否在标签位置生成一个等高的占位元素 | _boolean_ | `false` |
 
 ### Events
 
@@ -129,6 +130,14 @@ export default {
 | top     | 自定义订单栏上方内容 |
 | tip     | 提示文案中的额外内容 |
 
+### 类型定义
+
+组件导出以下类型定义：
+
+```ts
+import type { SubmitBarProps, SubmitBarTextAlign } from 'vant';
+```
+
 ## 主题定制
 
 ### 样式变量
@@ -139,19 +148,19 @@ export default {
 | --- | --- | --- |
 | --van-submit-bar-height | _50px_ | - |
 | --van-submit-bar-z-index | _100_ | - |
-| --van-submit-bar-background-color | _var(--van-white)_ | - |
+| --van-submit-bar-background | _var(--van-background-2)_ | - |
 | --van-submit-bar-button-width | _110px_ | - |
 | --van-submit-bar-price-color | _var(--van-danger-color)_ | - |
 | --van-submit-bar-price-font-size | _var(--van-font-size-sm)_ | - |
 | --van-submit-bar-price-integer-font-size | _20px_ | - |
-| --van-submit-bar-price-font-family | _var(--van-price-integer-font-family)_ | - |
+| --van-submit-bar-price-font | _var(--van-price-font)_ | - |
 | --van-submit-bar-text-color | _var(--van-text-color)_ | - |
 | --van-submit-bar-text-font-size | _var(--van-font-size-md)_ | - |
 | --van-submit-bar-tip-padding | _var(--van-padding-xs) var(--van-padding-sm)_ | - |
 | --van-submit-bar-tip-font-size | _var(--van-font-size-sm)_ | - |
 | --van-submit-bar-tip-line-height | _1.5_ | - |
-| --van-submit-bar-tip-color | _#f56723_ | - |
-| --van-submit-bar-tip-background-color | _#fff7cc_ | - |
+| --van-submit-bar-tip-color | _var(--van-orange-dark)_ | - |
+| --van-submit-bar-tip-background | _var(--van-orange-light)_ | - |
 | --van-submit-bar-tip-icon-size | _12px_ | - |
 | --van-submit-bar-button-height | _40px_ | - |
 | --van-submit-bar-padding | _0 var(--van-padding-md)_ | - |

@@ -1,4 +1,4 @@
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, ref, type ExtractPropTypes } from 'vue';
 
 // Utils
 import {
@@ -13,7 +13,7 @@ import {
 } from '../utils';
 
 // Composables
-import { useRect, useCustomFieldValue } from '@vant/use';
+import { useRect, useCustomFieldValue, useEventListener } from '@vant/use';
 import { useRefs } from '../composables/use-refs';
 import { useTouch } from '../composables/use-touch';
 
@@ -54,31 +54,36 @@ function getRateStatus(
   return { status: 'void', value: 0 };
 }
 
+export const rateProps = {
+  size: numericProp,
+  icon: makeStringProp('star'),
+  color: String,
+  count: makeNumericProp(5),
+  gutter: numericProp,
+  readonly: Boolean,
+  disabled: Boolean,
+  voidIcon: makeStringProp('star-o'),
+  allowHalf: Boolean,
+  voidColor: String,
+  touchable: truthProp,
+  iconPrefix: String,
+  modelValue: makeNumberProp(0),
+  disabledColor: String,
+};
+
+export type RateProps = ExtractPropTypes<typeof rateProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    size: numericProp,
-    icon: makeStringProp('star'),
-    color: String,
-    count: makeNumericProp(5),
-    gutter: numericProp,
-    readonly: Boolean,
-    disabled: Boolean,
-    voidIcon: makeStringProp('star-o'),
-    allowHalf: Boolean,
-    voidColor: String,
-    touchable: truthProp,
-    iconPrefix: String,
-    modelValue: makeNumberProp(0),
-    disabledColor: String,
-  },
+  props: rateProps,
 
   emits: ['change', 'update:modelValue'],
 
   setup(props, { emit }) {
     const touch = useTouch();
     const [itemRefs, setItemRefs] = useRefs();
+    const groupRef = ref<Element>();
 
     const untouchable = () =>
       props.readonly || props.disabled || !props.touchable;
@@ -96,28 +101,69 @@ export default defineComponent({
         )
     );
 
-    let ranges: Array<{ left: number; score: number }>;
+    let ranges: Array<{
+      left: number;
+      top: number;
+      height: number;
+      score: number;
+    }>;
+
+    let groupRefRect: DOMRect;
+    let minRectTop = Number.MAX_SAFE_INTEGER;
+    let maxRectTop = Number.MIN_SAFE_INTEGER;
 
     const updateRanges = () => {
+      groupRefRect = useRect(groupRef);
+
       const rects = itemRefs.value.map(useRect);
 
       ranges = [];
       rects.forEach((rect, index) => {
+        minRectTop = Math.min(rect.top, minRectTop);
+        maxRectTop = Math.max(rect.top, maxRectTop);
+
         if (props.allowHalf) {
           ranges.push(
-            { score: index + 0.5, left: rect.left },
-            { score: index + 1, left: rect.left + rect.width / 2 }
+            {
+              score: index + 0.5,
+              left: rect.left,
+              top: rect.top,
+              height: rect.height,
+            },
+            {
+              score: index + 1,
+              left: rect.left + rect.width / 2,
+              top: rect.top,
+              height: rect.height,
+            }
           );
         } else {
-          ranges.push({ score: index + 1, left: rect.left });
+          ranges.push({
+            score: index + 1,
+            left: rect.left,
+            top: rect.top,
+            height: rect.height,
+          });
         }
       });
     };
 
-    const getScoreByPosition = (x: number) => {
+    const getScoreByPosition = (x: number, y: number) => {
       for (let i = ranges.length - 1; i > 0; i--) {
-        if (x > ranges[i].left) {
-          return ranges[i].score;
+        if (y >= groupRefRect.top && y <= groupRefRect.bottom) {
+          if (
+            x > ranges[i].left &&
+            y >= ranges[i].top &&
+            y <= ranges[i].top + ranges[i].height
+          ) {
+            return ranges[i].score;
+          }
+        } else {
+          const curTop = y < groupRefRect.top ? minRectTop : maxRectTop;
+
+          if (x > ranges[i].left && ranges[i].top === curTop) {
+            return ranges[i].score;
+          }
         }
       }
       return props.allowHalf ? 0.5 : 1;
@@ -147,9 +193,9 @@ export default defineComponent({
       touch.move(event);
 
       if (touch.isHorizontal()) {
-        const { clientX } = event.touches[0];
+        const { clientX, clientY } = event.touches[0];
         preventDefault(event);
-        select(getScoreByPosition(clientX));
+        select(getScoreByPosition(clientX, clientY));
       }
     };
 
@@ -181,7 +227,9 @@ export default defineComponent({
 
       const onClickItem = (event: MouseEvent) => {
         updateRanges();
-        select(allowHalf ? getScoreByPosition(event.clientX) : score);
+        select(
+          allowHalf ? getScoreByPosition(event.clientX, event.clientY) : score
+        );
       };
 
       return (
@@ -191,8 +239,8 @@ export default defineComponent({
           role="radio"
           style={style}
           class={bem('item')}
-          tabindex={0}
-          aria-setsize={+count}
+          tabindex={disabled ? undefined : 0}
+          aria-setsize={count}
           aria-posinset={score}
           aria-checked={!isVoid}
           onClick={onClickItem}
@@ -220,16 +268,23 @@ export default defineComponent({
 
     useCustomFieldValue(() => props.modelValue);
 
+    // useEventListener will set passive to `false` to eliminate the warning of Chrome
+    useEventListener('touchmove', onTouchMove, {
+      target: groupRef,
+    });
+
     return () => (
       <div
+        ref={groupRef}
         role="radiogroup"
         class={bem({
           readonly: props.readonly,
           disabled: props.disabled,
         })}
-        tabindex={0}
-        onTouchstart={onTouchStart}
-        onTouchmove={onTouchMove}
+        tabindex={props.disabled ? undefined : 0}
+        aria-disabled={props.disabled}
+        aria-readonly={props.readonly}
+        onTouchstartPassive={onTouchStart}
       >
         {list.value.map(renderStar)}
       </div>

@@ -1,18 +1,16 @@
 {
   "name": "create-vant-cli-app",
-  "version": "1.1.1",
-  "description": "Create Vant Cli App",
+  "version": "2.0.1",
+  "description": "Create Vant CLI App",
   "main": "lib/index.js",
   "bin": {
     "create-vant-cli-app": "./lib/index.js"
   },
   "scripts": {
     "dev": "tsc --watch",
-    "release": "tsc & release-it"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/youzan/vant/tree/dev/packages/create-vant-cli-app"
+    "build": "rimraf ./lib && tsc",
+    "release": "pnpm build & release-it",
+    "prepare": "pnpm build"
   },
   "files": [
     "lib",
@@ -24,23 +22,26 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vant-ui/vant.git",
+    "directory": "packages/create-vant-cli-app"
+  },
+  "bugs": "https://github.com/vant-ui/vant/issues",
   "author": "chenjiahan",
   "license": "MIT",
   "devDependencies": {
-    "@types/fs-extra": "^8.1.0",
-    "@types/yeoman-environment": "^2.3.3",
-    "@types/yeoman-generator": "^3.1.4",
-    "release-it": "^13.0.0",
-    "typescript": "^3.8.3"
+    "@types/fs-extra": "^9.0.13",
+    "@types/inquirer": "^8.2.3",
+    "release-it": "^15.4.1",
+    "typescript": "^4.8.2"
   },
   "dependencies": {
-    "chalk": "^3.0.0",
     "consola": "^2.11.3",
-    "fast-glob": "^3.2.4",
-    "fs-extra": "^8.1.0",
-    "inquirer": "^7.0.6",
-    "yeoman-environment": "^2.8.0",
-    "yeoman-generator": "^4.6.0"
+    "fast-glob": "^3.2.11",
+    "fs-extra": "^10.1.0",
+    "inquirer": "^8.2.4",
+    "picocolors": "^1.0.0"
   },
   "release-it": {
     "git": {

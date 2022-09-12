@@ -1,20 +1,20 @@
+import fse from 'fs-extra';
 import execa from 'execa';
 import { join, relative } from 'path';
-import { remove, copy, readdir, existsSync } from 'fs-extra';
-import { clean } from './clean';
-import { CSS_LANG } from '../common/css';
-import { ora, consola } from '../common/logger';
-import { installDependencies } from '../common/manager';
-import { compileSfc } from '../compiler/compile-sfc';
-import { compileStyle } from '../compiler/compile-style';
-import { compileScript } from '../compiler/compile-script';
-import { compilePackage } from '../compiler/compile-package';
-import { genPackageEntry } from '../compiler/gen-package-entry';
-import { genStyleDepsMap } from '../compiler/gen-style-deps-map';
-import { genComponentStyle } from '../compiler/gen-component-style';
-import { SRC_DIR, LIB_DIR, ES_DIR } from '../common/constant';
-import { genPackageStyle } from '../compiler/gen-package-style';
-import { genVeturConfig } from '../compiler/gen-vetur-config';
+import { clean } from './clean.js';
+import { CSS_LANG } from '../common/css.js';
+import { createSpinner, consola } from '../common/logger.js';
+import { installDependencies } from '../common/manager.js';
+import { compileSfc } from '../compiler/compile-sfc.js';
+import { compileStyle } from '../compiler/compile-style.js';
+import { compileScript } from '../compiler/compile-script.js';
+import { compileBundles } from '../compiler/compile-bundles.js';
+import { genPackageEntry } from '../compiler/gen-package-entry.js';
+import { genStyleDepsMap } from '../compiler/gen-style-deps-map.js';
+import { genComponentStyle } from '../compiler/gen-component-style.js';
+import { SRC_DIR, LIB_DIR, ES_DIR, getVantConfig } from '../common/constant.js';
+import { genPackageStyle } from '../compiler/gen-package-style.js';
+import { genWebStormTypes } from '../compiler/web-types/index.js';
 import {
   isDir,
   isSfc,
@@ -26,11 +26,14 @@ import {
   setNodeEnv,
   setModuleEnv,
   setBuildTarget,
-} from '../common';
+} from '../common/index.js';
+import type { Format } from 'esbuild';
 
-async function compileFile(filePath: string) {
+const { remove, copy, readdir, existsSync } = fse;
+
+async function compileFile(filePath: string, format: Format) {
   if (isScript(filePath)) {
-    return compileScript(filePath);
+    return compileScript(filePath, format);
   }
   if (isStyle(filePath)) {
     return compileStyle(filePath);
@@ -67,12 +70,14 @@ async function preCompileDir(dir: string) {
   );
 }
 
-async function compileDir(dir: string) {
+async function compileDir(dir: string, format: Format) {
   const files = await readdir(dir);
   await Promise.all(
     files.map((filename) => {
       const filePath = join(dir, filename);
-      return isDir(filePath) ? compileDir(filePath) : compileFile(filePath);
+      return isDir(filePath)
+        ? compileDir(filePath, format)
+        : compileFile(filePath, format);
     })
   );
 }
@@ -84,13 +89,13 @@ async function copySourceCode() {
 async function buildESMOutputs() {
   setModuleEnv('esmodule');
   setBuildTarget('package');
-  await compileDir(ES_DIR);
+  await compileDir(ES_DIR, 'esm');
 }
 
 async function buildCJSOutputs() {
   setModuleEnv('commonjs');
   setBuildTarget('package');
-  await compileDir(LIB_DIR);
+  await compileDir(LIB_DIR, 'cjs');
 }
 
 async function buildTypeDeclarations() {
@@ -130,10 +135,10 @@ async function buildPackageStyleEntry() {
 }
 
 async function buildBundledOutputs() {
+  const config = getVantConfig();
   setModuleEnv('esmodule');
-  await compilePackage(false);
-  await compilePackage(true);
-  genVeturConfig();
+  await compileBundles();
+  genWebStormTypes(config.build?.tagPrefix);
 }
 
 const tasks = [
@@ -174,14 +179,14 @@ const tasks = [
 async function runBuildTasks() {
   for (let i = 0; i < tasks.length; i++) {
     const { task, text } = tasks[i];
-    const spinner = ora(text).start();
+    const spinner = createSpinner(text).start();
 
     try {
       /* eslint-disable no-await-in-loop */
       await task();
-      spinner.succeed(text);
+      spinner.success({ text });
     } catch (err) {
-      spinner.fail(text);
+      spinner.error({ text });
       console.log(err);
       throw err;
     }

@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import VanCell from '../../cell';
 import VanIcon from '../../icon';
-import { Notify } from '..';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
-import { NotifyType } from '../Notify';
-
-const VanNotify = Notify.Component;
+import { showNotify, Notify as VanNotify, type NotifyType } from '..';
+import { useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -18,8 +15,9 @@ const t = useTranslate({
     notifyType: '通知类型',
     customColor: '自定义颜色',
     customNotify: '自定义配置',
-    componentCall: '组件调用',
+    useComponent: '使用 Notify 组件',
     customDuration: '自定义时长',
+    customPosition: '自定义位置',
   },
   'en-US': {
     primary: 'Primary',
@@ -30,19 +28,20 @@ const t = useTranslate({
     notifyType: 'Notify Type',
     customColor: 'Custom Color',
     customNotify: 'Custom Notify',
-    componentCall: 'Component Call',
+    useComponent: 'Use Notify Component',
     customDuration: 'Custom Duration',
+    customPosition: 'Custom Position',
   },
 });
 
 const show = ref(false);
 
-const showNotify = () => {
-  Notify(t('content'));
+const showBasicNotify = () => {
+  showNotify(t('content'));
 };
 
 const showCustomColor = () => {
-  Notify({
+  showNotify({
     color: '#ad0000',
     message: t('customColor'),
     background: '#ffe1e1',
@@ -50,14 +49,21 @@ const showCustomColor = () => {
 };
 
 const showCustomDuration = () => {
-  Notify({
+  showNotify({
     message: t('customDuration'),
     duration: 1000,
   });
 };
 
+const showCustomPosition = () => {
+  showNotify({
+    message: t('customPosition'),
+    position: 'bottom',
+  });
+};
+
 const showType = (type: NotifyType) => {
-  Notify({
+  showNotify({
     message: t('content'),
     type,
   });
@@ -73,7 +79,7 @@ const showComponentCall = () => {
 
 <template>
   <demo-block card :title="t('basicUsage')">
-    <van-cell is-link :title="t('basicUsage')" @click="showNotify" />
+    <van-cell is-link :title="t('basicUsage')" @click="showBasicNotify" />
   </demo-block>
 
   <demo-block card :title="t('notifyType')">
@@ -87,13 +93,18 @@ const showComponentCall = () => {
     <van-cell is-link :title="t('customColor')" @click="showCustomColor" />
     <van-cell
       is-link
+      :title="t('customPosition')"
+      @click="showCustomPosition"
+    />
+    <van-cell
+      is-link
       :title="t('customDuration')"
       @click="showCustomDuration"
     />
   </demo-block>
 
-  <demo-block card :title="t('componentCall')">
-    <van-cell is-link :title="t('componentCall')" @click="showComponentCall" />
+  <demo-block card :title="t('useComponent')">
+    <van-cell is-link :title="t('useComponent')" @click="showComponentCall" />
 
     <van-notify v-model:show="show" type="success">
       <van-icon name="bell" style="margin-right: 4px" />

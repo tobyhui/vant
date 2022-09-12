@@ -55,7 +55,7 @@ import { ref } from 'vue';
 export default {
   setup() {
     const fileList = ref([
-      { url: 'https://img.yzcdn.cn/vant/leaf.jpg' },
+      { url: 'https://fastly.jsdelivr.net/npm/@vant/assets/leaf.jpeg' },
       // Uploader 根据文件后缀来判断是否为图片文件
       // 如果图片 URL 中不包含类型信息，可以添加 isImage 标记来声明
       { url: 'https://cloud-image', isImage: true },
@@ -83,12 +83,12 @@ export default {
   setup() {
     const fileList = ref([
       {
-        url: 'https://img.yzcdn.cn/vant/leaf.jpg',
+        url: 'https://fastly.jsdelivr.net/npm/@vant/assets/leaf.jpeg',
         status: 'uploading',
         message: '上传中...',
       },
       {
-        url: 'https://img.yzcdn.cn/vant/tree.jpg',
+        url: 'https://fastly.jsdelivr.net/npm/@vant/assets/tree.jpeg',
         status: 'failed',
         message: '上传失败',
       },
@@ -143,13 +143,13 @@ export default {
 ```
 
 ```js
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
     const onOversize = (file) => {
       console.log(file);
-      Toast('文件大小不能超过 500kb');
+      showToast('文件大小不能超过 500kb');
     };
 
     return {
@@ -166,7 +166,7 @@ export default {
 ```
 
 ```js
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
@@ -217,6 +217,23 @@ export default {
 </style>
 ```
 
+### 自定义预览大小
+
+通过 `preview-size` 属性定义预览图和上传区域的大小。
+
+```html
+<!-- 不指定单位，默认为 px -->
+<van-uploader v-model="fileList" preview-size="60" />
+<!-- 指定单位，支持 rem, vh, vw -->
+<van-uploader v-model="fileList" preview-size="5rem" />
+```
+
+将 `preview-size` 设置为数组格式，可以分别设置宽高。数组第一项对应宽度，数组第二项对应高度。
+
+```html
+<van-uploader v-model="fileList" :preview-size="[60, 40]" />
+```
+
 ### 上传前置处理
 
 通过传入 `beforeRead` 函数可以在上传前进行校验和处理，返回 `true` 表示校验通过，返回 `false` 表示校验失败。支持返回 `Promise` 对 file 对象进行自定义处理，例如压缩图片。
@@ -226,14 +243,14 @@ export default {
 ```
 
 ```js
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
     // 返回布尔值
     const beforeRead = (file) => {
       if (file.type !== 'image/jpeg') {
-        Toast('请上传 jpg 格式图片');
+        showToast('请上传 jpg 格式图片');
         return false;
       }
       return true;
@@ -243,7 +260,7 @@ export default {
     const asyncBeforeRead = (file) =>
       new Promise((resolve, reject) => {
         if (file.type !== 'image/jpeg') {
-          Toast('请上传 jpg 格式图片');
+          showToast('请上传 jpg 格式图片');
           reject();
         } else {
           const img = new File(['foo'], 'bar.jpg', {
@@ -279,24 +296,21 @@ export default {
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
     const fileList = ref([
-      { url: 'https://img.yzcdn.cn/vant/leaf.jpg' },
       {
-        url: 'https://img.yzcdn.cn/vant/sand.jpg',
+        url: 'https://fastly.jsdelivr.net/npm/@vant/assets/sand.jpeg',
         deletable: true,
         beforeDelete: () => {
-          Toast('自定义单个预览图片的事件和样式');
+          showToast('删除前置处理');
         },
       },
       {
-        url: 'https://img.yzcdn.cn/vant/tree.jpg',
-        deletable: true,
+        url: 'https://fastly.jsdelivr.net/npm/@vant/assets/tree.jpeg',
         imageFit: 'contain',
-        previewSize: 120,
       },
     ]);
 
@@ -313,8 +327,8 @@ export default {
 | --- | --- | --- | --- |
 | v-model | 已上传的文件列表 | _FileListItem[]_ | - |
 | accept | 允许上传的文件类型，[详细说明](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/Input/file#%E9%99%90%E5%88%B6%E5%85%81%E8%AE%B8%E7%9A%84%E6%96%87%E4%BB%B6%E7%B1%BB%E5%9E%8B) | _string_ | `image/*` |
-| name | 标识符，可以在回调函数的第二项参数中获取 | _number \| string_ | - |
-| preview-size | 预览图和上传区域的尺寸，默认单位为 `px` | _number \| string_ | `80px` |
+| name | 标识符，通常为一个唯一的字符串或数字，可以在回调函数的第二项参数中获取 | _number \| string_ | - |
+| preview-size | 预览图和上传区域的尺寸，默认单位为 `px` | _number \| string \| Array_ | `80px` |
 | preview-image | 是否在上传完成后展示预览图 | _boolean_ | `true` |
 | preview-full-image | 是否在点击预览图后展示全屏图片预览 | _boolean_ | `true` |
 | preview-options | 全屏图片预览的配置项，可选值见 [ImagePreview](#/zh-CN/image-preview) | _object_ | - |
@@ -333,7 +347,7 @@ export default {
 | result-type | 文件读取结果类型，可选值为 `file` `text` | _string_ | `dataUrl` |
 | upload-text | 上传区域文字提示 | _string_ | - |
 | image-fit | 预览图裁剪模式，可选值见 [Image](#/zh-CN/image) 组件 | _string_ | `cover` |
-| upload-icon | 上传区域[图标名称](#/zh-CN/icon)或图片链接 | _string_ | `photograph` |
+| upload-icon | 上传区域图标名称或图片链接，等同于 Icon 组件的 [name 属性](#/zh-CN/icon#props) | _string_ | `photograph` |
 
 > 注意：accept、capture 和 multiple 为浏览器 input 标签的原生属性，移动端各种机型对这些属性的支持程度有所差异，因此在不同机型和 WebView 下可能出现一些兼容性问题。
 
@@ -349,9 +363,10 @@ export default {
 
 ### Slots
 
-| 名称          | 说明                           | 参数                 |
-| ------------- | ------------------------------ | -------------------- |
-| default       | 自定义上传区域                 | -                    |
+| 名称 | 说明 | 参数 |
+| --- | --- | --- |
+| default | 自定义上传区域 | - |
+| preview-delete `v3.5.0` | 自定义删除按钮 | - |
 | preview-cover | 自定义覆盖在预览区域上方的内容 | _item: FileListItem_ |
 
 ### 回调参数
@@ -417,14 +432,14 @@ uploaderRef.value?.chooseFile();
 | --van-uploader-size | _80px_ | - |
 | --van-uploader-icon-size | _24px_ | - |
 | --van-uploader-icon-color | _var(--van-gray-4)_ | - |
-| --van-uploader-text-color | _var(--van-gray-6)_ | - |
+| --van-uploader-text-color | _var(--van-text-color-2)_ | - |
 | --van-uploader-text-font-size | _var(--van-font-size-sm)_ | - |
-| --van-uploader-upload-background-color | _var(--van-gray-1)_ | - |
+| --van-uploader-upload-background | _var(--van-gray-1)_ | - |
 | --van-uploader-upload-active-color | _var(--van-active-color)_ | - |
 | --van-uploader-delete-color | _var(--van-white)_ | - |
 | --van-uploader-delete-icon-size | _14px_ | - |
-| --van-uploader-delete-background-color | _rgba(0, 0, 0, 0.7)_ | - |
-| --van-uploader-file-background-color | _var(--van-background-color)_ | - |
+| --van-uploader-delete-background | _rgba(0, 0, 0, 0.7)_ | - |
+| --van-uploader-file-background | _var(--van-background)_ | - |
 | --van-uploader-file-icon-size | _20px_ | - |
 | --van-uploader-file-icon-color | _var(--van-gray-7)_ | - |
 | --van-uploader-file-name-padding | _0 var(--van-padding-base)_ | - |
@@ -432,7 +447,7 @@ uploaderRef.value?.chooseFile();
 | --van-uploader-file-name-font-size | _var(--van-font-size-sm)_ | - |
 | --van-uploader-file-name-text-color | _var(--van-gray-7)_ | - |
 | --van-uploader-mask-text-color | _var(--van-white)_ | - |
-| --van-uploader-mask-background-color | _fade(var(--van-gray-8), 88%)_ | - |
+| --van-uploader-mask-background | _fade(var(--van-gray-8), 88%)_ | - |
 | --van-uploader-mask-icon-size | _22px_ | - |
 | --van-uploader-mask-message-font-size | _var(--van-font-size-sm)_ | - |
 | --van-uploader-mask-message-line-height | _var(--van-line-height-xs)_ | - |

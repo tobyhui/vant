@@ -46,7 +46,7 @@ export default {
 <van-sidebar v-model="active">
   <van-sidebar-item title="Title" dot />
   <van-sidebar-item title="Title" badge="5" />
-  <van-sidebar-item title="Title" badge="20" />
+  <van-sidebar-item title="Title" />
 </van-sidebar>
 ```
 
@@ -72,12 +72,12 @@ export default {
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
     const active = ref(0);
-    const onChange = (index) => Toast(`Title ${index + 1}`);
+    const onChange = (index) => showToast(`Title ${index + 1}`);
     return {
       active,
       onChange,
@@ -107,6 +107,7 @@ export default {
 | title | Content | _string_ | `''` |
 | dot | Whether to show red dot | _boolean_ | `false` |
 | badge | Content of the badge | _number \| string_ | `''` |
+| badge-props `v3.2.8` | Props of Badge, see [Badge - props](#/en-US/badge#props) | _BadgeProps_ | - |
 | disabled | Whether to be disabled | _boolean_ | `false` |
 | url | Link | _string_ | - |
 | to | Target route of the link, same as to of vue-router | _string \| object_ | - |
@@ -124,6 +125,14 @@ export default {
 | ----- | ----------------- |
 | title | Custom item title |
 
+### Types
+
+The component exports the following type definitions:
+
+```ts
+import type { SidebarProps, SidebarItemProps } from 'vant';
+```
+
 ## Theming
 
 ### CSS Variables
@@ -136,13 +145,13 @@ The component provides the following CSS variables, which can be used to customi
 | --van-sidebar-font-size | _var(--van-font-size-md)_ | - |
 | --van-sidebar-line-height | _var(--van-line-height-md)_ | - |
 | --van-sidebar-text-color | _var(--van-text-color)_ | - |
-| --van-sidebar-disabled-text-color | _var(--van-gray-5)_ | - |
+| --van-sidebar-disabled-text-color | _var(--van-text-color-3)_ | - |
 | --van-sidebar-padding | _20px var(--van-padding-sm)_ | - |
 | --van-sidebar-active-color | _var(--van-active-color)_ | - |
-| --van-sidebar-background-color | _var(--van-background-color)_ | - |
-| --van-sidebar-selected-font-weight | _var(--van-font-weight-bold)_ | - |
+| --van-sidebar-background | _var(--van-background)_ | - |
+| --van-sidebar-selected-font-weight | _var(--van-font-bold)_ | - |
 | --van-sidebar-selected-text-color | _var(--van-text-color)_ | - |
 | --van-sidebar-selected-border-width | _4px_ | - |
 | --van-sidebar-selected-border-height | _16px_ | - |
-| --van-sidebar-selected-border-color | _var(--van-danger-color)_ | - |
-| --van-sidebar-selected-background-color | _var(--van-white)_ | - |
+| --van-sidebar-selected-border-color | _var(--van-primary-color)_ | - |
+| --van-sidebar-selected-background | _var(--van-background-2)_ | - |

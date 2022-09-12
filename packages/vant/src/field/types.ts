@@ -1,14 +1,32 @@
+/* eslint-disable no-use-before-define */
 import type { ComputedRef, ComponentPublicInstance } from 'vue';
 import type { FieldProps } from './Field';
 
 export type FieldType =
   | 'tel'
+  | 'url'
+  | 'date'
+  | 'file'
   | 'text'
+  | 'time'
+  | 'week'
+  | 'color'
   | 'digit'
+  | 'email'
+  | 'image'
+  | 'month'
+  | 'radio'
+  | 'range'
+  | 'reset'
+  | 'button'
+  | 'hidden'
   | 'number'
   | 'search'
+  | 'submit'
+  | 'checkbox'
   | 'password'
-  | 'textarea';
+  | 'textarea'
+  | 'datetime-local';
 
 export type FieldTextAlign = 'left' | 'center' | 'right';
 
@@ -28,17 +46,28 @@ export type FieldValidateError = {
   message: string;
 };
 
+export type FieldRuleMessage =
+  | string
+  | ((value: any, rule: FieldRule) => string);
+
+export type FieldRuleValidator = (
+  value: any,
+  rule: FieldRule
+) => boolean | string | Promise<boolean | string>;
+
+export type FiledRuleFormatter = (value: any, rule: FieldRule) => string;
+
 export type FieldRule = {
   pattern?: RegExp;
-  trigger?: FieldValidateTrigger;
-  message?: string | ((value: any, rule: FieldRule) => string);
+  trigger?: FieldValidateTrigger | FieldValidateTrigger[];
+  message?: FieldRuleMessage;
   required?: boolean;
-  validator?: (
-    value: any,
-    rule: FieldRule
-  ) => boolean | string | Promise<boolean | string>;
-  formatter?: (value: any, rule: FieldRule) => string;
+  validator?: FieldRuleValidator;
+  formatter?: FiledRuleFormatter;
+  validateEmpty?: boolean;
 };
+
+export type FieldValidationStatus = 'passed' | 'failed' | 'unvalidated';
 
 // Shared props of Field and Form
 export type FieldFormSharedProps =
@@ -57,9 +86,8 @@ export type FieldExpose = {
     rules?: FieldRule[] | undefined
   ) => Promise<void | FieldValidateError>;
   resetValidation: () => void;
-  /**
-   * @private
-   */
+  getValidationStatus: () => FieldValidationStatus;
+  /** @private */
   formValue: ComputedRef<unknown>;
 };
 
@@ -70,3 +98,25 @@ declare global {
     composing?: boolean;
   }
 }
+
+export type FieldThemeVars = {
+  fieldLabelWidth?: string;
+  fieldLabelColor?: string;
+  fieldLabelMarginRight?: string;
+  fieldInputTextColor?: string;
+  fieldInputErrorTextColor?: string;
+  fieldInputDisabledTextColor?: string;
+  fieldPlaceholderTextColor?: string;
+  fieldIconSize?: string;
+  fieldClearIconSize?: string;
+  fieldClearIconColor?: string;
+  fieldRightIconColor?: string;
+  fieldErrorMessageColor?: string;
+  fieldErrorMessageFontSize?: string;
+  fieldTextAreaMinHeight?: string;
+  fieldWordLimitColor?: string;
+  fieldWordLimitFontSize?: string;
+  fieldWordLimitLineHeight?: number | string;
+  fieldDisabledTextColor?: string;
+  fieldRequiredMarkColor?: string;
+};

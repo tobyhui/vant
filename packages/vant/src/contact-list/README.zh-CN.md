@@ -33,7 +33,7 @@ app.use(ContactList);
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
@@ -52,9 +52,9 @@ export default {
       },
     ]);
 
-    const onAdd = () => Toast('新增');
-    const onEdit = (contact) => Toast('编辑' + contact.id);
-    const onSelect = (contact) => Toast('选择' + contact.id);
+    const onAdd = () => showToast('新增');
+    const onEdit = (contact) => showToast('编辑' + contact.id);
+    const onSelect = (contact) => showToast('选择' + contact.id);
 
     return {
       list,
@@ -100,7 +100,7 @@ export default {
 组件导出以下类型定义：
 
 ```ts
-import type { ContactListItem } from 'vant';
+import type { ContactListItem, ContactListProps } from 'vant';
 ```
 
 ## 主题定制
@@ -109,9 +109,9 @@ import type { ContactListItem } from 'vant';
 
 组件提供了下列 CSS 变量，可用于自定义样式，使用方法请参考 [ConfigProvider 组件](#/zh-CN/config-provider)。
 
-| 名称                                     | 默认值                    | 描述 |
-| ---------------------------------------- | ------------------------- | ---- |
-| --van-contact-list-edit-icon-size        | _16px_                    | -    |
-| --van-contact-list-add-button-z-index    | _999_                     | -    |
-| --van-contact-list-item-padding          | _var(--van-padding-md)_   | -    |
-| --van-contact-list-item-radio-icon-color | _var(--van-danger-color)_ | -    |
+| 名称                                  | 默认值                     | 描述 |
+| ------------------------------------- | -------------------------- | ---- |
+| --van-contact-list-edit-icon-size     | _16px_                     | -    |
+| --van-contact-list-add-button-z-index | _999_                      | -    |
+| --van-contact-list-radio-color        | _var(--van-primary-color)_ | -    |
+| --van-contact-list-item-padding       | _var(--van-padding-md)_    | -    |

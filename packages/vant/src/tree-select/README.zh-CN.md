@@ -121,11 +121,11 @@ export default {
   <template #content>
     <van-image
       v-if="activeIndex === 0"
-      src="https://img.yzcdn.cn/vant/apple-1.jpg"
+      src="https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg"
     />
     <van-image
       v-if="activeIndex === 1"
-      src="https://img.yzcdn.cn/vant/apple-2.jpg"
+      src="https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg"
     />
   </template>
 </van-tree-select>
@@ -209,7 +209,7 @@ export default {
   {
     // 导航名称
     text: '所有城市',
-    // 导航名称右上角徽标
+    // 导航名称右上角徽标
     badge: 3,
     // 是否在导航名称右上角显示小红点
     dot: true,
@@ -239,7 +239,7 @@ export default {
 组件导出以下类型定义：
 
 ```ts
-import type { TreeSelectItem, TreeSelectChild } from 'vant';
+import type { TreeSelectItem, TreeSelectChild, TreeSelectProps } from 'vant';
 ```
 
 ## 主题定制
@@ -248,13 +248,13 @@ import type { TreeSelectItem, TreeSelectChild } from 'vant';
 
 组件提供了下列 CSS 变量，可用于自定义样式，使用方法请参考 [ConfigProvider 组件](#/zh-CN/config-provider)。
 
-| 名称 | 默认值 | 描述 |
-| --- | --- | --- |
-| --van-tree-select-font-size | _var(--van-font-size-md)_ | - |
-| --van-tree-select-nav-background-color | _var(--van-background-color)_ | - |
-| --van-tree-select-content-background-color | _var(--van-white)_ | - |
-| --van-tree-select-nav-item-padding | _14px var(--van-padding-sm)_ | - |
-| --van-tree-select-item-height | _48px_ | - |
-| --van-tree-select-item-active-color | _var(--van-danger-color)_ | - |
-| --van-tree-select-item-disabled-color | _var(--van-gray-5)_ | - |
-| --van-tree-select-item-selected-size | _16px_ | - |
+| 名称                                  | 默认值                       | 描述 |
+| ------------------------------------- | ---------------------------- | ---- |
+| --van-tree-select-font-size           | _var(--van-font-size-md)_    | -    |
+| --van-tree-select-nav-background      | _var(--van-background)_      | -    |
+| --van-tree-select-content-background  | _var(--van-background-2)_    | -    |
+| --van-tree-select-nav-item-padding    | _14px var(--van-padding-sm)_ | -    |
+| --van-tree-select-item-height         | _48px_                       | -    |
+| --van-tree-select-item-active-color   | _var(--van-primary-color)_   | -    |
+| --van-tree-select-item-disabled-color | _var(--van-gray-5)_          | -    |
+| --van-tree-select-item-selected-size  | _16px_                       | -    |

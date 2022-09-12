@@ -1,41 +1,117 @@
 # 更新日志
 
-## v4.0.0-beta.6
+## v5.0.0 (未发布)
+
+### 依赖升级
+
+对以下依赖进行了大版本升级：
+
+- vite v3
+- @vitejs/plugin-vue v3
+- @vitejs/plugin-vue-jsx v2
+
+### 依赖精简
+
+- 不再默认安装 `gh-pages` 依赖，请按照如下方式更新 `package.json`：
+
+```diff
+- "release:site": "pnpm build:site && gh-pages -d site-dist",
++ "release:site": "pnpm build:site && npx gh-pages -d site-dist",
+```
+
+- 不再默认内置 `stylelint`，需要的话可以自行安装：
+
+```bash
+yarn add stylelint@13 @vant/stylelint-config
+```
+
+### 移除 vetur 相关配置
+
+由于 Vue 3 推荐使用 volar 而不是 vetur，因此移除了 vetur 相关的配置文件。
+
+现在会默认生成 WebStorm 所需的 web-types.json 文件到 `lib/web-types.json` 目录下。
+
+## v4.0.4
+
+`2022-07-02`
+
+- 修复构建 sfc 文件的类型定义时报错的问题
+
+## v4.0.3
+
+`2022-07-02`
+
+- 新增 `build.bundleOptions` 配置项
+- 新增 `css.removeSourceFile` 配置项
+- 修复编译后的 script setup 中，引用的组件不生效的问题
+- 移除未使用的 esm bundle
+- 移除未使用的 ssr.js 文件
+
+## v4.0.2
+
+`2022-05-14`
+
+- 修复编译 script setup 错误的问题
+
+## v4.0.1
+
+`2022-03-03`
+
+- 支持复制示例代码到剪贴板
+- 修复官网更新日志的版本链接及 issue 链接异常的问题
+- 修复 ReDoS 安全问题
+
+## v4.0.0
+
+`2022-02-07`
 
 ### 不兼容更新
 
+- 支持的 node 版本范围提升到 `^14.16.0 || >=16.0.0`
 - 使用 vite 代替 webpack 进行构建，移除了所有 webpack 相关依赖
+- 使用 esbuild 进行代码转义和压缩
+- babel preset 添加了 `cjs` 后缀，现在需要通过 `@vant/cli/preset.cjs` 引入
+- vant.config.js 重命名为 `vant.config.mjs`，由 CommonJS 变更为 ESModule 格式
 - 站点构建产物的目录由 `site` 调整为 `site-dist`
 - 不再支持 webpack.config.js 配置文件
 - 不再支持 less import 语法中使用波浪号
 - 不再在 demo 文件中自动注册组件
+- 暂时不支持预览桌面端组件
 - 移除 build 命令的 --watch 参数
 - 移除内置的 babel-plugin-import 插件
 - 由于不再使用 html-webpack-plugin, 因此移除了 site.htmlPluginOptions 配置项
+- 为了避免幽灵依赖，不再默认依赖 `@vue/test-utils`，使用时需要手动安装
 - 为了减少依赖数量，移除了默认安装的 sass 依赖，使用 sass 时需要手动安装：
 
 ```bash
 yarn add sass
 ```
 
-### Features
-
-- 新增 site.htmlMeta 配置项
-- 新增 ESModule 格式的构建产物，分别为 `lib/[name].es.js` 和 `lib/[name].es.min.js`
-
 ### 依赖升级
 
 对以下依赖进行了大版本升级：
 
+- eslint v8
 - jest v27
 - husky v7
 - ts-jest v27
 - postcss v8
-- clean-css v5
 - commander v8
-- babel-jest v27
 - lint-staged v11
 - autoprefixer v10
+
+### Features
+
+- 新增 site.htmlMeta 配置项
+- 新增 build.configureWebpack 配置项
+- 新增 ESModule 格式的构建产物，分别为 `lib/[name].es.js` 和 `lib/[name].es.min.js`
+- 新增 CommonJS 格式的构建产物，分别为 `lib/[name].cjs.js` 和 `lib/[name].cjs.min.js`
+- 现在 ESModule 和 CommonJS 格式的产物会自动对外部依赖进行 external 处理
+
+### BugFixes
+
+- 修复 Windows 路径兼容问题
+- 修复通过 pnpm 安装使用时报错的问题
 
 ## v3.11.2
 
@@ -266,7 +342,7 @@ yarn add sass
 
 `2020-12-01`
 
--  升级 docsearch 3，优化搜索框样式
+- 升级 docsearch 3，优化搜索框样式
 
 ## v3.0.0
 
@@ -367,15 +443,15 @@ yarn add sass
 
 `2020-03-29`
 
-- 优化网站导航栏在大屏上的适配 ([#5928](https://github.com/youzan/vant/pull/5928))
+- 优化网站导航栏在大屏上的适配 ([#5928](https://github.com/vant-ui/vant/pull/5928))
 
 ### v2.3.0
 
 `2020-03-25`
 
-- build 命令支持编译 scoped 样式 ([#5910](https://github.com/youzan/vant/pull/5910))
-- build 命令支持生成 WebStorm 组件定义文件 ([#5899](https://github.com/youzan/vant/issues/5899))
-- clean 命令现在会移除而不是清空文件夹 ([#5895](https://github.com/youzan/vant/issues/5895))
+- build 命令支持编译 scoped 样式 ([#5910](https://github.com/vant-ui/vant/pull/5910))
+- build 命令支持生成 WebStorm 组件定义文件 ([#5899](https://github.com/vant-ui/vant/issues/5899))
+- clean 命令现在会移除而不是清空文件夹 ([#5895](https://github.com/vant-ui/vant/issues/5895))
 - 升级 @vant/markdown-vetur 2.0.0
 
 ### v2.2.8
@@ -409,7 +485,7 @@ yarn add sass
 
 `2020-02-14`
 
-- 修复在 windows 上构建出的样式入口文件路径错误的问题 ([#5655](https://github.com/youzan/vant/pull/5655)
+- 修复在 windows 上构建出的样式入口文件路径错误的问题 ([#5655](https://github.com/vant-ui/vant/pull/5655)
 
 ### v2.2.3
 
@@ -421,14 +497,14 @@ yarn add sass
 
 `2020-02-05`
 
-- 修复在 windows 上获取 markdown 路径错误的问题 ([#5626](https://github.com/youzan/vant/pull/5626))
+- 修复在 windows 上获取 markdown 路径错误的问题 ([#5626](https://github.com/vant-ui/vant/pull/5626))
 
 ### v2.2.1
 
 `2020-02-04`
 
 - 升级 babel@7.8
-- 修复切换版本时跳转 undefined 的问题 ([#5620](https://github.com/youzan/vant/pull/5620))
+- 修复切换版本时跳转 undefined 的问题 ([#5620](https://github.com/vant-ui/vant/pull/5620))
 
 ### v2.2.0
 
@@ -449,14 +525,14 @@ yarn add sass
 
 `2020-01-15`
 
-- 优化 help 命令 
+- 优化 help 命令
 - 优化控制台输出信息
 
 ### v2.1.6
 
 `2020-01-12`
 
-- 支持自定义 Postcss 配置
+- 支持自定义 PostCSS 配置
 - 支持自定义 devServer 端口
 - 优化文档站点的 meta 字段
 - 新增 API 文档中的版本标签样式

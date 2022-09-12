@@ -34,7 +34,7 @@ app.use(ShareSheet);
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
@@ -48,7 +48,7 @@ export default {
     ];
 
     const onSelect = (option) => {
-      Toast(option.name);
+      showToast(option.name);
       showShare.value = false;
     };
 
@@ -119,15 +119,15 @@ export default {
     const options = [
       {
         name: '名称',
-        icon: 'https://img.yzcdn.cn/vant/custom-icon-fire.png',
+        icon: 'https://fastly.jsdelivr.net/npm/@vant/assets/custom-icon-fire.png',
       },
       {
         name: '名称',
-        icon: 'https://img.yzcdn.cn/vant/custom-icon-light.png',
+        icon: 'https://fastly.jsdelivr.net/npm/@vant/assets/custom-icon-light.png',
       },
       {
         name: '名称',
-        icon: 'https://img.yzcdn.cn/vant/custom-icon-water.png',
+        icon: 'https://fastly.jsdelivr.net/npm/@vant/assets/custom-icon-water.png',
       },
     ];
 
@@ -186,6 +186,7 @@ export default {
 | cancel-text | 取消按钮文字，传入空字符串可以隐藏按钮 | _string_ | `'取消'` |
 | description | 标题下方的辅助描述文字 | _string_ | - |
 | duration | 动画时长，单位秒，设置为 0 可以禁用动画 | _number \| string_ | `0.3` |
+| z-index | 将面板的 z-index 层级设置为一个固定值 | _number \| string_ | `2000+` |
 | round `v3.2.6` | 是否显示圆角 | _boolean_ | `true` |
 | overlay | 是否显示遮罩层 | _boolean_ | `true` |
 | overlay-class | 自定义遮罩层类名 | _string \| Array \| object_ | - |
@@ -234,7 +235,11 @@ export default {
 组件导出以下类型定义：
 
 ```ts
-import type { ShareSheetOption, ShareSheetOptions } from 'vant';
+import type {
+  ShareSheetProps,
+  ShareSheetOption,
+  ShareSheetOptions,
+} from 'vant';
 ```
 
 ## 主题定制
@@ -249,17 +254,17 @@ import type { ShareSheetOption, ShareSheetOptions } from 'vant';
 | --van-share-sheet-title-color | _var(--van-text-color)_ | - |
 | --van-share-sheet-title-font-size | _var(--van-font-size-md)_ | - |
 | --van-share-sheet-title-line-height | _var(--van-line-height-md)_ | - |
-| --van-share-sheet-description-color | _var(--van-gray-6)_ | - |
+| --van-share-sheet-description-color | _var(--van-text-color-2)_ | - |
 | --van-share-sheet-description-font-size | _var(--van-font-size-sm)_ | - |
 | --van-share-sheet-description-line-height | _16px_ | - |
 | --van-share-sheet-icon-size | _48px_ | - |
 | --van-share-sheet-option-name-color | _var(--van-gray-7)_ | - |
 | --van-share-sheet-option-name-font-size | _var(--van-font-size-sm)_ | - |
-| --van-share-sheet-option-description-color | _var(--van-gray-5)_ | - |
+| --van-share-sheet-option-description-color | _var(--van-text-color-3)_ | - |
 | --van-share-sheet-option-description-font-size | _var(--van-font-size-sm)_ | - |
 | --van-share-sheet-cancel-button-font-size | _var(--van-font-size-lg)_ | - |
 | --van-share-sheet-cancel-button-height | _48px_ | - |
-| --van-share-sheet-cancel-button-background | _var(--van-white)_ | - |
+| --van-share-sheet-cancel-button-background | _var(--van-background-2)_ | - |
 
 ## 常见问题
 

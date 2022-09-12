@@ -2,12 +2,12 @@ import {
   ref,
   watch,
   nextTick,
-  PropType,
   reactive,
   onMounted,
-  CSSProperties,
   defineComponent,
-  ExtractPropTypes,
+  type PropType,
+  type CSSProperties,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
@@ -16,15 +16,18 @@ import {
   truthProp,
   unknownProp,
   Interceptor,
+  windowWidth,
+  windowHeight,
   makeArrayProp,
   makeStringProp,
   makeNumericProp,
   callInterceptor,
   createNamespace,
+  HAPTICS_FEEDBACK,
 } from '../utils';
 
 // Composables
-import { useRect, useWindowSize } from '@vant/use';
+import { useRect } from '@vant/use';
 import { useExpose } from '../composables/use-expose';
 
 // Components
@@ -45,7 +48,7 @@ const popupProps = [
   'closeOnPopstate',
 ] as const;
 
-const props = {
+export const imagePreviewProps = {
   show: Boolean,
   loop: truthProp,
   images: makeArrayProp<string>(),
@@ -58,6 +61,7 @@ const props = {
   closeIcon: makeStringProp('clear'),
   transition: String,
   beforeClose: Function as PropType<Interceptor>,
+  overlayClass: unknownProp,
   overlayStyle: Object as PropType<CSSProperties>,
   swipeDuration: makeNumericProp(300),
   startPosition: makeNumericProp(0),
@@ -66,18 +70,17 @@ const props = {
   closeIconPosition: makeStringProp<PopupCloseIconPosition>('top-right'),
 };
 
-export type ImagePreviewProps = ExtractPropTypes<typeof props>;
+export type ImagePreviewProps = ExtractPropTypes<typeof imagePreviewProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: imagePreviewProps,
 
   emits: ['scale', 'close', 'closed', 'change', 'update:show'],
 
   setup(props, { emit, slots }) {
     const swipeRef = ref<SwipeInstance>();
-    const windowSize = useWindowSize();
 
     const state = reactive({
       active: 0,
@@ -165,7 +168,10 @@ export default defineComponent({
           <Icon
             role="button"
             name={props.closeIcon}
-            class={bem('close-icon', props.closeIconPosition)}
+            class={[
+              bem('close-icon', props.closeIconPosition),
+              HAPTICS_FEEDBACK,
+            ]}
             onClick={emitClose}
           />
         );
@@ -181,7 +187,7 @@ export default defineComponent({
 
     onMounted(resize);
 
-    watch([windowSize.width, windowSize.height], resize);
+    watch([windowWidth, windowHeight], resize);
 
     watch(
       () => props.startPosition,
@@ -210,7 +216,7 @@ export default defineComponent({
     return () => (
       <Popup
         class={[bem(), props.className]}
-        overlayClass={bem('overlay')}
+        overlayClass={[bem('overlay'), props.overlayClass]}
         onClosed={onClosed}
         onUpdate:show={updateShow}
         {...pick(props, popupProps)}

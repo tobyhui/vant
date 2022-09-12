@@ -39,25 +39,41 @@ Locale.add(messages);
 
 Current supported languages:
 
-| Language                 | Filename     |
-| ------------------------ | ------------ |
-| Chinese                  | zh-CN        |
-| Traditional Chinese (HK) | zh-HK        |
-| Traditional Chinese (TW) | zh-TW        |
-| German                   | de-DE        |
-| German (formal)          | de-DE-formal |
-| English                  | en-US        |
-| Spanish (Spain)          | es-ES        |
-| Japanese                 | ja-JP        |
-| Norwegian                | nb-NO        |
-| Romanian                 | ro-RO        |
-| Russian                  | ru-RU        |
-| Turkish                  | tr-TR        |
-| Thai                     | th-TH        |
-| French                   | fr-FR        |
+| Language                 | Filename     | Version  |
+| ------------------------ | ------------ | -------- |
+| Bulgarian                | bg-BG        | `v3.5.0` |
+| Bangla (Bangladesh)      | bn-BD        | `v3.4.5` |
+| Danish                   | da-DK        | `v3.4.8` |
+| German                   | de-DE        | -        |
+| German (formal)          | de-DE-formal | -        |
+| Greek                    | el-GR        | `v3.5.0` |
+| English                  | en-US        | -        |
+| Spanish (Spain)          | es-ES        | -        |
+| Farsi                    | fa-IR        | `v3.5.0` |
+| French                   | fr-FR        | -        |
+| Hebrew                   | he-IL        | `v3.5.0` |
+| Hindi                    | hi-IN        | `v3.4.3` |
+| Indonesian               | id-ID        | `v3.4.5` |
+| Icelandic                | is-IS        | `v3.4.7` |
+| Italian                  | it-IT        | `v3.4.5` |
+| Japanese                 | ja-JP        | -        |
+| Korean                   | ko-KR        | `v3.4.3` |
+| Lao                      | la-LA        | `v3.4.7` |
+| Norwegian                | nb-NO        | -        |
+| Portuguese (Brazil)      | pt-BR        | `v3.3.3` |
+| Romanian                 | ro-RO        | -        |
+| Russian                  | ru-RU        | `v3.1.5` |
+| Swedish                  | sv-SE        | `v3.4.7` |
+| Turkish                  | tr-TR        | -        |
+| Thai                     | th-TH        | -        |
+| Ukrainian                | uk-UA        | `v3.4.5` |
+| Vietnamese               | vi-VN        | `v3.4.5` |
+| Chinese                  | zh-CN        | -        |
+| Traditional Chinese (HK) | zh-HK        | -        |
+| Traditional Chinese (TW) | zh-TW        | -        |
 
-> View all language configs [Here](https://github.com/youzan/vant/tree/dev/packages/vant/src/locale/lang).
+> View all language configs [Here](https://github.com/vant-ui/vant/tree/dev/packages/vant/src/locale/lang).
 
 ### Add new language
 
-If you can’t find the language you need, please send us a Pull Request to add the new language pack, you can refer to [Add German language pack](https://github.com/youzan/vant/pull/7245) PR.
+If you can’t find the language you need, please send us a Pull Request to add the new language pack, you can refer to [Add German language pack](https://github.com/vant-ui/vant/pull/7245) PR.

@@ -1,5 +1,5 @@
 import { Field } from '..';
-import { mount } from '../../../test';
+import { mount, later } from '../../../test';
 
 test('should emit "update:modelValue" event when after inputting', () => {
   const wrapper = mount(Field);
@@ -10,13 +10,13 @@ test('should emit "update:modelValue" event when after inputting', () => {
   expect(wrapper.emitted('update:modelValue')[0][0]).toEqual('1');
 });
 
-test('should emit click-input event when input is clicked', () => {
+test('should emit clickInput event when input is clicked', () => {
   const wrapper = mount(Field);
   wrapper.find('input').trigger('click');
-  expect(wrapper.emitted('click-input')[0][0]).toBeTruthy();
+  expect(wrapper.emitted('clickInput')[0][0]).toBeTruthy();
 });
 
-test('should emit click-input event when using input slot', () => {
+test('should emit clickInput event when using input slot', () => {
   const wrapper = mount(Field, {
     slots: {
       input: () => 'Custom Input',
@@ -24,10 +24,10 @@ test('should emit click-input event when using input slot', () => {
   });
 
   wrapper.find('.van-field__control').trigger('click');
-  expect(wrapper.emitted('click-input')[0][0]).toBeTruthy();
+  expect(wrapper.emitted('clickInput')[0][0]).toBeTruthy();
 });
 
-test('should emit click-left-icon event when left icon is clicked', () => {
+test('should emit clickLeftIcon event when left icon is clicked', () => {
   const wrapper = mount(Field, {
     props: {
       leftIcon: 'contact',
@@ -35,10 +35,10 @@ test('should emit click-left-icon event when left icon is clicked', () => {
   });
 
   wrapper.find('.van-field__left-icon').trigger('click');
-  expect(wrapper.emitted('click-left-icon')[0][0]).toBeTruthy();
+  expect(wrapper.emitted('clickLeftIcon')[0][0]).toBeTruthy();
 });
 
-test('should emit click-right-icon event when right icon is clicked', () => {
+test('should emit clickRightIcon event when right icon is clicked', () => {
   const wrapper = mount(Field, {
     props: {
       rightIcon: 'search',
@@ -46,7 +46,7 @@ test('should emit click-right-icon event when right icon is clicked', () => {
   });
 
   wrapper.find('.van-field__right-icon').trigger('click');
-  expect(wrapper.emitted('click-right-icon')[0][0]).toBeTruthy();
+  expect(wrapper.emitted('clickRightIcon')[0][0]).toBeTruthy();
 });
 
 test('should format input value when type is number', () => {
@@ -95,50 +95,51 @@ test('should format input value when type is digit', () => {
   expect(wrapper.emitted('update:modelValue')[2][0]).toEqual('123');
 });
 
-// TODO
-// test('should render textarea when type is textarea', async () => {
-//   const wrapper = mount(Field, {
-//     props: {
-//       type: 'textarea',
-//       autosize: true,
-//     },
-//   });
+test('should render textarea when type is textarea', async () => {
+  const wrapper = mount(Field, {
+    props: {
+      type: 'textarea',
+      autosize: true,
+    },
+  });
 
-//   await later();
-//   expect(wrapper.html()).toMatchSnapshot();
-// });
+  await later();
+  expect(wrapper.html()).toMatchSnapshot();
+});
 
-// test('autosize textarea field', () => {
-//   const wrapper = mount(Field, {
-//     props: {
-//       type: 'textarea',
-//       autosize: {},
-//     },
-//   });
+test('should autosize textarea field', async () => {
+  const wrapper = mount(Field, {
+    props: {
+      type: 'textarea',
+      autosize: {},
+    },
+  });
 
-//   const value = '1'.repeat(20);
-//   const textarea = wrapper.find('.van-field__control');
+  const value = '1'.repeat(20);
+  const textarea = wrapper.find('.van-field__control');
 
-//   wrapper.setProps({ value });
-//   expect(textarea.element.value).toEqual(value);
-// });
+  await wrapper.setProps({ modelValue: value });
+  expect(textarea.element.value).toEqual(value);
+});
 
-// test('autosize object', async () => {
-//   const wrapper = mount(Field, {
-//     props: {
-//       type: 'textarea',
-//       autosize: {
-//         maxHeight: 100,
-//         minHeight: 50,
-//       },
-//     },
-//   });
+test('should allow autosize prop be be an object', async () => {
+  window.scrollTo = jest.fn();
 
-//   const textarea = wrapper.find('.van-field__control');
+  const wrapper = mount(Field, {
+    props: {
+      type: 'textarea',
+      autosize: {
+        maxHeight: 100,
+        minHeight: 50,
+      },
+    },
+  });
 
-//   await later();
-//   expect(textarea.style.height).toEqual('50px');
-// });
+  const textarea = wrapper.find('.van-field__control');
+
+  await later();
+  expect(textarea.style.height).toEqual('50px');
+});
 
 test('should call input.focus when vm.focus is called', () => {
   const wrapper = mount(Field);
@@ -176,7 +177,7 @@ test('should limit maxlength of input value when using maxlength prop', async ()
   expect(wrapper.emitted('update:modelValue')[0][0]).toEqual('123');
   await wrapper.setProps({ modelValue: '123' });
 
-  // see: https://github.com/youzan/vant/issues/7265
+  // see: https://github.com/vant-ui/vant/issues/7265
   input.element.value = 1423;
   input.trigger('input');
   expect(input.element.value).toEqual('123');
@@ -342,7 +343,7 @@ test('should render word limit correctly', () => {
       showWordLimit: true,
     },
   });
-  expect(wrapper.html()).toMatchSnapshot();
+  expect(wrapper.find('.van-field__word-limit').html()).toMatchSnapshot();
 });
 
 test('should render word limit correctly when modelValue is undefined', () => {
@@ -390,24 +391,18 @@ test('should render colon when using colon prop', () => {
   expect(wrapper.find('.van-field__label').html()).toMatchSnapshot();
 });
 
-// TODO
-// test('should blur search input on enter', () => {
-//   const wrapper = mount(Field);
+test('should blur search input after pressing enter', async () => {
+  const wrapper = mount(Field, {
+    props: {
+      type: 'search',
+    },
+  });
 
-//   wrapper.find('input').element.focus();
-//   wrapper.find('input').trigger('keypress.enter');
-//   expect(wrapper.emitted('blur')).toBeFalsy();
-
-//   wrapper.setProps({ type: 'textarea' });
-//   wrapper.find('textarea').element.focus();
-//   wrapper.find('textarea').trigger('keypress.enter');
-//   expect(wrapper.emitted('blur')).toBeFalsy();
-
-//   wrapper.setProps({ type: 'search' });
-//   wrapper.find('input').element.focus();
-//   wrapper.find('input').trigger('keypress.enter');
-//   expect(wrapper.emitted('blur')).toBeTruthy();
-// });
+  const onBlur = jest.fn();
+  wrapper.find('input').element.blur = onBlur;
+  await wrapper.find('input').trigger('keypress.enter');
+  expect(onBlur).toHaveBeenCalledTimes(1);
+});
 
 test('should format value after mounted if initial modelValue is null', () => {
   const wrapper = mount(Field, {
@@ -428,6 +423,17 @@ test('should allow to set autocomplete attribute', () => {
   });
   expect(wrapper.find('input').element.getAttribute('autocomplete')).toEqual(
     'on'
+  );
+});
+
+test('should allow to set enterkeyhint attribute', () => {
+  const wrapper = mount(Field, {
+    props: {
+      enterkeyhint: 'done',
+    },
+  });
+  expect(wrapper.find('input').element.getAttribute('enterkeyhint')).toEqual(
+    'done'
   );
 });
 
@@ -479,4 +485,27 @@ test('should render error-message slot correctly', async () => {
   });
 
   expect(wrapper.find('.van-field__error-message').html()).toMatchSnapshot();
+});
+
+test('should limit maxlength with emoji correctly', async () => {
+  const wrapper = mount(Field, {
+    props: {
+      maxlength: 3,
+      modelValue: '😀😀😀😀',
+    },
+  });
+
+  const input = wrapper.find('input');
+  expect(input.element.value).toEqual('😀😀😀');
+});
+
+test('should render word limit with emoji correctly', () => {
+  const wrapper = mount(Field, {
+    props: {
+      modelValue: '😀😀',
+      maxlength: 3,
+      showWordLimit: true,
+    },
+  });
+  expect(wrapper.find('.van-field__word-limit').html()).toMatchSnapshot();
 });

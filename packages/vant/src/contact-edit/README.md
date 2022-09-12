@@ -33,13 +33,16 @@ app.use(ContactEdit);
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
-    const editingContact = ref({});
-    const onSave = (contactInfo) => Toast('Save');
-    const onDelete = (contactInfo) => Toast('Delete');
+    const editingContact = ref({
+      tel: '',
+      name: '',
+    });
+    const onSave = (contactInfo) => showToast('Save');
+    const onDelete = (contactInfo) => showToast('Delete');
     return {
       onSave,
       onDelete,
@@ -67,8 +70,8 @@ export default {
 
 | Event  | Description                               | Arguments             |
 | ------ | ----------------------------------------- | --------------------- |
-| save   | Emitted when the save button is clicked   | content：contact info |
-| delete | Emitted when the delete button is clicked | content：contact info |
+| save   | Emitted when the save button is clicked   | content: contact info |
+| delete | Emitted when the delete button is clicked | content: contact info |
 
 ### Data Structure of Contact
 
@@ -82,7 +85,7 @@ export default {
 The component exports the following type definitions:
 
 ```ts
-import type { ContactEditInfo } from 'vant';
+import type { ContactEditInfo, ContactEditProps } from 'vant';
 ```
 
 ## Theming
@@ -94,7 +97,7 @@ The component provides the following CSS variables, which can be used to customi
 | Name | Default Value | Description |
 | --- | --- | --- |
 | --van-contact-edit-padding | _var(--van-padding-md)_ | - |
-| --van-contact-edit-fields-radius | _var(--van-border-radius-md)_ | - |
+| --van-contact-edit-fields-radius | _var(--van-radius-md)_ | - |
 | --van-contact-edit-buttons-padding | _var(--van-padding-xl) 0_ | - |
 | --van-contact-edit-button-margin-bottom | _var(--van-padding-sm)_ | - |
 | --van-contact-edit-button-font-size | _var(--van-font-size-lg)_ | - |

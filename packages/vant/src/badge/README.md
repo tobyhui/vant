@@ -74,7 +74,7 @@ app.use(Badge);
 
 ### Custom Content
 
-Use `content` slot to custom :content of badge.
+Use `content` slot to custom the content of badge.
 
 ```html
 <van-badge>
@@ -105,6 +105,22 @@ Use `content` slot to custom :content of badge.
 }
 ```
 
+### Custom Position
+
+Use `position` prop to set the position of badge.
+
+```html
+<van-badge :content="10" position="top-left">
+  <div class="child" />
+</van-badge>
+<van-badge :content="10" position="bottom-left">
+  <div class="child" />
+</van-badge>
+<van-badge :content="10" position="bottom-right">
+  <div class="child" />
+</van-badge>
+```
+
 ### Standalone
 
 ```html
@@ -122,9 +138,10 @@ Use `content` slot to custom :content of badge.
 | content | Badge content | _number \| string_ | - |
 | color | Background color | _string_ | `#ee0a24` |
 | dot | Whether to show dot | _boolean_ | `false` |
-| max | Max value，show `{max}+` when exceed，only works when content is number | _number \| string_ | - |
+| max | Max value, show `{max}+` when exceed, only works when content is number | _number \| string_ | - |
 | offset `v3.0.5` | Offset of badge dot | _[number \| string, number \| string]_ | - |
 | show-zero `v3.0.10` | Whether to show badge when content is zero | _boolean_ | `true` |
+| position `v3.2.7` | Badge position, can be set to `top-left` `bottom-left` `bottom-right` | _string_ | `top-right` |
 
 ### Slots
 
@@ -132,6 +149,14 @@ Use `content` slot to custom :content of badge.
 | ------- | -------------------- |
 | default | Default slot         |
 | content | Custom badge content |
+
+### Types
+
+The component exports the following type definitions:
+
+```ts
+import type { BadgeProps, BadgePosition } from 'vant';
+```
 
 ## Theming
 
@@ -145,9 +170,9 @@ The component provides the following CSS variables, which can be used to customi
 | --van-badge-color | _var(--van-white)_ | - |
 | --van-badge-padding | _0 3px_ | - |
 | --van-badge-font-size | _var(--van-font-size-sm)_ | - |
-| --van-badge-font-weight | _var(--van-font-weight-bold)_ | - |
-| --van-badge-border-width | _var(--van-border-width-base)_ | - |
-| --van-badge-background-color | _var(--van-danger-color)_ | - |
+| --van-badge-font-weight | _var(--van-font-bold)_ | - |
+| --van-badge-border-width | _var(--van-border-width)_ | - |
+| --van-badge-background | _var(--van-danger-color)_ | - |
 | --van-badge-dot-color | _var(--van-danger-color)_ | - |
 | --van-badge-dot-size | _8px_ | - |
-| --van-badge-font-family | _-apple-system-font, Helvetica Neue, Arial, sans-serif_ | - |
+| --van-badge-font | _-apple-system-font, Helvetica Neue, Arial, sans-serif_ | - |

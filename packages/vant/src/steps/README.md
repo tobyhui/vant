@@ -44,7 +44,7 @@ export default {
 ### Custom Style
 
 ```html
-<van-steps :active="active" active-icon="success" active-color="#38f">
+<van-steps :active="active" active-icon="success" active-color="#07c160">
   <van-step>Step1</van-step>
   <van-step>Step2</van-step>
   <van-step>Step3</van-step>
@@ -106,7 +106,7 @@ export default {
 The component exports the following type definitions:
 
 ```ts
-import type { StepsDirection } from 'vant';
+import type { StepsProps, StepsDirection } from 'vant';
 ```
 
 ## Theming
@@ -117,15 +117,15 @@ The component provides the following CSS variables, which can be used to customi
 
 | Name | Default Value | Description |
 | --- | --- | --- |
-| --van-step-text-color | _var(--van-gray-6)_ | - |
-| --van-step-active-color | _var(--van-success-color)_ | - |
+| --van-step-text-color | _var(--van-text-color-2)_ | - |
+| --van-step-active-color | _var(--van-primary-color)_ | - |
 | --van-step-process-text-color | _var(--van-text-color)_ | - |
 | --van-step-font-size | _var(--van-font-size-md)_ | - |
 | --van-step-line-color | _var(--van-border-color)_ | - |
-| --van-step-finish-line-color | _var(--van-success-color)_ | - |
+| --van-step-finish-line-color | _var(--van-primary-color)_ | - |
 | --van-step-finish-text-color | _var(--van-text-color)_ | - |
 | --van-step-icon-size | _12px_ | - |
 | --van-step-circle-size | _5px_ | - |
 | --van-step-circle-color | _var(--van-gray-6)_ | - |
 | --van-step-horizontal-title-font-size | _var(--van-font-size-sm)_ | - |
-| --van-steps-background-color | _var(--van-white)_ | - |
+| --van-steps-background | _var(--van-background-2)_ | - |

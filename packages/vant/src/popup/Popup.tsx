@@ -3,13 +3,15 @@ import {
   watch,
   provide,
   Teleport,
+  nextTick,
   computed,
   onMounted,
   Transition,
   onActivated,
-  CSSProperties,
   onDeactivated,
   defineComponent,
+  type CSSProperties,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
@@ -20,6 +22,7 @@ import {
   makeStringProp,
   callInterceptor,
   createNamespace,
+  HAPTICS_FEEDBACK,
 } from '../utils';
 
 // Composables
@@ -28,49 +31,48 @@ import { useExpose } from '../composables/use-expose';
 import { useLockScroll } from '../composables/use-lock-scroll';
 import { useLazyRender } from '../composables/use-lazy-render';
 import { POPUP_TOGGLE_KEY } from '../composables/on-popup-reopen';
+import { useGlobalZIndex } from '../composables/use-global-z-index';
 
 // Components
 import { Icon } from '../icon';
 import { Overlay } from '../overlay';
 
-export type PopupPosition = 'top' | 'left' | 'bottom' | 'right' | 'center' | '';
+// Types
+import type { PopupPosition, PopupCloseIconPosition } from './types';
 
-export type PopupCloseIconPosition =
-  | 'top-left'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-right';
+export const popupProps = extend({}, popupSharedProps, {
+  round: Boolean,
+  position: makeStringProp<PopupPosition>('center'),
+  closeIcon: makeStringProp('cross'),
+  closeable: Boolean,
+  transition: String,
+  iconPrefix: String,
+  closeOnPopstate: Boolean,
+  closeIconPosition: makeStringProp<PopupCloseIconPosition>('top-right'),
+  safeAreaInsetTop: Boolean,
+  safeAreaInsetBottom: Boolean,
+});
+
+export type PopupProps = ExtractPropTypes<typeof popupProps>;
 
 const [name, bem] = createNamespace('popup');
-
-let globalZIndex = 2000;
 
 export default defineComponent({
   name,
 
   inheritAttrs: false,
 
-  props: extend({}, popupSharedProps, {
-    round: Boolean,
-    position: makeStringProp<PopupPosition>('center'),
-    closeIcon: makeStringProp('cross'),
-    closeable: Boolean,
-    transition: String,
-    iconPrefix: String,
-    closeOnPopstate: Boolean,
-    closeIconPosition: makeStringProp<PopupCloseIconPosition>('top-right'),
-    safeAreaInsetBottom: Boolean,
-  }),
+  props: popupProps,
 
   emits: [
     'open',
     'close',
-    'click',
     'opened',
     'closed',
+    'keydown',
     'update:show',
-    'click-overlay',
-    'click-close-icon',
+    'clickOverlay',
+    'clickCloseIcon',
   ],
 
   setup(props, { emit, attrs, slots }) {
@@ -100,12 +102,10 @@ export default defineComponent({
 
     const open = () => {
       if (!opened) {
-        if (props.zIndex !== undefined) {
-          globalZIndex = +props.zIndex;
-        }
-
         opened = true;
-        zIndex.value = ++globalZIndex;
+
+        zIndex.value =
+          props.zIndex !== undefined ? +props.zIndex : useGlobalZIndex();
 
         emit('open');
       }
@@ -124,7 +124,7 @@ export default defineComponent({
     };
 
     const onClickOverlay = (event: MouseEvent) => {
-      emit('click-overlay', event);
+      emit('clickOverlay', event);
 
       if (props.closeOnClickOverlay) {
         close();
@@ -141,6 +141,8 @@ export default defineComponent({
             zIndex={zIndex.value}
             duration={props.duration}
             customStyle={props.overlayStyle}
+            role={props.closeOnClickOverlay ? 'button' : undefined}
+            tabindex={props.closeOnClickOverlay ? 0 : undefined}
             onClick={onClickOverlay}
           />
         );
@@ -148,7 +150,7 @@ export default defineComponent({
     };
 
     const onClickCloseIcon = (event: MouseEvent) => {
-      emit('click-close-icon', event);
+      emit('clickCloseIcon', event);
       close();
     };
 
@@ -159,7 +161,10 @@ export default defineComponent({
             role="button"
             tabindex={0}
             name={props.closeIcon}
-            class={bem('close-icon', props.closeIconPosition)}
+            class={[
+              bem('close-icon', props.closeIconPosition),
+              HAPTICS_FEEDBACK,
+            ]}
             classPrefix={props.iconPrefix}
             onClick={onClickCloseIcon}
           />
@@ -167,25 +172,31 @@ export default defineComponent({
       }
     };
 
-    const onClick = (event: MouseEvent) => emit('click', event);
     const onOpened = () => emit('opened');
     const onClosed = () => emit('closed');
+    const onKeydown = (event: KeyboardEvent) => emit('keydown', event);
 
     const renderPopup = lazyRender(() => {
-      const { round, position, safeAreaInsetBottom } = props;
+      const { round, position, safeAreaInsetTop, safeAreaInsetBottom } = props;
+
       return (
         <div
           v-show={props.show}
           ref={popupRef}
           style={style.value}
+          role="dialog"
+          tabindex={0}
           class={[
             bem({
               round,
               [position]: position,
             }),
-            { 'van-safe-area-bottom': safeAreaInsetBottom },
+            {
+              'van-safe-area-top': safeAreaInsetTop,
+              'van-safe-area-bottom': safeAreaInsetBottom,
+            },
           ]}
-          onClick={onClick}
+          onKeydown={onKeydown}
           {...attrs}
         >
           {slots.default?.()}
@@ -212,10 +223,17 @@ export default defineComponent({
 
     watch(
       () => props.show,
-      (value) => {
-        if (value) {
+      (show) => {
+        if (show && !opened) {
           open();
-        } else {
+
+          if (attrs.tabindex === 0) {
+            nextTick(() => {
+              popupRef.value?.focus();
+            });
+          }
+        }
+        if (!show && opened) {
           opened = false;
           emit('close');
         }
@@ -247,7 +265,8 @@ export default defineComponent({
     });
 
     onDeactivated(() => {
-      if (props.show) {
+      // teleported popup should be closed when deactivated
+      if (props.show && props.teleport) {
         close();
         shouldReopen = true;
       }

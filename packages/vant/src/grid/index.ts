@@ -3,4 +3,11 @@ import _Grid from './Grid';
 
 export const Grid = withInstall(_Grid);
 export default Grid;
-export type { GridDirection } from './Grid';
+export { gridProps } from './Grid';
+export type { GridProps, GridDirection } from './Grid';
+
+declare module 'vue' {
+  export interface GlobalComponents {
+    VanGrid: typeof Grid;
+  }
+}

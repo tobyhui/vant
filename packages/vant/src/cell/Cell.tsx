@@ -1,4 +1,9 @@
-import { PropType, CSSProperties, defineComponent } from 'vue';
+import {
+  defineComponent,
+  type PropType,
+  type CSSProperties,
+  type ExtractPropTypes,
+} from 'vue';
 
 // Utils
 import {
@@ -18,11 +23,13 @@ import { Icon } from '../icon';
 
 const [name, bem] = createNamespace('cell');
 
+export type CellSize = 'normal' | 'large';
+
 export type CellArrowDirection = 'up' | 'down' | 'left' | 'right';
 
-export const cellProps = {
+export const cellSharedProps = {
   icon: String,
-  size: String as PropType<'large'>,
+  size: String as PropType<CellSize>,
   title: numericProp,
   value: numericProp,
   label: numericProp,
@@ -42,20 +49,16 @@ export const cellProps = {
   },
 };
 
+export const cellProps = extend({}, cellSharedProps, routeProps);
+
+export type CellProps = ExtractPropTypes<typeof cellProps>;
+
 export default defineComponent({
   name,
 
-  props: extend({}, cellProps, routeProps),
+  props: cellProps,
 
   setup(props, { slots }) {
-    if (process.env.NODE_ENV !== 'production') {
-      if (slots.default) {
-        console.warn(
-          '[Vant] Cell: "default" slot is deprecated, please use "value" slot instead.'
-        );
-      }
-    }
-
     const route = useRoute();
 
     const renderLabel = () => {
@@ -85,15 +88,13 @@ export default defineComponent({
     };
 
     const renderValue = () => {
-      // default slot is deprecated
-      // should be removed in next major version
+      // slots.default is an alias of slots.value
       const slot = slots.value || slots.default;
       const hasValue = slot || isDef(props.value);
 
       if (hasValue) {
-        const hasTitle = slots.title || isDef(props.title);
         return (
-          <div class={[bem('value', { alone: !hasTitle }), props.valueClass]}>
+          <div class={[bem('value'), props.valueClass]}>
             {slot ? slot() : <span>{props.value}</span>}
           </div>
         );

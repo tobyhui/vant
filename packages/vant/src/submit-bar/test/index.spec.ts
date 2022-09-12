@@ -1,11 +1,11 @@
 import { SubmitBar } from '..';
-import { mount } from '../../../test';
+import { later, mockGetBoundingClientRect, mount } from '../../../test';
 
 test('should emit submit event when submit button is clicked', () => {
   const wrapper = mount(SubmitBar);
   const button = wrapper.find('.van-submit-bar__button');
   button.trigger('click');
-  expect(wrapper.emitted('submit')!.length).toEqual(1);
+  expect(wrapper.emitted('submit')).toHaveLength(1);
 });
 
 test('should render disabled submit button correctly', () => {
@@ -106,4 +106,17 @@ test('should render button slot correctly', () => {
     },
   });
   expect(wrapper.html()).toMatchSnapshot();
+});
+
+test('should render placeholder element when using placeholder prop', async () => {
+  const restore = mockGetBoundingClientRect({ height: 50 });
+  const wrapper = mount(SubmitBar, {
+    props: {
+      placeholder: true,
+    },
+  });
+
+  await later();
+  expect(wrapper.html()).toMatchSnapshot();
+  restore();
 });

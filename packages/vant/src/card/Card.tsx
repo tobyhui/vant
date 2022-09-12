@@ -1,4 +1,4 @@
-import { defineComponent } from 'vue';
+import { defineComponent, type ExtractPropTypes } from 'vue';
 
 // Utils
 import { isDef, numericProp, makeStringProp, createNamespace } from '../utils';
@@ -9,24 +9,28 @@ import { Image } from '../image';
 
 const [name, bem] = createNamespace('card');
 
+export const cardProps = {
+  tag: String,
+  num: numericProp,
+  desc: String,
+  thumb: String,
+  title: String,
+  price: numericProp,
+  centered: Boolean,
+  lazyLoad: Boolean,
+  currency: makeStringProp('¥'),
+  thumbLink: String,
+  originPrice: numericProp,
+};
+
+export type CardProps = ExtractPropTypes<typeof cardProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    tag: String,
-    num: numericProp,
-    desc: String,
-    thumb: String,
-    title: String,
-    price: numericProp,
-    centered: Boolean,
-    lazyLoad: Boolean,
-    currency: makeStringProp('¥'),
-    thumbLink: String,
-    originPrice: numericProp,
-  },
+  props: cardProps,
 
-  emits: ['click-thumb'],
+  emits: ['clickThumb'],
 
   setup(props, { slots, emit }) {
     const renderTitle = () => {
@@ -50,7 +54,7 @@ export default defineComponent({
             {slots.tag ? (
               slots.tag()
             ) : (
-              <Tag mark type="danger">
+              <Tag mark type="primary">
                 {props.tag}
               </Tag>
             )}
@@ -81,7 +85,7 @@ export default defineComponent({
           <a
             href={props.thumbLink}
             class={bem('thumb')}
-            onClick={(event: MouseEvent) => emit('click-thumb', event)}
+            onClick={(event: MouseEvent) => emit('clickThumb', event)}
           >
             {renderThumbImage()}
             {renderThumbTag()}

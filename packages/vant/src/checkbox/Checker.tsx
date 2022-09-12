@@ -1,4 +1,4 @@
-import { ref, computed, PropType, defineComponent } from 'vue';
+import { ref, computed, defineComponent, type PropType } from 'vue';
 import {
   extend,
   addUnit,
@@ -7,6 +7,7 @@ import {
   unknownProp,
   makeStringProp,
   makeRequiredProp,
+  type Numeric,
 } from '../utils';
 import { Icon } from '../icon';
 
@@ -16,7 +17,7 @@ export type CheckerLabelPosition = 'left' | 'right';
 export type CheckerParent = {
   props: {
     disabled?: boolean;
-    iconSize?: number | string;
+    iconSize?: Numeric;
     direction?: CheckerDirection;
     checkedColor?: string;
   };
@@ -131,7 +132,7 @@ export default defineComponent({
             },
             direction.value,
           ])}
-          tabindex={disabled.value ? -1 : 0}
+          tabindex={disabled.value ? undefined : 0}
           aria-checked={props.checked}
           onClick={onClick}
         >

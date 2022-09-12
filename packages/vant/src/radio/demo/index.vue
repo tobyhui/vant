@@ -4,7 +4,7 @@ import VanRadio from '..';
 import VanCellGroup from '../../cell-group';
 import VanCell from '../../cell';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { cdnURL, useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -42,8 +42,8 @@ const radioLabel = ref('1');
 const radioShape = ref('1');
 const radioIconSize = ref('1');
 const radioHorizontal = ref('1');
-const activeIcon = 'https://img.yzcdn.cn/vant/user-active.png';
-const inactiveIcon = 'https://img.yzcdn.cn/vant/user-inactive.png';
+const activeIcon = cdnURL('user-active.png');
+const inactiveIcon = cdnURL('user-inactive.png');
 </script>
 
 <template>
@@ -123,7 +123,7 @@ const inactiveIcon = 'https://img.yzcdn.cn/vant/user-inactive.png';
 
   <demo-block :title="t('withCell')">
     <van-radio-group v-model="radio5">
-      <van-cell-group>
+      <van-cell-group inset>
         <van-cell clickable :title="t('radio') + 1" @click="radio5 = '1'">
           <template #right-icon>
             <van-radio name="1" />
@@ -141,8 +141,6 @@ const inactiveIcon = 'https://img.yzcdn.cn/vant/user-inactive.png';
 
 <style lang="less">
 .demo-radio {
-  background: var(--van-white);
-
   &-group {
     padding: 0 16px;
 

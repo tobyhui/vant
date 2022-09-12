@@ -1,5 +1,21 @@
 ## Changelog
 
+## 1.8.0
+
+- add qq icon
+- add weibo icon
+- add link-o icon
+- add miniprogram-o icon
+- add wechat-moments icon
+
+## 1.7.3
+
+- complete https protocol
+
+## 1.7.2
+
+- add cash-o icon
+
 ## 1.7.1
 
 - add guide-o icon

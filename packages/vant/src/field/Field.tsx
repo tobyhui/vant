@@ -5,10 +5,10 @@ import {
   computed,
   nextTick,
   reactive,
-  PropType,
   onMounted,
   defineComponent,
-  ExtractPropTypes,
+  type PropType,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
@@ -16,6 +16,7 @@ import {
   isDef,
   extend,
   addUnit,
+  toArray,
   FORM_KEY,
   numericProp,
   unknownProp,
@@ -25,20 +26,29 @@ import {
   makeStringProp,
   makeNumericProp,
   createNamespace,
+  type ComponentInstance,
 } from '../utils';
 import {
+  cutString,
   runSyncRule,
   endComposing,
   mapInputType,
+  isEmptyValue,
   startComposing,
   getRuleMessage,
   resizeTextarea,
+  getStringLength,
   runRuleValidator,
 } from './utils';
-import { cellProps } from '../cell/Cell';
+import { cellSharedProps } from '../cell/Cell';
 
 // Composables
-import { CUSTOM_FIELD_INJECTION_KEY, useParent } from '@vant/use';
+import {
+  useParent,
+  useEventListener,
+  CUSTOM_FIELD_INJECTION_KEY,
+} from '@vant/use';
+import { useId } from '../composables/use-id';
 import { useExpose } from '../composables/use-expose';
 
 // Components
@@ -55,6 +65,7 @@ import type {
   FieldFormatTrigger,
   FieldValidateError,
   FieldAutosizeConfig,
+  FieldValidationStatus,
   FieldValidateTrigger,
   FieldFormSharedProps,
 } from './types';
@@ -77,6 +88,7 @@ export const fieldSharedProps = {
   placeholder: String,
   autocomplete: String,
   errorMessage: String,
+  enterkeyhint: String,
   clearTrigger: makeStringProp<FieldClearTrigger>('focus'),
   formatTrigger: makeStringProp<FieldFormatTrigger>('onChange'),
   error: {
@@ -93,7 +105,7 @@ export const fieldSharedProps = {
   },
 };
 
-const props = extend({}, cellProps, fieldSharedProps, {
+export const fieldProps = extend({}, cellSharedProps, fieldSharedProps, {
   rows: numericProp,
   type: makeStringProp<FieldType>('text'),
   rules: Array as PropType<FieldRule[]>,
@@ -109,32 +121,36 @@ const props = extend({}, cellProps, fieldSharedProps, {
   },
 });
 
-export type FieldProps = ExtractPropTypes<typeof props>;
+export type FieldProps = ExtractPropTypes<typeof fieldProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: fieldProps,
 
   emits: [
     'blur',
     'focus',
     'clear',
     'keypress',
-    'click-input',
-    'click-left-icon',
-    'click-right-icon',
+    'clickInput',
+    'endValidate',
+    'startValidate',
+    'clickLeftIcon',
+    'clickRightIcon',
     'update:modelValue',
   ],
 
   setup(props, { emit, slots }) {
+    const id = useId();
     const state = reactive({
+      status: 'unvalidated' as FieldValidationStatus,
       focused: false,
-      validateFailed: false,
       validateMessage: '',
     });
 
     const inputRef = ref<HTMLInputElement>();
+    const clearIconRef = ref<ComponentInstance>();
     const customValue = ref<() => unknown>();
 
     const { parent: form } = useParent(FORM_KEY);
@@ -175,7 +191,7 @@ export default defineComponent({
       rules.reduce(
         (promise, rule) =>
           promise.then(() => {
-            if (state.validateFailed) {
+            if (state.status === 'failed') {
               return;
             }
 
@@ -186,18 +202,22 @@ export default defineComponent({
             }
 
             if (!runSyncRule(value, rule)) {
-              state.validateFailed = true;
+              state.status = 'failed';
               state.validateMessage = getRuleMessage(value, rule);
               return;
             }
 
             if (rule.validator) {
+              if (isEmptyValue(value) && rule.validateEmpty === false) {
+                return;
+              }
+
               return runRuleValidator(value, rule).then((result) => {
                 if (result && typeof result === 'string') {
-                  state.validateFailed = true;
+                  state.status = 'failed';
                   state.validateMessage = result;
                 } else if (result === false) {
-                  state.validateFailed = true;
+                  state.status = 'failed';
                   state.validateMessage = getRuleMessage(value, rule);
                 }
               });
@@ -207,24 +227,28 @@ export default defineComponent({
       );
 
     const resetValidation = () => {
-      if (state.validateFailed) {
-        state.validateFailed = false;
-        state.validateMessage = '';
-      }
+      state.status = 'unvalidated';
+      state.validateMessage = '';
     };
+
+    const endValidate = () => emit('endValidate', { status: state.status });
 
     const validate = (rules = props.rules) =>
       new Promise<FieldValidateError | void>((resolve) => {
         resetValidation();
         if (rules) {
+          emit('startValidate');
           runRules(rules).then(() => {
-            if (state.validateFailed) {
+            if (state.status === 'failed') {
               resolve({
                 name: props.name,
                 message: state.validateMessage,
               });
+              endValidate();
             } else {
+              state.status = 'passed';
               resolve();
+              endValidate();
             }
           });
         } else {
@@ -234,12 +258,12 @@ export default defineComponent({
 
     const validateWithTrigger = (trigger: FieldValidateTrigger) => {
       if (form && props.rules) {
-        const defaultTrigger = form.props.validateTrigger === trigger;
+        const { validateTrigger } = form.props;
+        const defaultTrigger = toArray(validateTrigger).includes(trigger);
         const rules = props.rules.filter((rule) => {
           if (rule.trigger) {
-            return rule.trigger === trigger;
+            return toArray(rule.trigger).includes(trigger);
           }
-
           return defaultTrigger;
         });
 
@@ -250,15 +274,15 @@ export default defineComponent({
     };
 
     // native maxlength have incorrect line-break counting
-    // see: https://github.com/youzan/vant/issues/5033
+    // see: https://github.com/vant-ui/vant/issues/5033
     const limitValueLength = (value: string) => {
       const { maxlength } = props;
-      if (isDef(maxlength) && value.length > maxlength) {
+      if (isDef(maxlength) && getStringLength(value) > maxlength) {
         const modelValue = getModelValue();
-        if (modelValue && modelValue.length === +maxlength) {
+        if (modelValue && getStringLength(modelValue) === +maxlength) {
           return modelValue;
         }
-        return value.slice(0, +maxlength);
+        return cutString(value, +maxlength);
       }
       return value;
     };
@@ -297,34 +321,45 @@ export default defineComponent({
     const blur = () => inputRef.value?.blur();
     const focus = () => inputRef.value?.focus();
 
+    const adjustTextareaSize = () => {
+      const input = inputRef.value;
+      if (props.type === 'textarea' && props.autosize && input) {
+        resizeTextarea(input, props.autosize);
+      }
+    };
+
     const onFocus = (event: Event) => {
       state.focused = true;
       emit('focus', event);
+      nextTick(adjustTextareaSize);
 
       // readonly not work in legacy mobile safari
-      const readonly = getProp('readonly');
-      if (readonly) {
+      if (getProp('readonly')) {
         blur();
       }
     };
 
     const onBlur = (event: Event) => {
+      if (getProp('readonly')) {
+        return;
+      }
+
       state.focused = false;
       updateValue(getModelValue(), 'onBlur');
       emit('blur', event);
       validateWithTrigger('onBlur');
+      nextTick(adjustTextareaSize);
       resetScroll();
     };
 
-    const onClickInput = (event: MouseEvent) => emit('click-input', event);
+    const onClickInput = (event: MouseEvent) => emit('clickInput', event);
 
-    const onClickLeftIcon = (event: MouseEvent) =>
-      emit('click-left-icon', event);
+    const onClickLeftIcon = (event: MouseEvent) => emit('clickLeftIcon', event);
 
     const onClickRightIcon = (event: MouseEvent) =>
-      emit('click-right-icon', event);
+      emit('clickRightIcon', event);
 
-    const onClear = (event: MouseEvent) => {
+    const onClear = (event: TouchEvent) => {
       preventDefault(event);
       emit('update:modelValue', '');
       emit('clear', event);
@@ -334,7 +369,7 @@ export default defineComponent({
       if (typeof props.error === 'boolean') {
         return props.error;
       }
-      if (form && form.props.showError && state.validateFailed) {
+      if (form && form.props.showError && state.status === 'failed') {
         return true;
       }
     });
@@ -364,12 +399,9 @@ export default defineComponent({
       emit('keypress', event);
     };
 
-    const adjustTextareaSize = () => {
-      const input = inputRef.value;
-      if (props.type === 'textarea' && props.autosize && input) {
-        resizeTextarea(input, props.autosize);
-      }
-    };
+    const getInputId = () => props.id || `${id}-input`;
+
+    const getValidationStatus = () => state.status;
 
     const renderInput = () => {
       const controlClass = bem('control', [
@@ -390,17 +422,18 @@ export default defineComponent({
       }
 
       const inputAttrs = {
-        id: props.id,
+        id: getInputId(),
         ref: inputRef,
         name: props.name,
         rows: props.rows !== undefined ? +props.rows : undefined,
         class: controlClass,
-        value: props.modelValue,
         disabled: getProp('disabled'),
         readonly: getProp('readonly'),
         autofocus: props.autofocus,
         placeholder: props.placeholder,
         autocomplete: props.autocomplete,
+        enterkeyhint: props.enterkeyhint,
+        'aria-labelledby': props.label ? `${id}-label` : undefined,
         onBlur,
         onFocus,
         onInput,
@@ -452,7 +485,7 @@ export default defineComponent({
 
     const renderWordLimit = () => {
       if (props.showWordLimit && props.maxlength) {
-        const count = getModelValue().length;
+        const count = getStringLength(getModelValue());
         return (
           <div class={bem('word-limit')}>
             <span class={bem('word-num')}>{count}</span>/{props.maxlength}
@@ -486,7 +519,11 @@ export default defineComponent({
         return [slots.label(), colon];
       }
       if (props.label) {
-        return <label for={props.id}>{props.label + colon}</label>;
+        return (
+          <label id={`${id}-label`} for={getInputId()}>
+            {props.label + colon}
+          </label>
+        );
       }
     };
 
@@ -495,9 +532,9 @@ export default defineComponent({
         {renderInput()}
         {showClear.value && (
           <Icon
+            ref={clearIconRef}
             name={props.clearIcon}
             class={bem('clear')}
-            onTouchstart={onClear}
           />
         )}
         {renderRightIcon()}
@@ -513,6 +550,7 @@ export default defineComponent({
       validate,
       formValue,
       resetValidation,
+      getValidationStatus,
     });
 
     provide(CUSTOM_FIELD_INJECTION_KEY, {
@@ -534,6 +572,11 @@ export default defineComponent({
     onMounted(() => {
       updateValue(getModelValue(), props.formatTrigger);
       nextTick(adjustTextareaSize);
+    });
+
+    // useEventListener will set passive to `false` to eliminate the warning of Chrome
+    useEventListener('touchstart', onClear, {
+      target: computed(() => clearIconRef.value?.$el),
     });
 
     return () => {

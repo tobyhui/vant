@@ -30,7 +30,7 @@ app.use(PullRefresh);
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
@@ -38,7 +38,7 @@ export default {
     const loading = ref(false);
     const onRefresh = () => {
       setTimeout(() => {
-        Toast('刷新成功');
+        showToast('刷新成功');
         loading.value = false;
         count.value++;
       }, 1000);
@@ -77,19 +77,25 @@ export default {
   <template #pulling="props">
     <img
       class="doge"
-      src="https://img.yzcdn.cn/vant/doge.png"
+      src="https://fastly.jsdelivr.net/npm/@vant/assets/doge.png"
       :style="{ transform: `scale(${props.distance / 80})` }"
     />
   </template>
 
   <!-- 释放提示 -->
   <template #loosing>
-    <img class="doge" src="https://img.yzcdn.cn/vant/doge.png" />
+    <img
+      class="doge"
+      src="https://fastly.jsdelivr.net/npm/@vant/assets/doge.png"
+    />
   </template>
 
   <!-- 加载提示 -->
   <template #loading>
-    <img class="doge" src="https://img.yzcdn.cn/vant/doge-fire.jpg" />
+    <img
+      class="doge"
+      src="https://fastly.jsdelivr.net/npm/@vant/assets/doge-fire.jpeg"
+    />
   </template>
   <p>刷新次数: {{ count }}</p>
 </van-pull-refresh>
@@ -123,20 +129,29 @@ export default {
 
 ### Events
 
-| 事件名  | 说明           | 回调参数 |
-| ------- | -------------- | -------- |
-| refresh | 下拉刷新时触发 | -        |
+| 事件名 | 说明 | 回调参数 |
+| --- | --- | --- |
+| refresh | 下拉刷新时触发 | - |
+| change `v3.5.1` | 拖动时或状态改变时触发 | _{ status: string, distance: number }_ |
 
 ### Slots
 
-| 名称    | 说明                 | 参数                       |
-| ------- | -------------------- | -------------------------- |
-| default | 自定义内容           | -                          |
-| normal  | 非下拉状态时顶部内容 | -                          |
-| pulling | 下拉过程中顶部内容   | { distance: 当前下拉距离 } |
-| loosing | 释放过程中顶部内容   | { distance: 当前下拉距离 } |
-| loading | 加载过程中顶部内容   | { distance: 当前下拉距离 } |
-| success | 刷新成功提示内容     | -                          |
+| 名称    | 说明                 | 参数                   |
+| ------- | -------------------- | ---------------------- |
+| default | 自定义内容           | -                      |
+| normal  | 非下拉状态时顶部内容 | -                      |
+| pulling | 下拉过程中顶部内容   | _{ distance: number }_ |
+| loosing | 释放过程中顶部内容   | _{ distance: number }_ |
+| loading | 加载过程中顶部内容   | _{ distance: number }_ |
+| success | 刷新成功提示内容     | -                      |
+
+### 类型定义
+
+组件导出以下类型定义：
+
+```ts
+import type { PullRefreshProps } from 'vant';
+```
 
 ## 主题定制
 
@@ -148,7 +163,7 @@ export default {
 | ------------------------------------ | ------------------------- | ---- |
 | --van-pull-refresh-head-height       | _50px_                    | -    |
 | --van-pull-refresh-head-font-size    | _var(--van-font-size-md)_ | -    |
-| --van-pull-refresh-head-text-color   | _var(--van-gray-6)_       | -    |
+| --van-pull-refresh-head-text-color   | _var(--van-text-color-2)_ | -    |
 | --van-pull-refresh-loading-icon-size | _16px_                    | -    |
 
 ## 常见问题

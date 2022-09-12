@@ -131,8 +131,10 @@ export default {
     const checked = ref('1');
     return {
       checked,
-      activeIcon: 'https://img.yzcdn.cn/vant/user-active.png',
-      inactiveIcon: 'https://img.yzcdn.cn/vant/user-inactive.png',
+      activeIcon:
+        'https://fastly.jsdelivr.net/npm/@vant/assets/user-active.png',
+      inactiveIcon:
+        'https://fastly.jsdelivr.net/npm/@vant/assets/user-inactive.png',
     };
   },
 };
@@ -155,7 +157,7 @@ export default {
 
 ```html
 <van-radio-group v-model="checked">
-  <van-cell-group>
+  <van-cell-group inset>
     <van-cell title="单选框 1" clickable @click="checked = '1'">
       <template #right-icon>
         <van-radio name="1" />
@@ -174,15 +176,15 @@ export default {
 
 ### Radio Props
 
-| 参数           | 说明                      | 类型               | 默认值    |
-| -------------- | ------------------------- | ------------------ | --------- |
-| name           | 标识符                    | _any_              | -         |
-| shape          | 形状，可选值为 `square`   | _string_           | `round`   |
-| disabled       | 是否为禁用状态            | _boolean_          | `false`   |
-| label-disabled | 是否禁用文本内容点击      | _boolean_          | `false`   |
-| label-position | 文本位置，可选值为 `left` | _string_           | `right`   |
-| icon-size      | 图标大小，默认单位为 `px` | _number \| string_ | `20px`    |
-| checked-color  | 选中状态颜色              | _string_           | `#1989fa` |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| name | 标识符，通常为一个唯一的字符串或数字 | _any_ | - |
+| shape | 形状，可选值为 `square` | _string_ | `round` |
+| disabled | 是否为禁用状态 | _boolean_ | `false` |
+| label-disabled | 是否禁用文本内容点击 | _boolean_ | `false` |
+| label-position | 文本位置，可选值为 `left` | _string_ | `right` |
+| icon-size | 图标大小，默认单位为 `px` | _number \| string_ | `20px` |
+| checked-color | 选中状态颜色 | _string_ | `#1989fa` |
 
 ### RadioGroup Props
 
@@ -218,7 +220,13 @@ export default {
 组件导出以下类型定义：
 
 ```ts
-import type { RadioShape, RadioLabelPosition, RadioGroupDirection } from 'vant';
+import type {
+  RadioProps,
+  RadioShape,
+  RadioGroupProps,
+  RadioLabelPosition,
+  RadioGroupDirection,
+} from 'vant';
 ```
 
 ## 主题定制
@@ -227,14 +235,14 @@ import type { RadioShape, RadioLabelPosition, RadioGroupDirection } from 'vant';
 
 组件提供了下列 CSS 变量，可用于自定义样式，使用方法请参考 [ConfigProvider 组件](#/zh-CN/config-provider)。
 
-| 名称 | 默认值 | 描述 |
-| --- | --- | --- |
-| --van-radio-size | _20px_ | - |
-| --van-radio-border-color | _var(--van-gray-5)_ | - |
-| --van-radio-transition-duration | _var(--van-animation-duration-fast)_ | - |
-| --van-radio-label-margin | _var(--van-padding-xs)_ | - |
-| --van-radio-label-color | _var(--van-text-color)_ | - |
-| --van-radio-checked-icon-color | _var(--van-primary-color)_ | - |
-| --van-radio-disabled-icon-color | _var(--van-gray-5)_ | - |
-| --van-radio-disabled-label-color | _var(--van-gray-5)_ | - |
-| --van-radio-disabled-background-color | _var(--van-border-color)_ | - |
+| 名称                             | 默认值                     | 描述 |
+| -------------------------------- | -------------------------- | ---- |
+| --van-radio-size                 | _20px_                     | -    |
+| --van-radio-border-color         | _var(--van-gray-5)_        | -    |
+| --van-radio-duration             | _var(--van-duration-fast)_ | -    |
+| --van-radio-label-margin         | _var(--van-padding-xs)_    | -    |
+| --van-radio-label-color          | _var(--van-text-color)_    | -    |
+| --van-radio-checked-icon-color   | _var(--van-primary-color)_ | -    |
+| --van-radio-disabled-icon-color  | _var(--van-gray-5)_        | -    |
+| --van-radio-disabled-label-color | _var(--van-text-color-3)_  | -    |
+| --van-radio-disabled-background  | _var(--van-border-color)_  | -    |

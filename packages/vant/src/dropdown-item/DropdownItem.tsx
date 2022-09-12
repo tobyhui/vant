@@ -1,11 +1,11 @@
 import {
   reactive,
   Teleport,
-  PropType,
-  TeleportProps,
-  CSSProperties,
   defineComponent,
-  ExtractPropTypes,
+  type PropType,
+  type TeleportProps,
+  type CSSProperties,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
@@ -32,7 +32,7 @@ import type { DropdownItemOption } from './types';
 
 const [name, bem] = createNamespace('dropdown-item');
 
-const props = {
+export const dropdownItemProps = {
   title: String,
   options: makeArrayProp<DropdownItemOption>(),
   disabled: Boolean,
@@ -42,12 +42,12 @@ const props = {
   titleClass: unknownProp,
 };
 
-export type DropdownItemProps = ExtractPropTypes<typeof props>;
+export type DropdownItemProps = ExtractPropTypes<typeof dropdownItemProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: dropdownItemProps,
 
   emits: ['open', 'opened', 'close', 'closed', 'change', 'update:modelValue'],
 
@@ -58,7 +58,7 @@ export default defineComponent({
       showWrapper: false,
     });
 
-    const { parent } = useParent(DROPDOWN_KEY);
+    const { parent, index } = useParent(DROPDOWN_KEY);
 
     if (!parent) {
       if (process.env.NODE_ENV !== 'production') {
@@ -142,14 +142,16 @@ export default defineComponent({
       return (
         <Cell
           v-slots={{ value: renderIcon }}
-          clickable
+          role="menuitem"
           key={option.value}
           icon={option.icon}
           title={option.text}
           class={bem('option', { active })}
           style={{ color: active ? activeColor : '' }}
+          tabindex={active ? 0 : -1}
+          clickable
           onClick={onClick}
-        ></Cell>
+        />
       );
     };
 
@@ -175,12 +177,14 @@ export default defineComponent({
         >
           <Popup
             v-model:show={state.showPopup}
+            role="menu"
             class={bem('content')}
             overlay={overlay}
             position={direction === 'down' ? 'top' : 'bottom'}
             duration={state.transition ? duration : 0}
             lazyRender={props.lazyRender}
             overlayStyle={{ position: 'absolute' }}
+            aria-labelledby={`${parent.id}-${index.value}`}
             closeOnClickOverlay={closeOnClickOverlay}
             onOpen={onOpen}
             onClose={onClose}

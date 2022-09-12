@@ -1,4 +1,4 @@
-import { PropType, defineComponent } from 'vue';
+import { defineComponent, type PropType, type ExtractPropTypes } from 'vue';
 
 // Utils
 import {
@@ -7,6 +7,7 @@ import {
   makeStringProp,
   makeNumericProp,
   createNamespace,
+  type Numeric,
 } from '../utils';
 
 // Components
@@ -17,7 +18,7 @@ import { SidebarItem } from '../sidebar-item';
 const [name, bem] = createNamespace('tree-select');
 
 export type TreeSelectChild = {
-  id: number | string;
+  id: Numeric;
   text: string;
   disabled?: boolean;
 };
@@ -25,38 +26,35 @@ export type TreeSelectChild = {
 export type TreeSelectItem = {
   dot?: boolean;
   text: string;
-  badge?: number | string;
+  badge?: Numeric;
   children?: TreeSelectChild[];
   disabled?: boolean;
   className?: unknown;
 };
 
+export const treeSelectProps = {
+  max: makeNumericProp(Infinity),
+  items: makeArrayProp<TreeSelectItem>(),
+  height: makeNumericProp(300),
+  selectedIcon: makeStringProp('success'),
+  mainActiveIndex: makeNumericProp(0),
+  activeId: {
+    type: [Number, String, Array] as PropType<Numeric | Numeric[]>,
+    default: 0,
+  },
+};
+
+export type TreeSelectProps = ExtractPropTypes<typeof treeSelectProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    max: makeNumericProp(Infinity),
-    items: makeArrayProp<TreeSelectItem>(),
-    height: makeNumericProp(300),
-    selectedIcon: makeStringProp('success'),
-    mainActiveIndex: makeNumericProp(0),
-    activeId: {
-      type: [Number, String, Array] as PropType<
-        number | string | Array<number | string>
-      >,
-      default: 0,
-    },
-  },
+  props: treeSelectProps,
 
-  emits: [
-    'click-nav',
-    'click-item',
-    'update:activeId',
-    'update:mainActiveIndex',
-  ],
+  emits: ['clickNav', 'clickItem', 'update:activeId', 'update:mainActiveIndex'],
 
   setup(props, { emit, slots }) {
-    const isActiveItem = (id: number | string) =>
+    const isActiveItem = (id: Numeric) =>
       Array.isArray(props.activeId)
         ? props.activeId.includes(id)
         : props.activeId === id;
@@ -83,7 +81,7 @@ export default defineComponent({
         }
 
         emit('update:activeId', activeId);
-        emit('click-item', item);
+        emit('clickItem', item);
       };
 
       return (
@@ -108,8 +106,9 @@ export default defineComponent({
 
     const onSidebarChange = (index: number) => {
       emit('update:mainActiveIndex', index);
-      emit('click-nav', index);
     };
+
+    const onClickSidebarItem = (index: number) => emit('clickNav', index);
 
     const renderSidebar = () => {
       const Items = props.items.map((item) => (
@@ -119,6 +118,7 @@ export default defineComponent({
           badge={item.badge}
           class={[bem('nav-item'), item.className]}
           disabled={item.disabled}
+          onClick={onClickSidebarItem}
         />
       ));
 

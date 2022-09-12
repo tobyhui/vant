@@ -39,7 +39,7 @@ test('should emit "update:modelValue" event after clicking slider', () => {
   expect(wrapper.emitted('update:modelValue')!.pop()).toEqual([100]);
 });
 
-test('should emit drag-start event when start dragging', () => {
+test('should emit dragStart event when start dragging', () => {
   const wrapper = mount(Slider, {
     props: {
       modelValue: 50,
@@ -49,10 +49,10 @@ test('should emit drag-start event when start dragging', () => {
   const button = wrapper.find('.van-slider__button');
   trigger(button, 'touchstart');
   trigger(button, 'touchmove');
-  expect(wrapper.emitted('drag-start')).toBeTruthy();
+  expect(wrapper.emitted('dragStart')).toBeTruthy();
 });
 
-test('should emit drag-end event when end dragging', () => {
+test('should emit dragEnd event when end dragging', () => {
   const wrapper = mount(Slider, {
     props: {
       modelValue: 50,
@@ -62,9 +62,9 @@ test('should emit drag-end event when end dragging', () => {
   const button = wrapper.find('.van-slider__button');
   trigger(button, 'touchstart');
   trigger(button, 'touchmove');
-  expect(wrapper.emitted('drag-end')).toBeFalsy();
+  expect(wrapper.emitted('dragEnd')).toBeFalsy();
   trigger(button, 'touchend');
-  expect(wrapper.emitted('drag-end')).toBeTruthy();
+  expect(wrapper.emitted('dragEnd')).toBeTruthy();
 });
 
 test('should not allow to drag slider when disabled', async () => {
@@ -115,6 +115,17 @@ test('should not allow to click slider when readonly', async () => {
 
   trigger(wrapper, 'click', 100, 0);
   expect(wrapper.emitted('update:modelValue')).toBeFalsy();
+});
+
+test('should render readonly Slider correctly', async () => {
+  const wrapper = mount(Slider, {
+    props: {
+      modelValue: 50,
+      readonly: true,
+    },
+  });
+
+  expect(wrapper.html()).toMatchSnapshot();
 });
 
 test('should allow to drag vertical slider', () => {
@@ -180,16 +191,16 @@ test('should not emit change event when value not changed', async () => {
   const button = wrapper.find('.van-slider__button');
   trigger(button, 'touchstart');
   trigger(wrapper, 'click', 100, 0);
-  expect(wrapper.emitted('change')!.length).toEqual(1);
+  expect(wrapper.emitted('change')).toHaveLength(1);
 
   await wrapper.setProps({ modelValue: 100 });
   trigger(button, 'touchstart');
   trigger(wrapper, 'click', 100, 0);
 
-  expect(wrapper.emitted('change')!.length).toEqual(1);
+  expect(wrapper.emitted('change')).toHaveLength(1);
 });
 
-// https://github.com/youzan/vant/issues/8889
+// https://github.com/vant-ui/vant/issues/8889
 test('should format v-model with step correctly', async () => {
   const wrapper = mount(Slider, {
     props: {

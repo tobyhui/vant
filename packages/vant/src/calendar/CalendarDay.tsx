@@ -1,4 +1,9 @@
-import { computed, CSSProperties, PropType, defineComponent } from 'vue';
+import {
+  computed,
+  defineComponent,
+  type PropType,
+  type CSSProperties,
+} from 'vue';
 import { makeNumberProp, createNamespace, makeRequiredProp } from '../utils';
 import { bem } from './utils';
 import type { CalendarDayItem } from './types';
@@ -47,6 +52,10 @@ export default defineComponent({
             style.color = color;
             break;
         }
+      }
+
+      if (offset + (item.date?.getDate() || 1) > 28) {
+        style.marginBottom = 0;
       }
 
       return style;

@@ -1,6 +1,8 @@
+import type { Numeric } from '../utils';
+
 export type CascaderOption = {
   text?: string;
-  value?: string | number;
+  value?: Numeric;
   color?: string;
   disabled?: boolean;
   children?: CascaderOption[];
@@ -18,4 +20,20 @@ export type CascaderFieldNames = {
   text?: string;
   value?: string;
   children?: string;
+};
+
+export type CascaderThemeVars = {
+  cascaderHeaderHeight?: string;
+  cascaderHeaderPadding?: string;
+  cascaderTitleFontSize?: string;
+  cascaderTitleLineHeight?: number | string;
+  cascaderCloseIconSize?: string;
+  cascaderCloseIconColor?: string;
+  cascaderSelectedIconSize?: string;
+  cascaderTabsHeight?: string;
+  cascaderActiveColor?: string;
+  cascaderOptionsHeight?: string;
+  cascaderOptionDisabledColor?: string;
+  cascaderTabColor?: string;
+  cascaderUnselectedTabColor?: string;
 };

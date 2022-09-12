@@ -1,19 +1,18 @@
 # Vant Area Data
 
-省市区数据，适用于 Vant Area 组件。
+中国省市区数据，适用于 Vant Area 组件。
 
 ## 安装
 
-#### NPM
-
 ```shell
-npm i @vant/area-data -D
-```
+# 通过 npm
+npm i @vant/area-data
 
-#### YARN
+# 通过 yarn
+yarn add @vant/area-data
 
-```shell
-yarn add @vant/area-data --dev
+# 通过 pnpm
+pnpm add @vant/area-data
 ```
 
 ## 使用
@@ -21,3 +20,7 @@ yarn add @vant/area-data --dev
 ```ts
 import { areaList } from '@vant/area-data';
 ```
+
+## 数据更新
+
+中国的行政区划每年都会有变动，如果发现省市区数据未及时更新，欢迎提 Pull Request 帮助我们更新。

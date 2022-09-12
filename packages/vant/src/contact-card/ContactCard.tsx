@@ -1,4 +1,4 @@
-import { defineComponent } from 'vue';
+import { defineComponent, type ExtractPropTypes } from 'vue';
 import { truthProp, makeStringProp, createNamespace } from '../utils';
 import { Cell } from '../cell';
 
@@ -6,16 +6,20 @@ const [name, bem, t] = createNamespace('contact-card');
 
 export type ContactCardType = 'add' | 'edit';
 
+export const contactCardProps = {
+  tel: String,
+  name: String,
+  type: makeStringProp<ContactCardType>('add'),
+  addText: String,
+  editable: truthProp,
+};
+
+export type ContactCardProps = ExtractPropTypes<typeof contactCardProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    tel: String,
-    name: String,
-    type: makeStringProp<ContactCardType>('add'),
-    addText: String,
-    editable: truthProp,
-  },
+  props: contactCardProps,
 
   emits: ['click'],
 
@@ -28,7 +32,7 @@ export default defineComponent({
 
     const renderContent = () => {
       if (props.type === 'add') {
-        return props.addText || t('addText');
+        return props.addText || t('addContact');
       }
 
       return [
@@ -39,13 +43,13 @@ export default defineComponent({
 
     return () => (
       <Cell
-        v-slots={{ value: renderContent }}
+        v-slots={{ title: renderContent }}
         center
         icon={props.type === 'edit' ? 'contact' : 'add-square'}
         class={bem([props.type])}
         border={false}
         isLink={props.editable}
-        valueClass={bem('value')}
+        titleClass={bem('title')}
         onClick={onClick}
       />
     );

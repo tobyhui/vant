@@ -2,7 +2,7 @@
 import VanField from '..';
 import VanCellGroup from '../../cell-group';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -10,12 +10,14 @@ const t = useTranslate({
     errorInfo: '错误提示',
     phoneError: '手机号格式错误',
     phonePlaceholder: '请输入手机号',
+    usernamePlaceholder: '请输入用户名',
   },
   'en-US': {
     phone: 'Phone',
     errorInfo: 'Error Info',
     phoneError: 'Invalid phone',
     phonePlaceholder: 'Phone',
+    usernamePlaceholder: 'Username',
   },
 });
 

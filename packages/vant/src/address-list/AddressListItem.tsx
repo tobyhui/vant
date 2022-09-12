@@ -1,7 +1,12 @@
-import { PropType, defineComponent } from 'vue';
+import { defineComponent, type PropType } from 'vue';
 
 // Utils
-import { createNamespace, extend, makeRequiredProp } from '../utils';
+import {
+  extend,
+  createNamespace,
+  makeRequiredProp,
+  type Numeric,
+} from '../utils';
 
 // Components
 import { Tag } from '../tag';
@@ -12,8 +17,8 @@ import { Radio } from '../radio';
 const [name, bem] = createNamespace('address-item');
 
 export type AddressListAddress = {
-  id: number | string;
-  tel: number | string;
+  id: Numeric;
+  tel: Numeric;
   name: string;
   address: string;
   isDefault?: boolean;
@@ -57,7 +62,7 @@ export default defineComponent({
       }
       if (props.address.isDefault && props.defaultTagText) {
         return (
-          <Tag type="danger" round class={bem('tag')}>
+          <Tag type="primary" round class={bem('tag')}>
             {props.defaultTagText}
           </Tag>
         );
@@ -93,11 +98,11 @@ export default defineComponent({
         <div class={bem({ disabled })} onClick={onClick}>
           <Cell
             v-slots={{
-              value: renderContent,
+              title: renderContent,
               'right-icon': renderRightIcon,
             }}
             border={false}
-            valueClass={bem('value')}
+            titleClass={bem('title')}
           />
           {slots.bottom?.(extend({}, props.address, { disabled }))}
         </div>

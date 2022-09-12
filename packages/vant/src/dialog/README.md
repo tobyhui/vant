@@ -2,7 +2,7 @@
 
 ### Intro
 
-A modal box pops up on the page, which is often used for message prompts, message confirmation, or to complete specific interactive operations in the current page. It supports two methods: function call and component call.
+A modal box pops up on the page, which is often used for message prompts, message confirmation, or to complete specific interactive operations in the current page. It supports two methods: component call and function call.
 
 ### Install
 
@@ -16,6 +16,18 @@ const app = createApp();
 app.use(Dialog);
 ```
 
+### Function Call
+
+Vant provides some utility functions that can quickly evoke global `Dialog` components.
+
+For example, calling the `showDialog` function will render a Dialog directly in the page.
+
+```js
+import { showDialog } from 'vant';
+
+showDialog({ message: 'Content' });
+```
+
 ## Usage
 
 ### Alert dialog
@@ -23,14 +35,14 @@ app.use(Dialog);
 Used to prompt for some messages, only including one confirm button.
 
 ```js
-Dialog.alert({
+showDialog({
   title: 'Title',
   message: 'Content',
 }).then(() => {
   // on close
 });
 
-Dialog.alert({
+showDialog({
   message: 'Content',
 }).then(() => {
   // on close
@@ -42,7 +54,7 @@ Dialog.alert({
 Used to confirm some messages, including a confirm button and a cancel button.
 
 ```js
-Dialog.confirm({
+showConfirmDialog({
   title: 'Title',
   message: 'Content',
 })
@@ -59,7 +71,7 @@ Dialog.confirm({
 Use round button style.
 
 ```js
-Dialog.alert({
+showDialog({
   title: 'Title',
   message: 'Content',
   theme: 'round-button',
@@ -67,7 +79,7 @@ Dialog.alert({
   // on close
 });
 
-Dialog.alert({
+showDialog({
   message: 'Content',
   theme: 'round-button',
 }).then(() => {
@@ -85,34 +97,20 @@ const beforeClose = (action) =>
     }, 1000);
   });
 
-Dialog.confirm({
+showConfirmDialog({
   title: 'Title',
   message: 'Content',
   beforeClose,
 });
 ```
 
-### Global Method
+### Use Dialog Component
 
-After registering the Dialog component through `app.use`, the `$dialog` method will be automatically mounted on all subComponents of the app.
-
-```js
-export default {
-  mounted() {
-    this.$dialog.alert({
-      message: 'Content',
-    });
-  },
-};
-```
-
-### Advanced Usage
-
-If you need to render vue components within a dialog, you can use dialog component.
+If you need to render Vue components within a Dialog, you can use the Dialog component.
 
 ```html
 <van-dialog v-model:show="show" title="Title" show-cancel-button>
-  <img src="https://img.yzcdn.cn/vant/apple-3.jpg" />
+  <img src="https://fastly.jsdelivr.net/npm/@vant/assets/apple-3.jpeg" />
 </van-dialog>
 ```
 
@@ -131,14 +129,15 @@ export default {
 
 ### Methods
 
+Vant exports following Dialog utility functions:
+
 | Name | Description | Attribute | Return value |
 | --- | --- | --- | --- |
-| Dialog | Show dialog | _options: DialogOptions_ | `Promise<void>` |
-| Dialog.alert | Show alert dialog | _options: DialogOptions_ | `Promise<void>` |
-| Dialog.confirm | Show confirm dialog | _options: DialogOptions_ | `Promise<void>` |
-| Dialog.setDefaultOptions | Set default options of all dialogs | _options: DialogOptions_ | `void` |
-| Dialog.resetDefaultOptions | Reset default options of all dialogs | - | `void` |
-| Dialog.close | Close dialog | - | `void` |
+| showDialog | Show dialog | _options: DialogOptions_ | `Promise<void>` |
+| showConfirmDialog | Show confirm dialog | _options: DialogOptions_ | `Promise<void>` |
+| closeDialog | Close dialog | - | `void` |
+| setDialogDefaultOptions | Set default options of all dialogs | _options: DialogOptions_ | `void` |
+| resetDialogDefaultOptions | Reset default options of all dialogs | - | `void` |
 
 ### DialogOptions
 
@@ -147,15 +146,17 @@ export default {
 | title | Title | _string_ | - |
 | width | Dialog width | _number \| string_ | `320px` |
 | message | Message | _string \| () => JSX.ELement_ | - |
-| messageAlign | Message text align，can be set to `left` `right` | _string_ | `center` |
-| theme | Theme style，can be set to `round-button` | _string_ | `default` |
+| messageAlign | Message text align, can be set to `left` `right` | _string_ | `center` |
+| theme | Theme style, can be set to `round-button` | _string_ | `default` |
 | className | Custom className | _string \| Array \| object_ | - |
 | showConfirmButton | Whether to show confirm button | _boolean_ | `true` |
 | showCancelButton | Whether to show cancel button | _boolean_ | `false` |
 | cancelButtonText | Cancel button text | _string_ | `Cancel` |
 | cancelButtonColor | Cancel button color | _string_ | `black` |
+| confirmButtonDisabled `v3.5.0` | Whether to disable cancel button | _boolean_ | `false` |
 | confirmButtonText | Confirm button text | _string_ | `Confirm` |
 | confirmButtonColor | Confirm button color | _string_ | `#ee0a24` |
+| confirmButtonDisabled `v3.5.0` | Whether to disable confirm button | _boolean_ | `false` |
 | overlay | Whether to show overlay | _boolean_ | `true` |
 | overlayClass | Custom overlay class | _string \| Array \| object_ | - |
 | overlayStyle | Custom overlay style | _object_ | - |
@@ -175,14 +176,17 @@ export default {
 | title | Title | _string_ | - |
 | width | Width | _number \| string_ | `320px` |
 | message | Message | _string \| () => JSX.ELement_ | - |
-| message-align | Message align，can be set to `left` `right` | _string_ | `center` |
-| theme | Theme style，can be set to `round-button` | _string_ | `default` |
+| message-align | Message align, can be set to `left` `right` `justify` | _string_ | `center` |
+| theme | Theme style, can be set to `round-button` | _string_ | `default` |
 | show-confirm-button | Whether to show confirm button | _boolean_ | `true` |
 | show-cancel-button | Whether to show cancel button | _boolean_ | `false` |
 | cancel-button-text | Cancel button text | _string_ | `Cancel` |
 | cancel-button-color | Cancel button color | _string_ | `black` |
+| cancel-button-disabled `v3.5.0` | Whether to disable cancel button | _boolean_ | `false` |
 | confirm-button-text | Confirm button text | _string_ | `Confirm` |
 | confirm-button-color | Confirm button color | _string_ | `#ee0a24` |
+| confirm-button-disabled `v3.5.0` | Whether to disable confirm button | _boolean_ | `false` |
+| z-index | Set the z-index to a fixed value | _number \| string_ | `2000+` |
 | overlay | Whether to show overlay | _boolean_ | `true` |
 | overlay-class | Custom overlay class | _string_ | - |
 | overlay-style | Custom overlay style | _object_ | - |
@@ -220,6 +224,7 @@ The component exports the following type definitions:
 
 ```ts
 import type {
+  DialogProps,
   DialogTheme,
   DialogMessage,
   DialogOptions,
@@ -238,10 +243,10 @@ The component provides the following CSS variables, which can be used to customi
 | --van-dialog-width | _320px_ | - |
 | --van-dialog-small-screen-width | _90%_ | - |
 | --van-dialog-font-size | _var(--van-font-size-lg)_ | - |
-| --van-dialog-transition | _var(--van-animation-duration-base)_ | - |
-| --van-dialog-border-radius | _16px_ | - |
-| --van-dialog-background-color | _var(--van-white)_ | - |
-| --van-dialog-header-font-weight | _var(--van-font-weight-bold)_ | - |
+| --van-dialog-transition | _var(--van-duration-base)_ | - |
+| --van-dialog-radius | _16px_ | - |
+| --van-dialog-background | _var(--van-background-2)_ | - |
+| --van-dialog-header-font-weight | _var(--van-font-bold)_ | - |
 | --van-dialog-header-line-height | _24px_ | - |
 | --van-dialog-header-padding-top | _26px_ | - |
 | --van-dialog-header-isolated-padding | _var(--van-padding-lg) 0_ | - |
@@ -253,4 +258,4 @@ The component provides the following CSS variables, which can be used to customi
 | --van-dialog-has-title-message-padding-top | _var(--van-padding-xs)_ | - |
 | --van-dialog-button-height | _48px_ | - |
 | --van-dialog-round-button-height | _36px_ | - |
-| --van-dialog-confirm-button-text-color | _var(--van-danger-color)_ | - |
+| --van-dialog-confirm-button-text-color | _var(--van-primary-color)_ | - |

@@ -26,8 +26,14 @@ It's welcomed to pull request, And there are some tips about that:
 
 ## Getting started
 
-```bash
-git clone git@github.com:youzan/vant.git
+You will need [Node.js >= 14](https://nodejs.org) and [pnpm](https://pnpm.io).
 
-yarn && yarn dev
+```bash
+git clone git@github.com:vant-ui/vant.git
+
+# Install dependencies
+pnpm i
+
+# Start development
+pnpm dev
 ```

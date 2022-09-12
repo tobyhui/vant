@@ -1,7 +1,15 @@
-import { PropType, reactive, defineComponent } from 'vue';
+import {
+  ref,
+  reactive,
+  withKeys,
+  defineComponent,
+  type PropType,
+  type ExtractPropTypes,
+} from 'vue';
 
 // Utils
 import {
+  noop,
   pick,
   extend,
   addUnit,
@@ -14,6 +22,7 @@ import {
   makeStringProp,
   callInterceptor,
   createNamespace,
+  type ComponentInstance,
 } from '../utils';
 import { popupSharedProps, popupSharedPropKeys } from '../popup/shared';
 
@@ -33,7 +42,31 @@ import type {
 
 const [name, bem, t] = createNamespace('dialog');
 
-const popupKeys = [
+export const dialogProps = extend({}, popupSharedProps, {
+  title: String,
+  theme: String as PropType<DialogTheme>,
+  width: numericProp,
+  message: [String, Function] as PropType<DialogMessage>,
+  callback: Function as PropType<(action?: DialogAction) => void>,
+  allowHtml: Boolean,
+  className: unknownProp,
+  transition: makeStringProp('van-dialog-bounce'),
+  messageAlign: String as PropType<DialogMessageAlign>,
+  closeOnPopstate: truthProp,
+  showCancelButton: Boolean,
+  cancelButtonText: String,
+  cancelButtonColor: String,
+  cancelButtonDisabled: Boolean,
+  confirmButtonText: String,
+  confirmButtonColor: String,
+  confirmButtonDisabled: Boolean,
+  showConfirmButton: truthProp,
+  closeOnClickOverlay: Boolean,
+});
+
+export type DialogProps = ExtractPropTypes<typeof dialogProps>;
+
+const popupInheritKeys = [
   ...popupSharedPropKeys,
   'transition',
   'closeOnPopstate',
@@ -42,29 +75,12 @@ const popupKeys = [
 export default defineComponent({
   name,
 
-  props: extend({}, popupSharedProps, {
-    title: String,
-    theme: String as PropType<DialogTheme>,
-    width: numericProp,
-    message: [String, Function] as PropType<DialogMessage>,
-    callback: Function as PropType<(action?: DialogAction) => void>,
-    allowHtml: Boolean,
-    className: unknownProp,
-    transition: makeStringProp('van-dialog-bounce'),
-    messageAlign: String as PropType<DialogMessageAlign>,
-    closeOnPopstate: truthProp,
-    showCancelButton: Boolean,
-    cancelButtonText: String,
-    cancelButtonColor: String,
-    confirmButtonText: String,
-    confirmButtonColor: String,
-    showConfirmButton: truthProp,
-    closeOnClickOverlay: Boolean,
-  }),
+  props: dialogProps,
 
-  emits: ['confirm', 'cancel', 'update:show'],
+  emits: ['confirm', 'cancel', 'keydown', 'update:show'],
 
   setup(props, { emit, slots }) {
+    const root = ref<ComponentInstance>();
     const loading = reactive({
       confirm: false,
       cancel: false,
@@ -104,6 +120,23 @@ export default defineComponent({
 
     const onCancel = getActionHandler('cancel');
     const onConfirm = getActionHandler('confirm');
+    const onKeydown = withKeys(
+      (event: KeyboardEvent) => {
+        // skip keyboard events of child elements
+        if (event.target !== root.value?.popupRef?.value) {
+          return;
+        }
+
+        const onEventType: Record<string, () => void> = {
+          Enter: props.showConfirmButton ? onConfirm : noop,
+          Escape: props.showCancelButton ? onCancel : noop,
+        };
+
+        onEventType[event.key]();
+        emit('keydown', event);
+      },
+      ['enter', 'esc']
+    );
 
     const renderTitle = () => {
       const title = slots.title ? slots.title() : props.title;
@@ -147,7 +180,7 @@ export default defineComponent({
         return (
           <div
             // add key to force re-render
-            // see: https://github.com/youzan/vant/issues/7963
+            // see: https://github.com/vant-ui/vant/issues/7963
             key={allowHtml ? 1 : 0}
             class={bem('content', { isolated: !hasTitle })}
           >
@@ -166,6 +199,7 @@ export default defineComponent({
             class={bem('cancel')}
             style={{ color: props.cancelButtonColor }}
             loading={loading.cancel}
+            disabled={props.cancelButtonDisabled}
             onClick={onCancel}
           />
         )}
@@ -176,6 +210,7 @@ export default defineComponent({
             class={[bem('confirm'), { [BORDER_LEFT]: props.showCancelButton }]}
             style={{ color: props.confirmButtonColor }}
             loading={loading.confirm}
+            disabled={props.confirmButtonDisabled}
             onClick={onConfirm}
           />
         )}
@@ -191,6 +226,7 @@ export default defineComponent({
             class={bem('cancel')}
             color={props.cancelButtonColor}
             loading={loading.cancel}
+            disabled={props.cancelButtonDisabled}
             onClick={onCancel}
           />
         )}
@@ -201,6 +237,7 @@ export default defineComponent({
             class={bem('confirm')}
             color={props.confirmButtonColor}
             loading={loading.confirm}
+            disabled={props.confirmButtonDisabled}
             onClick={onConfirm}
           />
         )}
@@ -220,12 +257,15 @@ export default defineComponent({
       const { width, title, theme, message, className } = props;
       return (
         <Popup
+          ref={root}
           role="dialog"
           class={[bem([theme]), className]}
           style={{ width: addUnit(width) }}
+          tabindex={0}
           aria-labelledby={title || message}
+          onKeydown={onKeydown}
           onUpdate:show={updateShow}
-          {...pick(props, popupKeys)}
+          {...pick(props, popupInheritKeys)}
         >
           {renderTitle()}
           {renderContent()}

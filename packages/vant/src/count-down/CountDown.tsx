@@ -1,4 +1,4 @@
-import { watch, computed, defineComponent, ExtractPropTypes } from 'vue';
+import { watch, computed, defineComponent, type ExtractPropTypes } from 'vue';
 
 // Utils
 import {
@@ -15,19 +15,19 @@ import { useExpose } from '../composables/use-expose';
 
 const [name, bem] = createNamespace('count-down');
 
-const props = {
+export const countDownProps = {
   time: makeNumericProp(0),
   format: makeStringProp('HH:mm:ss'),
   autoStart: truthProp,
   millisecond: Boolean,
 };
 
-export type CountDownProps = ExtractPropTypes<typeof props>;
+export type CountDownProps = ExtractPropTypes<typeof countDownProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: countDownProps,
 
   emits: ['change', 'finish'],
 
@@ -58,7 +58,7 @@ export default defineComponent({
     });
 
     return () => (
-      <div class={bem()}>
+      <div role="timer" class={bem()}>
         {slots.default ? slots.default(current.value) : timeText.value}
       </div>
     );

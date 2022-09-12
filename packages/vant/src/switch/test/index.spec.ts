@@ -5,12 +5,12 @@ test('should emit update:modelValue event when click the switch button', async (
   const wrapper = mount(Switch);
 
   wrapper.trigger('click');
-  expect(wrapper.emitted('update:modelValue')!.length).toEqual(1);
+  expect(wrapper.emitted('update:modelValue')).toHaveLength(1);
   expect(wrapper.emitted('update:modelValue')![0]).toEqual([true]);
 
   await wrapper.setProps({ modelValue: true });
   wrapper.trigger('click');
-  expect(wrapper.emitted('update:modelValue')!.length).toEqual(2);
+  expect(wrapper.emitted('update:modelValue')).toHaveLength(2);
   expect(wrapper.emitted('update:modelValue')![1]).toEqual([false]);
 });
 
@@ -18,12 +18,12 @@ test('should emit change event when click the switch button', async () => {
   const wrapper = mount(Switch);
 
   wrapper.trigger('click');
-  expect(wrapper.emitted('change')!.length).toEqual(1);
+  expect(wrapper.emitted('change')).toHaveLength(1);
   expect(wrapper.emitted('change')![0]).toEqual([true]);
 
   await wrapper.setProps({ modelValue: true });
   wrapper.trigger('click');
-  expect(wrapper.emitted('change')!.length).toEqual(2);
+  expect(wrapper.emitted('change')).toHaveLength(2);
   expect(wrapper.emitted('change')![1]).toEqual([false]);
 });
 
@@ -108,4 +108,24 @@ test('should allow to custom active-value and inactive-value', () => {
 
   wrapper.trigger('click');
   expect(wrapper.emitted('update:modelValue')![0]).toEqual(['off']);
+});
+
+test('should render node slot correctly', () => {
+  const wrapper = mount(Switch, {
+    slots: {
+      node: () => 'Custom node',
+    },
+  });
+
+  expect(wrapper.html()).toMatchSnapshot();
+});
+
+test('should render background slot correctly', () => {
+  const wrapper = mount(Switch, {
+    slots: {
+      background: () => 'Custom background',
+    },
+  });
+
+  expect(wrapper.html()).toMatchSnapshot();
 });

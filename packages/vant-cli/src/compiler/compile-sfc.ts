@@ -1,8 +1,15 @@
-import hash from 'hash-sum';
+import fse from 'fs-extra';
 import path from 'path';
-import { parse, SFCBlock, compileTemplate } from '@vue/compiler-sfc';
-import { remove, readFileSync, outputFile } from 'fs-extra';
-import { replaceExt } from '../common';
+import hash from 'hash-sum';
+import {
+  parse,
+  SFCBlock,
+  compileTemplate,
+  compileScript,
+} from 'vue/compiler-sfc';
+import { replaceExt } from '../common/index.js';
+
+const { remove, readFileSync, outputFile } = fse;
 
 const RENDER_FN = '__vue_render__';
 const VUEIDS = '__vue_sfc__';
@@ -71,20 +78,26 @@ export async function compileSfc(filePath: string): Promise<any> {
   const scopeId = hasScoped ? `data-v-${hash(source)}` : '';
 
   // compile js part
-  if (descriptor.script) {
-    const lang = descriptor.script.lang || 'js';
+  if (descriptor.script || descriptor.scriptSetup) {
+    const lang =
+      descriptor.script?.lang || descriptor.scriptSetup?.lang || 'js';
     const scriptFilePath = replaceExt(filePath, `.${lang}`);
 
     tasks.push(
       new Promise((resolve) => {
         let script = '';
 
-        // the generated render fn lacks type definitions
-        if (lang === 'ts') {
-          script += '// @ts-nocheck\n';
+        let bindingMetadata;
+        if (descriptor.scriptSetup) {
+          const { bindings, content } = compileScript(descriptor, {
+            id: scopeId,
+          });
+          script += content;
+          bindingMetadata = bindings;
+        } else {
+          script += descriptor.script!.content;
         }
 
-        script += descriptor.script!.content;
         script = injectStyle(script, styles, filePath);
         script = script.replace(EXPORT, `const ${VUEIDS} =`);
 
@@ -93,6 +106,9 @@ export async function compileSfc(filePath: string): Promise<any> {
             id: scopeId,
             source: template.content,
             filename: filePath,
+            compilerOptions: {
+              bindingMetadata,
+            },
           }).code;
 
           script = injectRender(script, render);
@@ -103,6 +119,12 @@ export async function compileSfc(filePath: string): Promise<any> {
         }
 
         script += `\n${EXPORT} ${VUEIDS}`;
+
+        // ts-nocheck should be placed on the first line
+        // the generated render fn lacks type definitions
+        if (lang === 'ts') {
+          script = '// @ts-nocheck\n' + script;
+        }
 
         outputFile(scriptFilePath, script).then(resolve);
       })

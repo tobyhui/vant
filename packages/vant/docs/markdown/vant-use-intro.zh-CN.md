@@ -2,7 +2,22 @@
 
 ### 介绍
 
-Vant 内置了一系列的组合式 API，对于安装了 `vant` 的项目，可以直接使用这些 API 进行开发。
+Vant 底层依赖了 `@vant/use` 包，其中内置了一系列的组合式 API。对于使用了 Vant 的项目，可以复用这些 API 进行开发。
+
+### 安装
+
+虽然 Vant 的依赖中已经包含了 `@vant/use`，但我们仍然推荐显式地安装它：
+
+```shell
+# with npm
+npm i @vant/use
+
+# with yarn
+yarn add @vant/use
+
+# with pnpm
+pnpm add @vant/use
+```
 
 ### 示例
 
@@ -25,6 +40,7 @@ console.log(height.value); // -> 窗口高度
 | --- | --- |
 | [useClickAway](#/zh-CN/use-click-away) | 监听点击元素外部的事件 |
 | [useCountDown](#/zh-CN/use-count-down) | 提供倒计时管理能力 |
+| [useCustomFieldValue](#/zh-CN/use-custom-field-value) | 自定义表单组件中的表单项 |
 | [useEventListener](#/zh-CN/use-event-listener) | 方便地进行事件绑定 |
 | [usePageVisibility](#/zh-CN/use-page-visibility) | 获取页面的可见状态 |
 | [useRect](#/zh-CN/use-rect) | 获取元素的大小及其相对于视口的位置 |

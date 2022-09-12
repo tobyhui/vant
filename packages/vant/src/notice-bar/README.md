@@ -21,14 +21,17 @@ app.use(NoticeBar);
 ### Basic Usage
 
 ```html
-<van-notice-bar text="Notice Content" left-icon="volume-o" />
+<van-notice-bar
+  text="Technology is the common soul of the people who developed it."
+  left-icon="volume-o"
+/>
 ```
 
 ### Scrollable
 
 ```html
 <!-- Enable scroll when text is short -->
-<van-notice-bar scrollable text="Notice Content" />
+<van-notice-bar scrollable text="Short Content" />
 
 <!-- Disable scroll when text is long -->
 <van-notice-bar
@@ -40,22 +43,24 @@ app.use(NoticeBar);
 ### Wrapable
 
 ```html
-<van-notice-bar wrapable :scrollable="false">Notice Content</van-notice-bar>
+<van-notice-bar wrapable :scrollable="false">
+  Technology is the common soul of the people who developed it.
+</van-notice-bar>
 ```
 
 ### Mode
 
 ```html
-<van-notice-bar mode="closeable">Notice Content</van-notice-bar>
+<van-notice-bar mode="closeable">Short Content</van-notice-bar>
 
-<van-notice-bar mode="link">Notice Content</van-notice-bar>
+<van-notice-bar mode="link">Short Content</van-notice-bar>
 ```
 
 ### Custom Style
 
 ```html
 <van-notice-bar color="#1989fa" background="#ecf9ff" left-icon="info-o">
-  Notice Content
+  Short Content
 </van-notice-bar>
 ```
 
@@ -67,6 +72,7 @@ app.use(NoticeBar);
     vertical
     class="notice-swipe"
     :autoplay="3000"
+    :touchable="false"
     :show-indicators="false"
   >
     <van-swipe-item>Content 1</van-swipe-item>
@@ -91,8 +97,8 @@ app.use(NoticeBar);
 | --- | --- | --- | --- |
 | mode | Mode, can be set to `closeable` `link` | _string_ | `''` |
 | text | Notice text content | _string_ | `''` |
-| color | Text color | _string_ | `#f60` |
-| background | Background color | _string_ | `#fff7cc` |
+| color | Text color | _string_ | `#ed6a0c` |
+| background | Background color | _string_ | `#fffbe8` |
 | left-icon | Left Icon | _string_ | - |
 | delay | Animation delay (s) | _number \| string_ | `1` |
 | speed | Scroll speed (px/s) | _number \| string_ | `60` |
@@ -156,6 +162,6 @@ The component provides the following CSS variables, which can be used to customi
 | --van-notice-bar-text-color | _var(--van-orange-dark)_ | - |
 | --van-notice-bar-font-size | _var(--van-font-size-md)_ | - |
 | --van-notice-bar-line-height | _24px_ | - |
-| --van-notice-bar-background-color | _var(--van-orange-light)_ | - |
+| --van-notice-bar-background | _var(--van-orange-light)_ | - |
 | --van-notice-bar-icon-size | _16px_ | - |
 | --van-notice-bar-icon-min-width | _24px_ | - |

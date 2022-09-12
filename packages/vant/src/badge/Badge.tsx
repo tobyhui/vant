@@ -1,4 +1,10 @@
-import { PropType, CSSProperties, defineComponent, computed } from 'vue';
+import {
+  computed,
+  defineComponent,
+  type PropType,
+  type CSSProperties,
+  type ExtractPropTypes,
+} from 'vue';
 import {
   isDef,
   addUnit,
@@ -7,22 +13,34 @@ import {
   numericProp,
   makeStringProp,
   createNamespace,
+  type Numeric,
 } from '../utils';
 
 const [name, bem] = createNamespace('badge');
 
+export type BadgePosition =
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right';
+
+export const badgeProps = {
+  dot: Boolean,
+  max: numericProp,
+  tag: makeStringProp<keyof HTMLElementTagNameMap>('div'),
+  color: String,
+  offset: Array as unknown as PropType<[Numeric, Numeric]>,
+  content: numericProp,
+  showZero: truthProp,
+  position: makeStringProp<BadgePosition>('top-right'),
+};
+
+export type BadgeProps = ExtractPropTypes<typeof badgeProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    dot: Boolean,
-    max: numericProp,
-    tag: makeStringProp<keyof HTMLElementTagNameMap>('div'),
-    color: String,
-    offset: Array as unknown as PropType<[string | number, string | number]>,
-    content: numericProp,
-    showZero: truthProp,
-  },
+  props: badgeProps,
 
   setup(props, { slots }) {
     const hasContent = () => {
@@ -30,7 +48,11 @@ export default defineComponent({
         return true;
       }
       const { content, showZero } = props;
-      return isDef(content) && content !== '' && (showZero || content !== 0);
+      return (
+        isDef(content) &&
+        content !== '' &&
+        (showZero || (content !== 0 && content !== '0'))
+      );
     };
 
     const renderContent = () => {
@@ -77,7 +99,10 @@ export default defineComponent({
       if (hasContent() || props.dot) {
         return (
           <div
-            class={bem({ dot: props.dot, fixed: !!slots.default })}
+            class={bem([
+              props.position,
+              { dot: props.dot, fixed: !!slots.default },
+            ])}
             style={style.value}
           >
             {renderContent()}

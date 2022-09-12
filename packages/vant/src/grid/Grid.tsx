@@ -1,4 +1,9 @@
-import { PropType, defineComponent, ExtractPropTypes, InjectionKey } from 'vue';
+import {
+  defineComponent,
+  type PropType,
+  type InjectionKey,
+  type ExtractPropTypes,
+} from 'vue';
 import {
   createNamespace,
   addUnit,
@@ -13,7 +18,7 @@ const [name, bem] = createNamespace('grid');
 
 export type GridDirection = 'horizontal' | 'vertical';
 
-const props = {
+export const gridProps = {
   square: Boolean,
   center: truthProp,
   border: truthProp,
@@ -25,8 +30,10 @@ const props = {
   columnNum: makeNumericProp(4),
 };
 
+export type GridProps = ExtractPropTypes<typeof gridProps>;
+
 export type GridProvide = {
-  props: ExtractPropTypes<typeof props>;
+  props: GridProps;
 };
 
 export const GRID_KEY: InjectionKey<GridProvide> = Symbol(name);
@@ -34,7 +41,7 @@ export const GRID_KEY: InjectionKey<GridProvide> = Symbol(name);
 export default defineComponent({
   name,
 
-  props,
+  props: gridProps,
 
   setup(props, { slots }) {
     const { linkChildren } = useChildren(GRID_KEY);

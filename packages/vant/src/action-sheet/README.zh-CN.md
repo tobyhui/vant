@@ -29,7 +29,7 @@ app.use(ActionSheet);
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
@@ -43,7 +43,7 @@ export default {
       // 默认情况下点击选项时不会自动收起
       // 可以通过 close-on-click-action 属性开启自动收起
       show.value = false;
-      Toast(item.name);
+      showToast(item.name);
     };
 
     return {
@@ -71,7 +71,7 @@ export default {
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
@@ -81,7 +81,7 @@ export default {
       { name: '选项二' },
       { name: '选项三' },
     ];
-    const onCancel = () => Toast('取消');
+    const onCancel = () => showToast('取消');
 
     return {
       show,
@@ -187,8 +187,9 @@ export default {
 | cancel-text | 取消按钮文字 | _string_ | - |
 | description | 选项上方的描述信息 | _string_ | - |
 | closeable | 是否显示关闭图标 | _boolean_ | `true` |
-| close-icon | 关闭[图标名称](#/zh-CN/icon)或图片链接 | _string_ | `cross` |
+| close-icon | 关闭图标名称或图片链接，等同于 Icon 组件的 [name 属性](#/zh-CN/icon#props) | _string_ | `cross` |
 | duration | 动画时长，单位秒，设置为 0 可以禁用动画 | _number \| string_ | `0.3` |
+| z-index | 将面板的 z-index 层级设置为一个固定值 | _number \| string_ | `2000+` |
 | round | 是否显示圆角 | _boolean_ | `true` |
 | overlay | 是否显示遮罩层 | _boolean_ | `true` |
 | overlay-class | 自定义遮罩层类名 | _string \| Array \| object_ | - |
@@ -230,18 +231,19 @@ export default {
 
 ### Slots
 
-| 名称             | 说明                 |
-| ---------------- | -------------------- |
-| default          | 自定义面板的展示内容 |
-| description      | 自定义描述文案       |
-| cancel `v3.0.10` | 自定义取消按钮内容   |
+| 名称 | 说明 | 参数 |
+| --- | --- | --- |
+| default | 自定义面板的展示内容 | - |
+| description | 自定义描述文案 | - |
+| cancel `v3.0.10` | 自定义取消按钮内容 | - |
+| action `v3.4.0` | 自定义选项内容 | _{ action: ActionSheetAction, index: number }_ |
 
 ### 类型定义
 
 组件导出以下类型定义：
 
 ```ts
-import type { ActionSheetAction } from 'vant';
+import type { ActionSheetProps, ActionSheetAction } from 'vant';
 ```
 
 ## 主题定制
@@ -255,22 +257,21 @@ import type { ActionSheetAction } from 'vant';
 | --van-action-sheet-max-height | _80%_ | - |
 | --van-action-sheet-header-height | _48px_ | - |
 | --van-action-sheet-header-font-size | _var(--van-font-size-lg)_ | - |
-| --van-action-sheet-description-color | _var(--van-gray-6)_ | - |
+| --van-action-sheet-description-color | _var(--van-text-color-2)_ | - |
 | --van-action-sheet-description-font-size | _var(--van-font-size-md)_ | - |
 | --van-action-sheet-description-line-height | _var(--van-line-height-md)_ | - |
-| --van-action-sheet-item-background | _var(--van-white)_ | - |
+| --van-action-sheet-item-background | _var(--van-background-2)_ | - |
 | --van-action-sheet-item-font-size | _var(--van-font-size-lg)_ | - |
 | --van-action-sheet-item-line-height | _var(--van-line-height-lg)_ | - |
 | --van-action-sheet-item-text-color | _var(--van-text-color)_ | - |
-| --van-action-sheet-item-disabled-text-color | _var(--van-gray-5)_ | - |
-| --van-action-sheet-subname-color | _var(--van-gray-6)_ | - |
+| --van-action-sheet-item-disabled-text-color | _var(--van-text-color-3)_ | - |
+| --van-action-sheet-subname-color | _var(--van-text-color-2)_ | - |
 | --van-action-sheet-subname-font-size | _var(--van-font-size-sm)_ | - |
 | --van-action-sheet-subname-line-height | _var(--van-line-height-sm)_ | - |
 | --van-action-sheet-close-icon-size | _22px_ | - |
 | --van-action-sheet-close-icon-color | _var(--van-gray-5)_ | - |
-| --van-action-sheet-close-icon-active-color | _var(--van-gray-6)_ | - |
 | --van-action-sheet-close-icon-padding | _0 var(--van-padding-md)_ | - |
 | --van-action-sheet-cancel-text-color | _var(--van-gray-7)_ | - |
 | --van-action-sheet-cancel-padding-top | _var(--van-padding-xs)_ | - |
-| --van-action-sheet-cancel-padding-color | _var(--van-background-color)_ | - |
+| --van-action-sheet-cancel-padding-color | _var(--van-background)_ | - |
 | --van-action-sheet-loading-icon-size | _22px_ | - |

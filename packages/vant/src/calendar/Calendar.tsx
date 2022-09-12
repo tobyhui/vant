@@ -2,10 +2,10 @@ import {
   ref,
   watch,
   computed,
-  PropType,
-  TeleportProps,
   defineComponent,
-  ExtractPropTypes,
+  type PropType,
+  type TeleportProps,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
@@ -41,7 +41,7 @@ import { useExpose } from '../composables/use-expose';
 // Components
 import { Popup, PopupPosition } from '../popup';
 import { Button } from '../button';
-import { Toast } from '../toast';
+import { showToast } from '../toast';
 import CalendarMonth from './CalendarMonth';
 import CalendarHeader from './CalendarHeader';
 
@@ -53,7 +53,7 @@ import type {
   CalendarMonthInstance,
 } from './types';
 
-const props = {
+export const calendarProps = {
   show: Boolean,
   type: makeStringProp<CalendarType>('single'),
   title: String,
@@ -79,6 +79,7 @@ const props = {
   showRangePrompt: truthProp,
   confirmDisabledText: String,
   closeOnClickOverlay: truthProp,
+  safeAreaInsetTop: Boolean,
   safeAreaInsetBottom: truthProp,
   minDate: {
     type: Date,
@@ -100,21 +101,21 @@ const props = {
   },
 };
 
-export type CalendarProps = ExtractPropTypes<typeof props>;
+export type CalendarProps = ExtractPropTypes<typeof calendarProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: calendarProps,
 
   emits: [
     'select',
     'confirm',
     'unselect',
-    'month-show',
-    'over-range',
+    'monthShow',
+    'overRange',
     'update:show',
-    'click-subtitle',
+    'clickSubtitle',
   ],
 
   setup(props, { emit, slots }) {
@@ -133,7 +134,7 @@ export default defineComponent({
     };
 
     const getInitialDate = (defaultDate = props.defaultDate) => {
-      const { type, minDate, maxDate } = props;
+      const { type, minDate, maxDate, allowSameDay } = props;
 
       if (defaultDate === null) {
         return defaultDate;
@@ -148,9 +149,12 @@ export default defineComponent({
         const start = limitDateRange(
           defaultDate[0] || now,
           minDate,
-          getPrevDay(maxDate)
+          allowSameDay ? maxDate : getPrevDay(maxDate)
         );
-        const end = limitDateRange(defaultDate[1] || now, getNextDay(minDate));
+        const end = limitDateRange(
+          defaultDate[1] || now,
+          allowSameDay ? minDate : getNextDay(minDate)
+        );
         return [start, end];
       }
 
@@ -209,6 +213,8 @@ export default defineComponent({
       return !currentDate.value;
     });
 
+    const getSelectedDate = () => currentDate.value;
+
     // calculate the position of the elements
     // and find the elements that needs to be rendered
     const onScroll = () => {
@@ -243,7 +249,7 @@ export default defineComponent({
 
           if (!monthRefs.value[i].showed) {
             monthRefs.value[i].showed = true;
-            emit('month-show', {
+            emit('monthShow', {
               date: month.date,
               title: month.getTitle(),
             });
@@ -270,7 +276,7 @@ export default defineComponent({
         months.value.some((month, index) => {
           if (compareMonth(month, targetDate) === 0) {
             if (bodyRef.value) {
-              monthRefs.value[index].scrollIntoView(bodyRef.value);
+              monthRefs.value[index].scrollToDate(bodyRef.value, targetDate);
             }
             return true;
           }
@@ -282,8 +288,7 @@ export default defineComponent({
       });
     };
 
-    // scroll to current month
-    const scrollIntoView = () => {
+    const scrollToCurrentDate = () => {
       if (props.poppable && !props.show) {
         return;
       }
@@ -293,7 +298,9 @@ export default defineComponent({
           props.type === 'single'
             ? (currentDate.value as Date)
             : (currentDate.value as Date[])[0];
-        scrollToDate(targetDate);
+        if (isDate(targetDate)) {
+          scrollToDate(targetDate);
+        }
       } else {
         raf(onScroll);
       }
@@ -306,15 +313,15 @@ export default defineComponent({
 
       raf(() => {
         // add Math.floor to avoid decimal height issues
-        // https://github.com/youzan/vant/issues/5640
+        // https://github.com/vant-ui/vant/issues/5640
         bodyHeight = Math.floor(useRect(bodyRef).height);
-        scrollIntoView();
       });
+      scrollToCurrentDate();
     };
 
     const reset = (date = getInitialDate()) => {
       currentDate.value = date;
-      scrollIntoView();
+      scrollToCurrentDate();
     };
 
     const checkRange = (date: [Date, Date]) => {
@@ -322,9 +329,9 @@ export default defineComponent({
 
       if (maxRange && calcDateNum(date) > maxRange) {
         if (showRangePrompt) {
-          Toast(rangePrompt || t('rangePrompt', maxRange));
+          showToast(rangePrompt || t('rangePrompt', maxRange));
         }
-        emit('over-range');
+        emit('overRange');
         return false;
       }
 
@@ -344,15 +351,11 @@ export default defineComponent({
         const valid = checkRange(date as [Date, Date]);
 
         if (!valid) {
-          // auto selected to max range if showConfirm
-          if (props.showConfirm) {
-            setCurrentDate([
-              (date as Date[])[0],
-              getDayByOffset((date as Date[])[0], +props.maxRange - 1),
-            ]);
-          } else {
-            setCurrentDate(date);
-          }
+          // auto selected to max range
+          setCurrentDate([
+            (date as Date[])[0],
+            getDayByOffset((date as Date[])[0], +props.maxRange - 1),
+          ]);
           return;
         }
       }
@@ -411,7 +414,12 @@ export default defineComponent({
             );
 
             if (disabledDay) {
-              select([startDay, getPrevDay(disabledDay)]);
+              const endDay = getPrevDay(disabledDay);
+              if (compareDay(startDay, endDay) === -1) {
+                select([startDay, endDay]);
+              } else {
+                select([date]);
+              }
             } else {
               select([startDay, date], true);
             }
@@ -438,7 +446,7 @@ export default defineComponent({
           const [unselectedDate] = dates.splice(selectedIndex, 1);
           emit('unselect', cloneDate(unselectedDate));
         } else if (props.maxRange && dates.length >= props.maxRange) {
-          Toast(props.rangePrompt || t('rangePrompt', props.maxRange));
+          showToast(props.rangePrompt || t('rangePrompt', props.maxRange));
         } else {
           select([...dates, date]);
         }
@@ -482,22 +490,21 @@ export default defineComponent({
       }
 
       if (props.showConfirm) {
-        const text = buttonDisabled.value
-          ? props.confirmDisabledText
-          : props.confirmText;
-
+        const slot = slots['confirm-text'];
+        const disabled = buttonDisabled.value;
+        const text = disabled ? props.confirmDisabledText : props.confirmText;
         return (
           <Button
             round
             block
-            type="danger"
+            type="primary"
             color={props.color}
             class={bem('confirm')}
-            disabled={buttonDisabled.value}
+            disabled={disabled}
             nativeType="button"
             onClick={onConfirm}
           >
-            {text || t('confirm')}
+            {slot ? slot({ disabled }) : text || t('confirm')}
           </Button>
         );
       }
@@ -523,9 +530,7 @@ export default defineComponent({
           showTitle={props.showTitle}
           showSubtitle={props.showSubtitle}
           firstDayOfWeek={dayOffset.value}
-          onClick-subtitle={(event: MouseEvent) =>
-            emit('click-subtitle', event)
-          }
+          onClickSubtitle={(event: MouseEvent) => emit('clickSubtitle', event)}
         />
         <div ref={bodyRef} class={bem('body')} onScroll={onScroll}>
           {months.value.map(renderMonth)}
@@ -543,13 +548,14 @@ export default defineComponent({
       () => props.defaultDate,
       (value = null) => {
         currentDate.value = value;
-        scrollIntoView();
+        scrollToCurrentDate();
       }
     );
 
     useExpose<CalendarExpose>({
       reset,
       scrollToDate,
+      getSelectedDate,
     });
 
     onMountedOrActivated(init);
@@ -566,6 +572,7 @@ export default defineComponent({
             closeable={props.showTitle || props.showSubtitle}
             teleport={props.teleport}
             closeOnPopstate={props.closeOnPopstate}
+            safeAreaInsetTop={props.safeAreaInsetTop}
             closeOnClickOverlay={props.closeOnClickOverlay}
             onUpdate:show={updateShow}
           />

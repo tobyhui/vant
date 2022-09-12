@@ -7,7 +7,7 @@ exports[`delete preview image 1`] = `
       <div class="van-image van-uploader__preview-image"
            style="width: 30px; height: 30px;"
       >
-        <img src="https://img.yzcdn.cn/vant/cat.jpeg"
+        <img src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
              class="van-image__img"
              style="object-fit: cover;"
         >
@@ -16,7 +16,11 @@ exports[`delete preview image 1`] = `
           </i>
         </div>
       </div>
-      <div class="van-uploader__preview-delete">
+      <div role="button"
+           class="van-uploader__preview-delete van-uploader__preview-delete--shadow"
+           tabindex="0"
+           aria-label="Delete"
+      >
         <i class="van-badge__wrapper van-icon van-icon-cross van-uploader__preview-delete-icon">
         </i>
       </div>
@@ -61,7 +65,11 @@ exports[`disable preview image 2`] = `
           test.jpg
         </div>
       </div>
-      <div class="van-uploader__preview-delete">
+      <div role="button"
+           class="van-uploader__preview-delete van-uploader__preview-delete--shadow"
+           tabindex="0"
+           aria-label="Delete"
+      >
         <i class="van-badge__wrapper van-icon van-icon-cross van-uploader__preview-delete-icon">
         </i>
       </div>
@@ -98,7 +106,7 @@ exports[`image-fit prop 1`] = `
   <div class="van-uploader__wrapper">
     <div class="van-uploader__preview">
       <div class="van-image van-uploader__preview-image">
-        <img src="https://img.yzcdn.cn/vant/cat.jpeg"
+        <img src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
              class="van-image__img"
              style="object-fit: contain;"
         >
@@ -107,97 +115,16 @@ exports[`image-fit prop 1`] = `
           </i>
         </div>
       </div>
-      <div class="van-uploader__preview-delete">
+      <div role="button"
+           class="van-uploader__preview-delete van-uploader__preview-delete--shadow"
+           tabindex="0"
+           aria-label="Delete"
+      >
         <i class="van-badge__wrapper van-icon van-icon-cross van-uploader__preview-delete-icon">
         </i>
       </div>
     </div>
     <div class="van-uploader__upload">
-      <i class="van-badge__wrapper van-icon van-icon-photograph van-uploader__upload-icon">
-      </i>
-      <input type="file"
-             class="van-uploader__input"
-             accept="image/*"
-      >
-    </div>
-  </div>
-</div>
-`;
-
-exports[`preview-cover slot 1`] = `
-<div class="van-uploader">
-  <div class="van-uploader__wrapper">
-    <div class="van-uploader__preview">
-      <div class="van-image van-uploader__preview-image">
-        <img src="https://img.yzcdn.cn/vant/cat.jpeg"
-             class="van-image__img"
-             style="object-fit: cover;"
-        >
-        <div class="van-image__loading">
-          <i class="van-badge__wrapper van-icon van-icon-photo van-image__loading-icon">
-          </i>
-        </div>
-        <div class="van-uploader__preview-cover">
-          Custom Preview Cover
-        </div>
-      </div>
-      <div class="van-uploader__preview-delete">
-        <i class="van-badge__wrapper van-icon van-icon-cross van-uploader__preview-delete-icon">
-        </i>
-      </div>
-    </div>
-    <div class="van-uploader__preview">
-      <div class="van-image van-uploader__preview-image">
-        <img src="https://img.yzcdn.cn/vant/cat.jpeg"
-             class="van-image__img"
-             style="object-fit: cover;"
-        >
-        <div class="van-image__loading">
-          <i class="van-badge__wrapper van-icon van-icon-photo van-image__loading-icon">
-          </i>
-        </div>
-        <div class="van-uploader__preview-cover">
-          Custom Preview Cover
-        </div>
-      </div>
-      <div class="van-uploader__preview-delete">
-        <i class="van-badge__wrapper van-icon van-icon-cross van-uploader__preview-delete-icon">
-        </i>
-      </div>
-    </div>
-    <div class="van-uploader__upload">
-      <i class="van-badge__wrapper van-icon van-icon-photograph van-uploader__upload-icon">
-      </i>
-      <input type="file"
-             class="van-uploader__input"
-             accept="image/*"
-      >
-    </div>
-  </div>
-</div>
-`;
-
-exports[`preview-size prop 1`] = `
-<div class="van-uploader">
-  <div class="van-uploader__wrapper">
-    <div class="van-uploader__preview">
-      <div class="van-uploader__file"
-           style="width: 30px; height: 30px;"
-      >
-        <i class="van-badge__wrapper van-icon van-icon-description van-uploader__file-icon">
-        </i>
-        <div class="van-uploader__file-name van-ellipsis">
-          test.jpg
-        </div>
-      </div>
-      <div class="van-uploader__preview-delete">
-        <i class="van-badge__wrapper van-icon van-icon-cross van-uploader__preview-delete-icon">
-        </i>
-      </div>
-    </div>
-    <div class="van-uploader__upload"
-         style="width: 30px; height: 30px;"
-    >
       <i class="van-badge__wrapper van-icon van-icon-photograph van-uploader__upload-icon">
       </i>
       <input type="file"
@@ -214,7 +141,7 @@ exports[`render preview image 1`] = `
   <div class="van-uploader__wrapper">
     <div class="van-uploader__preview">
       <div class="van-image van-uploader__preview-image">
-        <img src="https://img.yzcdn.cn/vant/cat.jpeg"
+        <img src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
              class="van-image__img"
              style="object-fit: cover;"
         >
@@ -223,7 +150,11 @@ exports[`render preview image 1`] = `
           </i>
         </div>
       </div>
-      <div class="van-uploader__preview-delete">
+      <div role="button"
+           class="van-uploader__preview-delete van-uploader__preview-delete--shadow"
+           tabindex="0"
+           aria-label="Delete"
+      >
         <i class="van-badge__wrapper van-icon van-icon-cross van-uploader__preview-delete-icon">
         </i>
       </div>
@@ -233,10 +164,14 @@ exports[`render preview image 1`] = `
         <i class="van-badge__wrapper van-icon van-icon-description van-uploader__file-icon">
         </i>
         <div class="van-uploader__file-name van-ellipsis">
-          https://img.yzcdn.cn/vant/test.pdf
+          https://fastly.jsdelivr.net/npm/@vant/assets/test.pdf
         </div>
       </div>
-      <div class="van-uploader__preview-delete">
+      <div role="button"
+           class="van-uploader__preview-delete van-uploader__preview-delete--shadow"
+           tabindex="0"
+           aria-label="Delete"
+      >
         <i class="van-badge__wrapper van-icon van-icon-cross van-uploader__preview-delete-icon">
         </i>
       </div>
@@ -249,7 +184,11 @@ exports[`render preview image 1`] = `
           test.jpg
         </div>
       </div>
-      <div class="van-uploader__preview-delete">
+      <div role="button"
+           class="van-uploader__preview-delete van-uploader__preview-delete--shadow"
+           tabindex="0"
+           aria-label="Delete"
+      >
         <i class="van-badge__wrapper van-icon van-icon-cross van-uploader__preview-delete-icon">
         </i>
       </div>
@@ -274,6 +213,22 @@ exports[`should not render upload input when using readonly prop 1`] = `
       </i>
     </div>
   </div>
+</div>
+`;
+
+exports[`should render preview-cover slot correctly 1`] = `
+<div class="van-uploader__preview-cover">
+  Custom Preview Cover
+</div>
+`;
+
+exports[`should render preview-delete slot correctly 1`] = `
+<div role="button"
+     class="van-uploader__preview-delete"
+     tabindex="0"
+     aria-label="Delete"
+>
+  Custom Preview Delete
 </div>
 `;
 

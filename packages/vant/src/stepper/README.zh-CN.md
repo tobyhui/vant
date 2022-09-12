@@ -103,18 +103,18 @@ export default {
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { closeToast, showLoadingToast } from 'vant';
 
 export default {
   setup() {
     const value = ref(1);
 
     const beforeChange = (value) => {
-      Toast.loading({ forbidClick: true });
+      showLoadingToast({ forbidClick: true });
 
       return new Promise((resolve) => {
         setTimeout(() => {
-          Toast.clear();
+          closeToast();
           // 在 resolve 函数中返回 true 或 false
           resolve(true);
         }, 500);
@@ -148,7 +148,7 @@ export default {
 | max | 最大值 | _number \| string_ | - |
 | default-value | 初始值，当 v-model 为空时生效 | _number \| string_ | `1` |
 | step | 步长，每次点击时改变的值 | _number \| string_ | `1` |
-| name | 标识符，可以在 `change` 事件回调参数中获取 | _number \| string_ | - |
+| name | 标识符，通常为一个唯一的字符串或数字，可以在 `change` 事件回调参数中获取 | _number \| string_ | - |
 | input-width | 输入框宽度，默认单位为 `px` | _number \| string_ | `32px` |
 | button-size | 按钮大小以及输入框高度，默认单位为 `px` | _number \| string_ | `28px` |
 | decimal-length | 固定显示的小数位数 | _number \| string_ | - |
@@ -163,8 +163,8 @@ export default {
 | show-plus | 是否显示增加按钮 | _boolean_ | `true` |
 | show-minus | 是否显示减少按钮 | _boolean_ | `true` |
 | show-input | 是否显示输入框 | _boolean_ | `true` |
-| long-press | 是否开启长按手势 | _boolean_ | `true` |
-| allow-empty | 是否允许输入的值为空 | _boolean_ | `false` |
+| long-press | 是否开启长按手势，开启后可以长按增加和减少按钮 | _boolean_ | `true` |
+| allow-empty | 是否允许输入的值为空，设置为 `true` 后允许传入空字符串 | _boolean_ | `false` |
 
 ### Events
 
@@ -182,7 +182,7 @@ export default {
 组件导出以下类型定义：
 
 ```ts
-import type { StepperTheme } from 'vant';
+import type { StepperTheme, StepperProps } from 'vant';
 ```
 
 ## 主题定制
@@ -191,22 +191,21 @@ import type { StepperTheme } from 'vant';
 
 组件提供了下列 CSS 变量，可用于自定义样式，使用方法请参考 [ConfigProvider 组件](#/zh-CN/config-provider)。
 
-| 名称 | 默认值 | 描述 |
-| --- | --- | --- |
-| --van-stepper-active-color | _#e8e8e8_ | - |
-| --van-stepper-background-color | _var(--van-active-color)_ | - |
-| --van-stepper-button-icon-color | _var(--van-text-color)_ | - |
-| --van-stepper-button-disabled-color | _var(--van-background-color)_ | - |
-| --van-stepper-button-disabled-icon-color | _var(--van-gray-5)_ | - |
-| --van-stepper-button-round-theme-color | _var(--van-danger-color)_ | - |
-| --van-stepper-input-width | _32px_ | - |
-| --van-stepper-input-height | _28px_ | - |
-| --van-stepper-input-font-size | _var(--van-font-size-md)_ | - |
-| --van-stepper-input-line-height | _normal_ | - |
-| --van-stepper-input-text-color | _var(--van-text-color)_ | - |
-| --van-stepper-input-disabled-text-color | _var(--van-gray-5)_ | - |
-| --van-stepper-input-disabled-background-color | _var(--van-active-color)_ | - |
-| --van-stepper-border-radius | _var(--van-border-radius-md)_ | - |
+| 名称                                     | 默认值                     | 描述 |
+| ---------------------------------------- | -------------------------- | ---- |
+| --van-stepper-background                 | _var(--van-active-color)_  | -    |
+| --van-stepper-button-icon-color          | _var(--van-text-color)_    | -    |
+| --van-stepper-button-disabled-color      | _var(--van-background)_    | -    |
+| --van-stepper-button-disabled-icon-color | _var(--van-gray-5)_        | -    |
+| --van-stepper-button-round-theme-color   | _var(--van-primary-color)_ | -    |
+| --van-stepper-input-width                | _32px_                     | -    |
+| --van-stepper-input-height               | _28px_                     | -    |
+| --van-stepper-input-font-size            | _var(--van-font-size-md)_  | -    |
+| --van-stepper-input-line-height          | _normal_                   | -    |
+| --van-stepper-input-text-color           | _var(--van-text-color)_    | -    |
+| --van-stepper-input-disabled-text-color  | _var(--van-text-color-3)_  | -    |
+| --van-stepper-input-disabled-background  | _var(--van-active-color)_  | -    |
+| --van-stepper-radius                     | _var(--van-radius-md)_     | -    |
 
 ## 常见问题
 

@@ -1,9 +1,10 @@
 import {
   computed,
-  PropType,
-  ComputedRef,
-  InjectionKey,
   defineComponent,
+  type PropType,
+  type ComputedRef,
+  type InjectionKey,
+  type ExtractPropTypes,
 } from 'vue';
 import {
   truthProp,
@@ -32,16 +33,20 @@ export type RowJustify =
   | 'space-around'
   | 'space-between';
 
+export const rowProps = {
+  tag: makeStringProp<keyof HTMLElementTagNameMap>('div'),
+  wrap: truthProp,
+  align: String as PropType<RowAlign>,
+  gutter: makeNumericProp(0),
+  justify: String as PropType<RowJustify>,
+};
+
+export type RowProps = ExtractPropTypes<typeof rowProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    tag: makeStringProp<keyof HTMLElementTagNameMap>('div'),
-    wrap: truthProp,
-    align: String as PropType<RowAlign>,
-    gutter: makeNumericProp(0),
-    justify: String as PropType<RowJustify>,
-  },
+  props: rowProps,
 
   setup(props, { slots }) {
     const { children, linkChildren } = useChildren(ROW_KEY);

@@ -67,7 +67,7 @@ test('should close popover when clicking the action', async () => {
 
   await wrapper.setProps({ closeOnClickAction: false });
   await wrapper.find('.van-popover__action').trigger('click');
-  expect(wrapper.emitted('update:show')!.length).toEqual(1);
+  expect(wrapper.emitted('update:show')).toHaveLength(1);
 });
 
 test('should allow to custom the className of action', () => {
@@ -147,7 +147,7 @@ test('should close popover when touch outside content', async () => {
   expect(wrapper.emitted('update:show')![0]).toEqual([false]);
 });
 
-test('should emit click-overlay event when overlay is clicked', () => {
+test('should emit clickOverlay event when overlay is clicked', () => {
   const onClickOverlay = jest.fn();
   const wrapper = mount(Popover, {
     props: {
@@ -211,4 +211,19 @@ test('should allow to hide arrow', () => {
   });
 
   expect(wrapper.find('.van-popover__arrow').exists()).toBeFalsy();
+});
+
+test('should render action slot correctly', () => {
+  const wrapper = mount(Popover, {
+    props: {
+      show: true,
+      actions: [{ text: 'Text' }],
+      teleport: null,
+    },
+    slots: {
+      action: ({ action, index }) => `name: ${action.text}, index: ${index}`,
+    },
+  });
+
+  expect(wrapper.find('.van-popover__action').html()).toMatchSnapshot();
 });

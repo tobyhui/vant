@@ -58,8 +58,8 @@ app.use(SwipeItem);
 export default {
   setup() {
     const images = [
-      'https://img.yzcdn.cn/vant/apple-1.jpg',
-      'https://img.yzcdn.cn/vant/apple-2.jpg',
+      'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
+      'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
     ];
     return { images };
   },
@@ -80,11 +80,11 @@ export default {
 ```
 
 ```js
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
-    const onChange = (index) => Toast('当前 Swipe 索引：' + index);
+    const onChange = (index) => showToast('当前 Swipe 索引：' + index);
     return { onChange };
   },
 };
@@ -128,8 +128,8 @@ export default {
   <van-swipe-item>2</van-swipe-item>
   <van-swipe-item>3</van-swipe-item>
   <van-swipe-item>4</van-swipe-item>
-  <template #indicator="{ active }">
-    <div class="custom-indicator">{{ active + 1 }}/4</div>
+  <template #indicator="{ active, total }">
+    <div class="custom-indicator">{{ active + 1 }}/{{ total }}</div>
   </template>
 </van-swipe>
 
@@ -214,10 +214,10 @@ swipeRef.value?.next();
 
 ### Swipe Slots
 
-| 名称                | 说明         | 参数                 |
-| ------------------- | ------------ | -------------------- |
-| default             | 轮播内容     | -                    |
-| indicator `v3.0.16` | 自定义指示器 | _{ active: number }_ |
+| 名称               | 说明         | 参数                                |
+| ------------------ | ------------ | ----------------------------------- |
+| default            | 轮播内容     | -                                   |
+| indicator `v3.4.0` | 自定义指示器 | _{ active: number, total: number }_ |
 
 ## 主题定制
 
@@ -231,8 +231,8 @@ swipeRef.value?.next();
 | --van-swipe-indicator-margin | _var(--van-padding-sm)_ | - |
 | --van-swipe-indicator-active-opacity | _1_ | - |
 | --van-swipe-indicator-inactive-opacity | _0.3_ | - |
-| --van-swipe-indicator-active-background-color | _var(--van-primary-color)_ | - |
-| --van-swipe-indicator-inactive-background-color | _var(--van-border-color)_ | - |
+| --van-swipe-indicator-active-background | _var(--van-primary-color)_ | - |
+| --van-swipe-indicator-inactive-background | _var(--van-border-color)_ | - |
 
 ## 常见问题
 

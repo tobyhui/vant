@@ -5,7 +5,7 @@ import {
   onUpdated,
   onMounted,
   defineComponent,
-  ExtractPropTypes,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
@@ -30,7 +30,7 @@ import type { ListExpose, ListDirection } from './types';
 
 const [name, bem, t] = createNamespace('list');
 
-const props = {
+export const listProps = {
   error: Boolean,
   offset: makeNumericProp(300),
   loading: Boolean,
@@ -42,12 +42,12 @@ const props = {
   immediateCheck: truthProp,
 };
 
-export type ListProps = ExtractPropTypes<typeof props>;
+export type ListProps = ExtractPropTypes<typeof listProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: listProps,
 
   emits: ['load', 'update:error', 'update:loading'],
 
@@ -115,7 +115,12 @@ export default defineComponent({
         const text = slots.error ? slots.error() : props.errorText;
         if (text) {
           return (
-            <div class={bem('error-text')} onClick={clickErrorText}>
+            <div
+              role="button"
+              class={bem('error-text')}
+              tabindex={0}
+              onClick={clickErrorText}
+            >
               {text}
             </div>
           );
@@ -139,10 +144,7 @@ export default defineComponent({
       }
     };
 
-    watch(
-      [() => props.loading, () => props.finished, () => props.error],
-      check
-    );
+    watch(() => [props.loading, props.finished, props.error], check);
 
     if (tabStatus) {
       watch(tabStatus, (tabActive) => {
@@ -164,7 +166,10 @@ export default defineComponent({
 
     useExpose<ListExpose>({ check });
 
-    useEventListener('scroll', check, { target: scrollParent });
+    useEventListener('scroll', check, {
+      target: scrollParent,
+      passive: true,
+    });
 
     return () => {
       const Content = slots.default?.();

@@ -3,9 +3,9 @@ import {
   Ref,
   reactive,
   computed,
-  PropType,
   defineComponent,
-  ExtractPropTypes,
+  type PropType,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
@@ -21,7 +21,7 @@ import {
 } from '../utils';
 
 // Composables
-import { useRect, useClickAway } from '@vant/use';
+import { useRect, useClickAway, useEventListener } from '@vant/use';
 import { useTouch } from '../composables/use-touch';
 import { useExpose } from '../composables/use-expose';
 
@@ -34,7 +34,7 @@ import type {
 
 const [name, bem] = createNamespace('swipe-cell');
 
-const props = {
+export const swipeCellProps = {
   name: makeNumericProp(''),
   disabled: Boolean,
   leftWidth: numericProp,
@@ -43,12 +43,12 @@ const props = {
   stopPropagation: Boolean,
 };
 
-export type SwipeCellProps = ExtractPropTypes<typeof props>;
+export type SwipeCellProps = ExtractPropTypes<typeof swipeCellProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: swipeCellProps,
 
   emits: ['open', 'close', 'click'],
 
@@ -80,13 +80,15 @@ export default defineComponent({
     );
 
     const open = (side: SwipeCellSide) => {
-      opened = true;
       state.offset = side === 'left' ? leftWidth.value : -rightWidth.value;
 
-      emit('open', {
-        name: props.name,
-        position: side,
-      });
+      if (!opened) {
+        opened = true;
+        emit('open', {
+          name: props.name,
+          position: side,
+        });
+      }
     };
 
     const close = (position: SwipeCellPosition) => {
@@ -207,6 +209,11 @@ export default defineComponent({
 
     useClickAway(root, () => onClick('outside'), { eventName: 'touchstart' });
 
+    // useEventListener will set passive to `false` to eliminate the warning of Chrome
+    useEventListener('touchmove', onTouchMove, {
+      target: root,
+    });
+
     return () => {
       const wrapperStyle = {
         transform: `translate3d(${state.offset}px, 0, 0)`,
@@ -217,9 +224,8 @@ export default defineComponent({
         <div
           ref={root}
           class={bem()}
-          onClick={getClickHandler('cell')}
-          onTouchstart={onTouchStart}
-          onTouchmove={onTouchMove}
+          onClick={getClickHandler('cell', lockClick)}
+          onTouchstartPassive={onTouchStart}
           onTouchend={onTouchEnd}
           onTouchcancel={onTouchEnd}
         >

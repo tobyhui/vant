@@ -1,16 +1,13 @@
-import { createNamespace, isFunction } from '../utils';
+import { toArray, createNamespace, isFunction } from '../utils';
 import type {
   UploaderMaxSize,
   UploaderResultType,
   UploaderFileListItem,
 } from './types';
 
-const [name, bem] = createNamespace('uploader');
+const [name, bem, t] = createNamespace('uploader');
 
-export { name, bem };
-
-export const toArray = <T>(item: T | T[]): T[] =>
-  Array.isArray(item) ? item : [item];
+export { name, bem, t };
 
 export function readFileContent(file: File, resultType: UploaderResultType) {
   return new Promise<string | void>((resolve) => {

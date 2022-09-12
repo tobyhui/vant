@@ -1,4 +1,4 @@
-import { defineComponent } from 'vue';
+import { defineComponent, type ExtractPropTypes } from 'vue';
 import {
   addUnit,
   truthProp,
@@ -12,18 +12,22 @@ import {
 
 const [name, bem] = createNamespace('password-input');
 
+export const passwordInputProps = {
+  info: String,
+  mask: truthProp,
+  value: makeStringProp(''),
+  gutter: numericProp,
+  length: makeNumericProp(6),
+  focused: Boolean,
+  errorInfo: String,
+};
+
+export type PasswordInputProps = ExtractPropTypes<typeof passwordInputProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    info: String,
-    mask: truthProp,
-    value: makeStringProp(''),
-    gutter: numericProp,
-    length: makeNumericProp(6),
-    focused: Boolean,
-    errorInfo: String,
-  },
+  props: passwordInputProps,
 
   emits: ['focus'],
 
@@ -74,7 +78,7 @@ export default defineComponent({
         <div class={bem()}>
           <ul
             class={[bem('security'), { [BORDER_SURROUND]: !props.gutter }]}
-            onTouchstart={onTouchStart}
+            onTouchstartPassive={onTouchStart}
           >
             {renderPoints()}
           </ul>

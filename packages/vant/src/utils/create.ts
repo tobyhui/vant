@@ -6,7 +6,7 @@ import locale from '../locale';
 export function createTranslate(name: string) {
   const prefix = camelize(name) + '.';
 
-  return (path: string, ...args: any[]): any => {
+  return (path: string, ...args: unknown[]) => {
     const messages = locale.messages();
     const message = get(messages, prefix + path) || get(messages, path);
 
@@ -29,7 +29,10 @@ function genBem(name: string, mods?: Mods): string {
   }
 
   if (Array.isArray(mods)) {
-    return mods.reduce<string>((ret, item) => ret + genBem(name, item), '');
+    return (mods as Mod[]).reduce<string>(
+      (ret, item) => ret + genBem(name, item),
+      ''
+    );
   }
 
   return Object.keys(mods).reduce(

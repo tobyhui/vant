@@ -1,4 +1,11 @@
-import { watch, computed, reactive, CSSProperties, defineComponent } from 'vue';
+import {
+  ref,
+  watch,
+  computed,
+  reactive,
+  defineComponent,
+  type CSSProperties,
+} from 'vue';
 
 // Utils
 import {
@@ -7,10 +14,12 @@ import {
   preventDefault,
   createNamespace,
   makeRequiredProp,
+  type ComponentInstance,
 } from '../utils';
 
 // Composables
 import { useTouch } from '../composables/use-touch';
+import { useEventListener } from '@vant/use';
 
 // Components
 import { Image } from '../image';
@@ -51,6 +60,7 @@ export default defineComponent({
     });
 
     const touch = useTouch();
+    const swipeItem = ref<ComponentInstance>();
 
     const vertical = computed(() => {
       const { rootWidth, rootHeight } = props;
@@ -100,7 +110,7 @@ export default defineComponent({
     });
 
     const setScale = (scale: number) => {
-      scale = clamp(scale, +props.minZoom, +props.maxZoom);
+      scale = clamp(scale, +props.minZoom, +props.maxZoom + 1);
 
       if (scale !== state.scale) {
         state.scale = scale;
@@ -125,6 +135,7 @@ export default defineComponent({
       state.moveY = 0;
     };
 
+    let fingerNum: number;
     let startMoveX: number;
     let startMoveY: number;
     let startScale: number;
@@ -138,12 +149,13 @@ export default defineComponent({
 
       touch.start(event);
 
+      fingerNum = touches.length;
       startMoveX = state.moveX;
       startMoveY = state.moveY;
       touchStartTime = Date.now();
 
-      state.moving = touches.length === 1 && state.scale !== 1;
-      state.zooming = touches.length === 2 && !offsetX.value;
+      state.moving = fingerNum === 1 && state.scale !== 1;
+      state.zooming = fingerNum === 2 && !offsetX.value;
 
       if (state.zooming) {
         startScale = state.scale;
@@ -177,10 +189,14 @@ export default defineComponent({
     };
 
     const checkTap = () => {
+      if (fingerNum > 1) {
+        return;
+      }
+
       const { offsetX, offsetY } = touch;
       const deltaTime = Date.now() - touchStartTime;
       const TAP_TIME = 250;
-      const TAP_OFFSET = 10;
+      const TAP_OFFSET = 5;
 
       if (
         offsetX.value < TAP_OFFSET &&
@@ -230,6 +246,10 @@ export default defineComponent({
           if (state.scale < 1) {
             resetScale();
           }
+
+          if (state.scale > props.maxZoom) {
+            state.scale = +props.maxZoom;
+          }
         }
       }
 
@@ -255,6 +275,11 @@ export default defineComponent({
       }
     );
 
+    // useEventListener will set passive to `false` to eliminate the warning of Chrome
+    useEventListener('touchmove', onTouchMove, {
+      target: computed(() => swipeItem.value?.$el),
+    });
+
     return () => {
       const imageSlots = {
         loading: () => <Loading type="spinner" />,
@@ -262,9 +287,9 @@ export default defineComponent({
 
       return (
         <SwipeItem
+          ref={swipeItem}
           class={bem('swipe-item')}
-          onTouchstart={onTouchStart}
-          onTouchmove={onTouchMove}
+          onTouchstartPassive={onTouchStart}
           onTouchend={onTouchEnd}
           onTouchcancel={onTouchEnd}
         >

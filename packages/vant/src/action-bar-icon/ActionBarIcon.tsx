@@ -1,4 +1,4 @@
-import { defineComponent } from 'vue';
+import { defineComponent, type PropType, type ExtractPropTypes } from 'vue';
 import { extend, createNamespace, unknownProp, numericProp } from '../utils';
 import { ACTION_BAR_KEY } from '../action-bar/ActionBar';
 
@@ -8,22 +8,27 @@ import { useRoute, routeProps } from '../composables/use-route';
 
 // Components
 import { Icon } from '../icon';
-import { Badge } from '../badge';
+import { Badge, type BadgeProps } from '../badge';
 
 const [name, bem] = createNamespace('action-bar-icon');
+
+export const actionBarIconProps = extend({}, routeProps, {
+  dot: Boolean,
+  text: String,
+  icon: String,
+  color: String,
+  badge: numericProp,
+  iconClass: unknownProp,
+  badgeProps: Object as PropType<Partial<BadgeProps>>,
+  iconPrefix: String,
+});
+
+export type ActionBarIconProps = ExtractPropTypes<typeof actionBarIconProps>;
 
 export default defineComponent({
   name,
 
-  props: extend({}, routeProps, {
-    dot: Boolean,
-    text: String,
-    icon: String,
-    color: String,
-    badge: numericProp,
-    iconClass: unknownProp,
-    iconPrefix: String,
-  }),
+  props: actionBarIconProps,
 
   setup(props, { slots }) {
     const route = useRoute();
@@ -31,15 +36,17 @@ export default defineComponent({
     useParent(ACTION_BAR_KEY);
 
     const renderIcon = () => {
-      const { dot, badge, icon, color, iconClass, iconPrefix } = props;
+      const { dot, badge, icon, color, iconClass, badgeProps, iconPrefix } =
+        props;
 
       if (slots.icon) {
         return (
           <Badge
             v-slots={{ default: slots.icon }}
             dot={dot}
-            content={badge}
             class={bem('icon')}
+            content={badge}
+            {...badgeProps}
           />
         );
       }
@@ -52,6 +59,7 @@ export default defineComponent({
           badge={badge}
           color={color}
           class={[bem('icon'), iconClass]}
+          badgeProps={badgeProps}
           classPrefix={iconPrefix}
         />
       );

@@ -5,15 +5,19 @@ exports[`should render demo and match snapshot 1`] = `
   <div class="van-cell-group van-cell-group--inset">
     <div class="van-cell van-field">
       <div class="van-cell__title van-field__label">
-        <label>
+        <label id="van-field-label"
+               for="van-field-input"
+        >
           Label
         </label>
       </div>
       <div class="van-cell__value van-field__value">
         <div class="van-field__body">
           <input type="text"
+                 id="van-field-input"
                  class="van-field__control"
                  placeholder="Text"
+                 aria-labelledby="van-field-label"
           >
         </div>
       </div>
@@ -22,113 +26,145 @@ exports[`should render demo and match snapshot 1`] = `
 </div>
 <div>
   <div class="van-cell-group van-cell-group--inset">
-    <div class="van-cell van-field">
-      <div class="van-cell__title van-field__label">
-        <label>
-          Text
-        </label>
-      </div>
-      <div class="van-cell__value van-field__value">
-        <div class="van-field__body">
-          <input type="text"
-                 class="van-field__control"
-                 placeholder="Text"
+    <form class="van-form">
+      <div class="van-cell van-field">
+        <div class="van-cell__title van-field__label">
+          <label id="van-field-label"
+                 for="van-field-input"
           >
+            Text
+          </label>
+        </div>
+        <div class="van-cell__value van-field__value">
+          <div class="van-field__body">
+            <input type="text"
+                   id="van-field-input"
+                   class="van-field__control"
+                   placeholder="Text"
+                   autocomplete="off"
+                   aria-labelledby="van-field-label"
+            >
+          </div>
         </div>
       </div>
-    </div>
-    <div class="van-cell van-field">
-      <div class="van-cell__title van-field__label">
-        <label>
-          Phone
-        </label>
-      </div>
-      <div class="van-cell__value van-field__value">
-        <div class="van-field__body">
-          <input type="tel"
-                 class="van-field__control"
-                 placeholder="Phone"
+      <div class="van-cell van-field">
+        <div class="van-cell__title van-field__label">
+          <label id="van-field-label"
+                 for="van-field-input"
           >
+            Phone
+          </label>
+        </div>
+        <div class="van-cell__value van-field__value">
+          <div class="van-field__body">
+            <input type="tel"
+                   id="van-field-input"
+                   class="van-field__control"
+                   placeholder="Phone"
+                   aria-labelledby="van-field-label"
+            >
+          </div>
         </div>
       </div>
-    </div>
-    <div class="van-cell van-field">
-      <div class="van-cell__title van-field__label">
-        <label>
-          Digit
-        </label>
-      </div>
-      <div class="van-cell__value van-field__value">
-        <div class="van-field__body">
-          <input type="tel"
-                 inputmode="numeric"
-                 class="van-field__control"
-                 placeholder="Digit"
+      <div class="van-cell van-field">
+        <div class="van-cell__title van-field__label">
+          <label id="van-field-label"
+                 for="van-field-input"
           >
+            Digit
+          </label>
+        </div>
+        <div class="van-cell__value van-field__value">
+          <div class="van-field__body">
+            <input type="tel"
+                   inputmode="numeric"
+                   id="van-field-input"
+                   class="van-field__control"
+                   placeholder="Digit"
+                   aria-labelledby="van-field-label"
+            >
+          </div>
         </div>
       </div>
-    </div>
-    <div class="van-cell van-field">
-      <div class="van-cell__title van-field__label">
-        <label>
-          Number
-        </label>
-      </div>
-      <div class="van-cell__value van-field__value">
-        <div class="van-field__body">
-          <input type="text"
-                 inputmode="decimal"
-                 class="van-field__control"
-                 placeholder="Number"
+      <div class="van-cell van-field">
+        <div class="van-cell__title van-field__label">
+          <label id="van-field-label"
+                 for="van-field-input"
           >
+            Number
+          </label>
+        </div>
+        <div class="van-cell__value van-field__value">
+          <div class="van-field__body">
+            <input type="text"
+                   inputmode="decimal"
+                   id="van-field-input"
+                   class="van-field__control"
+                   placeholder="Number"
+                   aria-labelledby="van-field-label"
+            >
+          </div>
         </div>
       </div>
-    </div>
-    <div class="van-cell van-field">
-      <div class="van-cell__title van-field__label">
-        <label>
-          Password
-        </label>
-      </div>
-      <div class="van-cell__value van-field__value">
-        <div class="van-field__body">
-          <input type="password"
-                 class="van-field__control"
-                 placeholder="Password"
+      <div class="van-cell van-field">
+        <div class="van-cell__title van-field__label">
+          <label id="van-field-label"
+                 for="van-field-input"
           >
+            Password
+          </label>
+        </div>
+        <div class="van-cell__value van-field__value">
+          <div class="van-field__body">
+            <input type="password"
+                   id="van-field-input"
+                   class="van-field__control"
+                   placeholder="Password"
+                   autocomplete="off"
+                   aria-labelledby="van-field-label"
+            >
+          </div>
         </div>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 <div>
   <div class="van-cell-group van-cell-group--inset">
     <div class="van-cell van-field">
       <div class="van-cell__title van-field__label">
-        <label>
+        <label id="van-field-label"
+               for="van-field-input"
+        >
           Text
         </label>
       </div>
       <div class="van-cell__value van-field__value">
         <div class="van-field__body">
           <input type="text"
+                 id="van-field-input"
                  class="van-field__control"
                  readonly
+                 aria-labelledby="van-field-label"
           >
         </div>
       </div>
     </div>
     <div class="van-cell van-field van-field--disabled">
       <div class="van-cell__title van-field__label">
-        <label>
+        <label id="van-field-label"
+               for="van-field-input"
+        >
           Text
         </label>
       </div>
       <div class="van-cell__value van-field__value">
         <div class="van-field__body">
           <input type="text"
+                 id="van-field-input"
                  class="van-field__control"
                  disabled
+                 aria-labelledby="van-field-label"
           >
         </div>
       </div>
@@ -143,15 +179,19 @@ exports[`should render demo and match snapshot 1`] = `
         </i>
       </div>
       <div class="van-cell__title van-field__label">
-        <label>
+        <label id="van-field-label"
+               for="van-field-input"
+        >
           Text
         </label>
       </div>
       <div class="van-cell__value van-field__value">
         <div class="van-field__body">
           <input type="text"
+                 id="van-field-input"
                  class="van-field__control"
                  placeholder="Show Icon"
+                 aria-labelledby="van-field-label"
           >
           <div class="van-field__right-icon">
             <i class="van-badge__wrapper van-icon van-icon-warning-o">
@@ -166,15 +206,19 @@ exports[`should render demo and match snapshot 1`] = `
         </i>
       </div>
       <div class="van-cell__title van-field__label">
-        <label>
+        <label id="van-field-label"
+               for="van-field-input"
+        >
           Text
         </label>
       </div>
       <div class="van-cell__value van-field__value">
         <div class="van-field__body">
           <input type="text"
+                 id="van-field-input"
                  class="van-field__control"
                  placeholder="Show Clear Icon"
+                 aria-labelledby="van-field-label"
           >
         </div>
       </div>
@@ -185,30 +229,38 @@ exports[`should render demo and match snapshot 1`] = `
   <div class="van-cell-group van-cell-group--inset">
     <div class="van-cell van-field van-field--error">
       <div class="van-cell__title van-field__label van-field__label--required">
-        <label>
+        <label id="van-field-label"
+               for="van-field-input"
+        >
           Username
         </label>
       </div>
       <div class="van-cell__value van-field__value">
         <div class="van-field__body">
           <input type="text"
+                 id="van-field-input"
                  class="van-field__control van-field__control--error"
                  placeholder="Username"
+                 aria-labelledby="van-field-label"
           >
         </div>
       </div>
     </div>
     <div class="van-cell van-field">
       <div class="van-cell__title van-field__label van-field__label--required">
-        <label>
+        <label id="van-field-label"
+               for="van-field-input"
+        >
           Phone
         </label>
       </div>
       <div class="van-cell__value van-field__value">
         <div class="van-field__body">
           <input type="text"
+                 id="van-field-input"
                  class="van-field__control"
                  placeholder="Phone"
+                 aria-labelledby="van-field-label"
           >
         </div>
         <div class="van-field__error-message">
@@ -222,15 +274,19 @@ exports[`should render demo and match snapshot 1`] = `
   <div class="van-cell-group van-cell-group--inset">
     <div class="van-cell van-cell--center van-field">
       <div class="van-cell__title van-field__label">
-        <label>
+        <label id="van-field-label"
+               for="van-field-input"
+        >
           SMS
         </label>
       </div>
       <div class="van-cell__value van-field__value">
         <div class="van-field__body">
           <input type="text"
+                 id="van-field-input"
                  class="van-field__control"
                  placeholder="SMS"
+                 aria-labelledby="van-field-label"
           >
           <div class="van-field__button">
             <button type="button"
@@ -252,30 +308,38 @@ exports[`should render demo and match snapshot 1`] = `
   <div class="van-cell-group van-cell-group--inset">
     <div class="van-cell van-field">
       <div class="van-cell__title van-field__label">
-        <label>
+        <label id="van-field-label"
+               for="van-field-input"
+        >
           Text
         </label>
       </div>
       <div class="van-cell__value van-field__value">
         <div class="van-field__body">
           <input type="text"
+                 id="van-field-input"
                  class="van-field__control"
                  placeholder="Format On Change"
+                 aria-labelledby="van-field-label"
           >
         </div>
       </div>
     </div>
     <div class="van-cell van-field">
       <div class="van-cell__title van-field__label">
-        <label>
+        <label id="van-field-label"
+               for="van-field-input"
+        >
           Text
         </label>
       </div>
       <div class="van-cell__value van-field__value">
         <div class="van-field__body">
           <input type="text"
+                 id="van-field-input"
                  class="van-field__control"
                  placeholder="Format On Blur"
+                 aria-labelledby="van-field-label"
           >
         </div>
       </div>
@@ -285,9 +349,10 @@ exports[`should render demo and match snapshot 1`] = `
 <div>
   <div class="van-cell-group van-cell-group--inset">
     <div class="van-cell van-field">
-      <div class="van-cell__value van-cell__value--alone van-field__value">
+      <div class="van-cell__value van-field__value">
         <div class="van-field__body">
-          <textarea rows="1"
+          <textarea id="van-field-input"
+                    rows="1"
                     class="van-field__control"
                     placeholder="Message"
                     style="height: auto;"
@@ -302,15 +367,19 @@ exports[`should render demo and match snapshot 1`] = `
   <div class="van-cell-group van-cell-group--inset">
     <div class="van-cell van-field">
       <div class="van-cell__title van-field__label">
-        <label>
+        <label id="van-field-label"
+               for="van-field-input"
+        >
           Message
         </label>
       </div>
       <div class="van-cell__value van-field__value">
         <div class="van-field__body">
-          <textarea rows="2"
+          <textarea id="van-field-input"
+                    rows="2"
                     class="van-field__control"
                     placeholder="Message"
+                    aria-labelledby="van-field-label"
                     style="height: auto;"
           >
           </textarea>
@@ -329,15 +398,19 @@ exports[`should render demo and match snapshot 1`] = `
   <div class="van-cell-group van-cell-group--inset">
     <div class="van-cell van-field">
       <div class="van-cell__title van-field__label">
-        <label>
+        <label id="van-field-label"
+               for="van-field-input"
+        >
           Text
         </label>
       </div>
       <div class="van-cell__value van-field__value">
         <div class="van-field__body">
           <input type="text"
+                 id="van-field-input"
                  class="van-field__control van-field__control--right"
                  placeholder="Input Align Right"
+                 aria-labelledby="van-field-label"
           >
         </div>
       </div>

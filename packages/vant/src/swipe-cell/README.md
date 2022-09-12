@@ -43,7 +43,7 @@ app.use(SwipeCell);
     desc="Description"
     title="Title"
     class="goods-card"
-    thumb="https://img.yzcdn.cn/vant/cat.jpeg"
+    thumb="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
   />
   <template #right>
     <van-button square text="Delete" type="danger" class="delete-button" />
@@ -77,7 +77,7 @@ app.use(SwipeCell);
 ```
 
 ```js
-import { Dialog } from 'vant';
+import { showConfirmDialog } from 'vant';
 
 export default {
   setup() {
@@ -89,7 +89,7 @@ export default {
           return true;
         case 'right':
           return new Promise((resolve) => {
-            Dialog.confirm({
+            showConfirmDialog({
               title: 'Are you sure to delete?',
             }).then(resolve);
           });
@@ -107,7 +107,7 @@ export default {
 
 | Attribute | Description | Type | Default |
 | --- | --- | --- | --- |
-| name | Identifier of SwipeCell | _number \| string_ | - |
+| name | Identifier of SwipeCell, usually a unique string or number | _number \| string_ | - |
 | left-width | Width of the left swipe area | _number \| string_ | `auto` |
 | right-width | Width of the right swipe area | _number \| string_ | `auto` |
 | before-close | Callback function before close | _(args) => boolean \| Promise\<boolean\>_ | - |
@@ -127,8 +127,8 @@ export default {
 | Event | Description | Arguments |
 | --- | --- | --- |
 | click | Emitted when SwipeCell is clicked | _position: 'left' \| 'right' \| 'cell' \| 'outside'_ |
-| open | Emitted when SwipeCell is opened | _{ name: string \| number, position: 'left' \| 'right' }_ |
-| close | Emitted when SwipeCell is closed | _{ name: string \| number, position: 'left' \| 'right' \| 'cell' \| 'outside' }_ |
+| open | Emitted when SwipeCell is opened | _value: { name: string \| number, position: 'left' \| 'right' }_ |
+| close | Emitted when SwipeCell is closed | _value: { name: string \| number, position: 'left' \| 'right' \| 'cell' \| 'outside' }_ |
 
 ### beforeClose Params
 
@@ -169,16 +169,3 @@ const swipeCellRef = ref<SwipeCellInstance>();
 
 swipeCellRef.value?.close();
 ```
-
-## Theming
-
-### CSS Variables
-
-The component provides the following CSS variables, which can be used to customize styles. Please refer to [ConfigProvider component](#/en-US/config-provider).
-
-| Name | Default Value | Description |
-| --- | --- | --- |
-| --van-switch-cell-padding-top | _var(--van-cell-vertical-padding) - 1px_ | - |
-| --van-switch-cell-padding-bottom | _var(--van-cell-vertical-padding) - 1px_ | - |
-| --van-switch-cell-large-padding-top | _var(--van-cell-large-vertical-padding) - 1px_ | - |
-| --van-switch-cell-large-padding-bottom | _var(--van-cell-large-vertical-padding) - 1px_ | - |

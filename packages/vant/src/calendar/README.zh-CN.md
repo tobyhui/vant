@@ -129,7 +129,7 @@ export default {
 通过 `color` 属性可以自定义日历的颜色，对选中日期和底部按钮生效。
 
 ```html
-<van-calendar v-model:show="show" color="#1989fa" />
+<van-calendar v-model:show="show" color="#ee0a24" />
 ```
 
 ### 自定义日期范围
@@ -255,7 +255,7 @@ export default {
 | --- | --- | --- | --- |
 | type | 选择类型:<br>`single` 表示选择单个日期，<br>`multiple` 表示选择多个日期，<br>`range` 表示选择日期区间 | _string_ | `single` |
 | title | 日历标题 | _string_ | `日期选择` |
-| color | 主题色，对底部按钮和选中日期生效 | _string_ | `#ee0a24` |
+| color | 主题色，对底部按钮和选中日期生效 | _string_ | `#1989fa` |
 | min-date | 可选择的最小日期 | _Date_ | 当前日期 |
 | max-date | 可选择的最大日期 | _Date_ | 当前日期的六个月后 |
 | default-date | 默认选中的日期，`type` 为 `multiple` 或 `range` 时为数组，传入 `null` 表示默认不选择 | _Date \| Date[] \| null_ | 今天 |
@@ -283,6 +283,7 @@ export default {
 | round | 是否显示圆角弹窗 | _boolean_ | `true` |
 | close-on-popstate | 是否在页面回退时自动关闭 | _boolean_ | `true` |
 | close-on-click-overlay | 是否在点击遮罩层后关闭 | _boolean_ | `true` |
+| safe-area-inset-top | 是否开启[顶部安全区适配](#/zh-CN/advanced-usage#di-bu-an-quan-qu-gua-pei) | _boolean_ | `false` |
 | safe-area-inset-bottom | 是否开启[底部安全区适配](#/zh-CN/advanced-usage#di-bu-an-quan-qu-gua-pei) | _boolean_ | `true` |
 | teleport | 指定挂载的节点，等同于 Teleport 组件的 [to 属性](https://v3.cn.vuejs.org/api/built-in-components.html#teleport) | _string \| Element_ | - |
 
@@ -336,13 +337,14 @@ export default {
 
 ### Slots
 
-| 名称                  | 说明                     | 参数       |
-| --------------------- | ------------------------ | ---------- |
-| title                 | 自定义标题               | -          |
-| subtitle `v3.1.3`     | 自定义日历副标题         | -          |
-| footer                | 自定义底部区域内容       | -          |
-| top-info `v3.0.17`    | 自定义日期上方的提示信息 | _day: Day_ |
-| bottom-info `v3.0.17` | 自定义日期下方的提示信息 | _day: Day_ |
+| 名称                  | 说明                     | 参数                    |
+| --------------------- | ------------------------ | ----------------------- |
+| title                 | 自定义标题               | -                       |
+| subtitle `v3.1.3`     | 自定义日历副标题         | -                       |
+| footer                | 自定义底部区域内容       | -                       |
+| confirm-text `v3.2.6` | 自定义确认按钮的内容     | _{ disabled: boolean }_ |
+| top-info `v3.0.17`    | 自定义日期上方的提示信息 | _day: Day_              |
+| bottom-info `v3.0.17` | 自定义日期下方的提示信息 | _day: Day_              |
 
 ### 方法
 
@@ -352,6 +354,7 @@ export default {
 | --- | --- | --- | --- |
 | reset | 将选中的日期重置到指定日期，未传参时会重置到默认日期 | _date?: Date \| Date[]_ | - |
 | scrollToDate | 滚动到某个日期 | _date: Date_ | - |
+| getSelectedDate | 获取选中的日期 | - | _Date \| Date[] \| null_ |
 
 ### 类型定义
 
@@ -386,9 +389,9 @@ calendarRef.value?.reset();
 
 | 名称 | 默认值 | 描述 |
 | --- | --- | --- |
-| --van-calendar-background-color | _var(--van-white)_ | - |
+| --van-calendar-background | _var(--van-background-2)_ | - |
 | --van-calendar-popup-height | _80%_ | - |
-| --van-calendar-header-box-shadow | _0 2px 10px rgba(125, 126, 128, 0.16)_ | - |
+| --van-calendar-header-shadow | _0 2px 10px rgba(125, 126, 128, 0.16)_ | - |
 | --van-calendar-header-title-height | _44px_ | - |
 | --van-calendar-header-title-font-size | _var(--van-font-size-lg)_ | - |
 | --van-calendar-header-subtitle-font-size | _var(--van-font-size-md)_ | - |
@@ -399,20 +402,43 @@ calendarRef.value?.reset();
 | --van-calendar-month-mark-font-size | _160px_ | - |
 | --van-calendar-day-height | _64px_ | - |
 | --van-calendar-day-font-size | _var(--van-font-size-lg)_ | - |
+| --van-calendar-day-margin-bottom | _4px_ | - |
 | --van-calendar-range-edge-color | _var(--van-white)_ | - |
-| --van-calendar-range-edge-background-color | _var(--van-danger-color)_ | - |
-| --van-calendar-range-middle-color | _var(--van-danger-color)_ | - |
+| --van-calendar-range-edge-background | _var(--van-primary-color)_ | - |
+| --van-calendar-range-middle-color | _var(--van-primary-color)_ | - |
 | --van-calendar-range-middle-background-opacity | _0.1_ | - |
 | --van-calendar-selected-day-size | _54px_ | - |
 | --van-calendar-selected-day-color | _var(--van-white)_ | - |
 | --van-calendar-info-font-size | _var(--van-font-size-xs)_ | - |
 | --van-calendar-info-line-height | _var(--van-line-height-xs)_ | - |
-| --van-calendar-selected-day-background-color | _var(--van-danger-color)_ | - |
-| --van-calendar-day-disabled-color | _var(--van-gray-5)_ | - |
+| --van-calendar-selected-day-background | _var(--van-primary-color)_ | - |
+| --van-calendar-day-disabled-color | _var(--van-text-color-3)_ | - |
 | --van-calendar-confirm-button-height | _36px_ | - |
 | --van-calendar-confirm-button-margin | _7px 0_ | - |
 
 ## 常见问题
+
+### 如何在 formatter 中使用异步返回的数据？
+
+如果需要在 formatter 中使用异步返回的数据，可以使用计算属性动态创建 formatter 函数，示例如下：
+
+```js
+const asyncData = ref();
+
+const formatter = computed(() => {
+  if (!asyncData.value) {
+    return (day) => day;
+  }
+  return (day) => {
+    day.bottomInfo = asyncData.value;
+    return day;
+  };
+});
+
+setTimeout(() => {
+  asyncData.value = '后端文案';
+}, 3000);
+```
 
 ### 在 iOS 系统上初始化组件失败？
 

@@ -2,7 +2,7 @@
 import VanCell from '../../cell';
 import VanCalendar from '..';
 import { reactive } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 import TiledDisplay from './TiledDisplay.vue';
 import type { CalendarDayItem } from '../types';
 
@@ -134,7 +134,7 @@ const show = (type: string, id: string) => {
       state.showConfirm = false;
       break;
     case 'customColor':
-      state.color = '#1989fa';
+      state.color = '#ee0a24';
       break;
     case 'customConfirm':
       state.confirmText = t('confirmText');

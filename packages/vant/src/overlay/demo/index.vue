@@ -2,7 +2,7 @@
 import VanButton from '../../button';
 import VanOverlay from '..';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -47,8 +47,6 @@ const showEmbedded = ref(false);
 
 <style lang="less">
 .demo-overlay {
-  background: var(--van-white);
-
   .wrapper {
     display: flex;
     align-items: center;
@@ -59,7 +57,7 @@ const showEmbedded = ref(false);
   .block {
     width: 120px;
     height: 120px;
-    background-color: var(--van-white);
+    background-color: var(--van-background-2);
     border-radius: 4px;
   }
 }

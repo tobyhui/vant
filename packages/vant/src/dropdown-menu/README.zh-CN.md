@@ -66,16 +66,16 @@ export default {
   <van-dropdown-item title="筛选" ref="item">
     <van-cell center title="包邮">
       <template #right-icon>
-        <van-switch v-model="switch1" size="24" active-color="#ee0a24" />
+        <van-switch v-model="switch1" />
       </template>
     </van-cell>
     <van-cell center title="团购">
       <template #right-icon>
-        <van-switch v-model="switch2" size="24" active-color="#ee0a24" />
+        <van-switch v-model="switch2" />
       </template>
     </van-cell>
     <div style="padding: 5px 16px;">
-      <van-button type="danger" block round @click="onConfirm">
+      <van-button type="primary" block round @click="onConfirm">
         确认
       </van-button>
     </div>
@@ -118,7 +118,7 @@ export default {
 通过 `active-color` 属性可以自定义菜单标题和选项的选中态颜色。
 
 ```html
-<van-dropdown-menu active-color="#1989fa">
+<van-dropdown-menu active-color="#ee0a24">
   <van-dropdown-item v-model="value1" :options="option1" />
   <van-dropdown-item v-model="value2" :options="option2" />
 </van-dropdown-menu>
@@ -150,7 +150,7 @@ export default {
 
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| active-color | 菜单标题和选项的选中态颜色 | _string_ | `#ee0a24` |
+| active-color | 菜单标题和选项的选中态颜色 | _string_ | `#1989fa` |
 | direction | 菜单展开方向，可选值为`up` | _string_ | `down` |
 | z-index | 菜单栏 z-index 层级 | _number \| string_ | `10` |
 | duration | 动画时长，单位秒，设置为 0 可以禁用动画 | _number \| string_ | `0.2` |
@@ -222,11 +222,11 @@ dropdownItemRef.value?.toggle();
 
 ### Option 数据结构
 
-| 键名  | 说明                                   | 类型               |
-| ----- | -------------------------------------- | ------------------ |
-| text  | 文字                                   | _string_           |
-| value | 标识符                                 | _number \| string_ |
-| icon  | 左侧[图标名称](#/zh-CN/icon)或图片链接 | _string_           |
+| 键名 | 说明 | 类型 |
+| --- | --- | --- |
+| text | 文字 | _string_ |
+| value | 标识符 | _number \| string_ |
+| icon | 左侧图标名称或图片链接，等同于 Icon 组件的 [name 属性](#/zh-CN/icon#props) | _string_ |
 
 ## 主题定制
 
@@ -237,15 +237,15 @@ dropdownItemRef.value?.toggle();
 | 名称 | 默认值 | 描述 |
 | --- | --- | --- |
 | --van-dropdown-menu-height | _48px_ | - |
-| --van-dropdown-menu-background-color | _var(--van-white)_ | - |
-| --van-dropdown-menu-box-shadow | _0 2px 12px fade(var(--van-gray-7), 12)_ | - |
+| --van-dropdown-menu-background | _var(--van-background-2)_ | - |
+| --van-dropdown-menu-shadow | _0 2px 12px fade(var(--van-gray-7), 12)_ | - |
 | --van-dropdown-menu-title-font-size | _15px_ | - |
 | --van-dropdown-menu-title-text-color | _var(--van-text-color)_ | - |
-| --van-dropdown-menu-title-active-text-color | _var(--van-danger-color)_ | - |
-| --van-dropdown-menu-title-disabled-text-color | _var(--van-gray-6)_ | - |
+| --van-dropdown-menu-title-active-text-color | _var(--van-primary-color)_ | - |
+| --van-dropdown-menu-title-disabled-text-color | _var(--van-text-color-2)_ | - |
 | --van-dropdown-menu-title-padding | _0 var(--van-padding-xs)_ | - |
 | --van-dropdown-menu-title-line-height | _var(--van-line-height-lg)_ | - |
-| --van-dropdown-menu-option-active-color | _var(--van-danger-color)_ | - |
+| --van-dropdown-menu-option-active-color | _var(--van-primary-color)_ | - |
 | --van-dropdown-menu-content-max-height | _80%_ | - |
 | --van-dropdown-item-z-index | _10_ | - |
 

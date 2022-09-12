@@ -37,23 +37,33 @@ Empty 组件内置了多种占位图片类型，可以在不同业务场景下�
 <van-empty image="search" description="描述文字" />
 ```
 
+### 自定义大小
+
+通过 `image-size` 属性图片的大小。
+
+```html
+<!-- 不指定单位，默认为 px -->
+<van-empty image-size="100" description="描述文字" />
+<!-- 指定单位，支持 rem, vh, vw -->
+<van-empty image-size="10rem" description="描述文字" />
+```
+
+将 `image-size` 设置为数组格式，可以分别设置宽高。数组第一项对应宽度，数组第二项对应高度。
+
+```html
+<van-empty :image-size="[60, 40]" description="描述文字" />
+```
+
 ### 自定义图片
 
 需要自定义图片时，可以在 image 属性中传入任意图片 URL。
 
 ```html
 <van-empty
-  class="custom-image"
-  image="https://img.yzcdn.cn/vant/custom-empty-image.png"
+  image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
+  image-size="80"
   description="描述文字"
 />
-
-<style>
-  .custom-image .van-empty__image {
-    width: 90px;
-    height: 90px;
-  }
-</style>
 ```
 
 ### 底部内容
@@ -62,7 +72,7 @@ Empty 组件内置了多种占位图片类型，可以在不同业务场景下�
 
 ```html
 <van-empty description="描述文字">
-  <van-button round type="danger" class="bottom-button">按钮</van-button>
+  <van-button round type="primary" class="bottom-button">按钮</van-button>
 </van-empty>
 
 <style>
@@ -80,7 +90,7 @@ Empty 组件内置了多种占位图片类型，可以在不同业务场景下�
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | image | 图片类型，可选值为 `error` `network` `search`，支持传入图片 URL | _string_ | `default` |
-| image-size | 图片大小，默认单位为 `px` | _number \| string_ | - |
+| image-size | 图片大小，默认单位为 `px` | _number \| string \| Array_ | - |
 | description | 图片下方的描述文字 | _string_ | - |
 
 ### Slots
@@ -90,6 +100,14 @@ Empty 组件内置了多种占位图片类型，可以在不同业务场景下�
 | default     | 自定义底部内容 |
 | image       | 自定义图标     |
 | description | 自定义描述文字 |
+
+### 类型定义
+
+组件导出以下类型定义：
+
+```ts
+import type { EmptyProps } from 'vant';
+```
 
 ## 主题定制
 
@@ -103,7 +121,7 @@ Empty 组件内置了多种占位图片类型，可以在不同业务场景下�
 | --van-empty-image-size              | _160px_                     | -    |
 | --van-empty-description-margin-top  | _var(--van-padding-md)_     | -    |
 | --van-empty-description-padding     | _0 60px_                    | -    |
-| --van-empty-description-color       | _var(--van-gray-6)_         | -    |
+| --van-empty-description-color       | _var(--van-text-color-2)_   | -    |
 | --van-empty-description-font-size   | _var(--van-font-size-md)_   | -    |
 | --van-empty-description-line-height | _var(--van-line-height-md)_ | -    |
 | --van-empty-bottom-margin-top       | _24px_                      | -    |

@@ -97,8 +97,10 @@ export default {
     const checked = ref(true);
     return {
       checked,
-      activeIcon: 'https://img.yzcdn.cn/vant/user-active.png',
-      inactiveIcon: 'https://img.yzcdn.cn/vant/user-inactive.png',
+      activeIcon:
+        'https://fastly.jsdelivr.net/npm/@vant/assets/user-active.png',
+      inactiveIcon:
+        'https://fastly.jsdelivr.net/npm/@vant/assets/user-inactive.png',
     };
   },
 };
@@ -190,7 +192,6 @@ export default {
   setup() {
     const checked = ref([]);
     const checkboxGroup = ref(null);
-
     const checkAll = () => {
       checkboxGroup.value.toggleAll(true);
     }
@@ -214,7 +215,7 @@ export default {
 
 ```html
 <van-checkbox-group v-model="checked">
-  <van-cell-group>
+  <van-cell-group inset>
     <van-cell
       v-for="(item, index) in list"
       clickable
@@ -263,17 +264,17 @@ export default {
 
 ### Checkbox Props
 
-| 参数           | 说明                      | 类型               | 默认值    |
-| -------------- | ------------------------- | ------------------ | --------- |
-| v-model        | 是否为选中状态            | _boolean_          | `false`   |
-| name           | 标识符                    | _any_              | -         |
-| shape          | 形状，可选值为 `square`   | _string_           | `round`   |
-| disabled       | 是否禁用复选框            | _boolean_          | `false`   |
-| label-disabled | 是否禁用复选框文本点击    | _boolean_          | `false`   |
-| label-position | 文本位置，可选值为 `left` | _string_           | `right`   |
-| icon-size      | 图标大小，默认单位为 `px` | _number \| string_ | `20px`    |
-| checked-color  | 选中状态颜色              | _string_           | `#1989fa` |
-| bind-group     | 是否与复选框组绑定        | _boolean_          | `true`    |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| v-model | 是否为选中状态 | _boolean_ | `false` |
+| name | 标识符，通常为一个唯一的字符串或数字 | _any_ | - |
+| shape | 形状，可选值为 `square` | _string_ | `round` |
+| disabled | 是否禁用复选框 | _boolean_ | `false` |
+| label-disabled | 是否禁用复选框文本点击 | _boolean_ | `false` |
+| label-position | 文本位置，可选值为 `left` | _string_ | `right` |
+| icon-size | 图标大小，默认单位为 `px` | _number \| string_ | `20px` |
+| checked-color | 选中状态颜色 | _string_ | `#1989fa` |
+| bind-group | 是否与复选框组绑定 | _boolean_ | `true` |
 
 ### CheckboxGroup Props
 
@@ -317,21 +318,24 @@ export default {
 ### toggleAll 方法示例
 
 ```js
-const { checkboxGroup } = this.$refs;
+import { ref } from 'vue';
+import type { CheckboxGroupInstance } from 'vant';
+
+const checkboxGroupRef = ref<CheckboxGroupInstance>();
 
 // 全部反选
-checkboxGroup.toggleAll();
+checkboxGroupRef?.value.toggleAll();
 // 全部选中
-checkboxGroup.toggleAll(true);
+checkboxGroupRef?.value.toggleAll(true);
 // 全部取消
-checkboxGroup.toggleAll(false);
+checkboxGroupRef?.value.toggleAll(false);
 
 // 全部反选，并跳过禁用的复选框
-checkboxGroup.toggleAll({
+checkboxGroupRef?.value.toggleAll({
   skipDisabled: true,
 });
 // 全部选中，并跳过禁用的复选框
-checkboxGroup.toggleAll({
+checkboxGroupRef?.value.toggleAll({
   checked: true,
   skipDisabled: true,
 });
@@ -381,14 +385,14 @@ checkboxGroupRef.value?.toggleAll();
 
 组件提供了下列 CSS 变量，可用于自定义样式，使用方法请参考 [ConfigProvider 组件](#/zh-CN/config-provider)。
 
-| 名称 | 默认值 | 描述 |
-| --- | --- | --- |
-| --van-checkbox-size | _20px_ | - |
-| --van-checkbox-border-color | _var(--van-gray-5)_ | - |
-| --van-checkbox-transition-duration | _var(--van-animation-duration-fast)_ | - |
-| --van-checkbox-label-margin | _var(--van-padding-xs)_ | - |
-| --van-checkbox-label-color | _var(--van-text-color)_ | - |
-| --van-checkbox-checked-icon-color | _var(--van-primary-color)_ | - |
-| --van-checkbox-disabled-icon-color | _var(--van-gray-5)_ | - |
-| --van-checkbox-disabled-label-color | _var(--van-gray-5)_ | - |
-| --van-checkbox-disabled-background-color | _var(--van-border-color)_ | - |
+| 名称                                | 默认值                     | 描述 |
+| ----------------------------------- | -------------------------- | ---- |
+| --van-checkbox-size                 | _20px_                     | -    |
+| --van-checkbox-border-color         | _var(--van-gray-5)_        | -    |
+| --van-checkbox-duration             | _var(--van-duration-fast)_ | -    |
+| --van-checkbox-label-margin         | _var(--van-padding-xs)_    | -    |
+| --van-checkbox-label-color          | _var(--van-text-color)_    | -    |
+| --van-checkbox-checked-icon-color   | _var(--van-primary-color)_ | -    |
+| --van-checkbox-disabled-icon-color  | _var(--van-gray-5)_        | -    |
+| --van-checkbox-disabled-label-color | _var(--van-text-color-3)_  | -    |
+| --van-checkbox-disabled-background  | _var(--van-border-color)_  | -    |

@@ -1,25 +1,39 @@
-import { CSSProperties, Transition, defineComponent } from 'vue';
-import { truthProp, makeStringProp, createNamespace } from '../utils';
+import {
+  Transition,
+  defineComponent,
+  type PropType,
+  type CSSProperties,
+  type ExtractPropTypes,
+} from 'vue';
+import {
+  truthProp,
+  makeStringProp,
+  createNamespace,
+  HAPTICS_FEEDBACK,
+} from '../utils';
 import { Icon } from '../icon';
+import type { TagType, TagSize } from './types';
 
 const [name, bem] = createNamespace('tag');
 
-export type TagType = 'default' | 'primary' | 'success' | 'warning' | 'danger';
+export const tagProps = {
+  size: String as PropType<TagSize>,
+  mark: Boolean,
+  show: truthProp,
+  type: makeStringProp<TagType>('default'),
+  color: String,
+  plain: Boolean,
+  round: Boolean,
+  textColor: String,
+  closeable: Boolean,
+};
+
+export type TagProps = ExtractPropTypes<typeof tagProps>;
 
 export default defineComponent({
   name,
 
-  props: {
-    size: String,
-    mark: Boolean,
-    show: truthProp,
-    type: makeStringProp<TagType>('default'),
-    color: String,
-    plain: Boolean,
-    round: Boolean,
-    textColor: String,
-    closeable: Boolean,
-  },
+  props: tagProps,
 
   emits: ['close'],
 
@@ -55,7 +69,11 @@ export default defineComponent({
       }
 
       const CloseIcon = closeable && (
-        <Icon name="cross" class={bem('close')} onClick={onClose} />
+        <Icon
+          name="cross"
+          class={[bem('close'), HAPTICS_FEEDBACK]}
+          onClick={onClose}
+        />
       );
 
       return (

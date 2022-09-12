@@ -19,9 +19,7 @@ export type SwipeExpose = {
   next: () => void;
   resize: () => void;
   swipeTo: (index: number, options?: SwipeToOptions) => void;
-  /**
-   * @private
-   */
+  /** @private */
   state: SwipeState;
 };
 
@@ -33,3 +31,12 @@ export type SwipeProvide = {
 };
 
 export type SwipeInstance = ComponentPublicInstance<SwipeProps, SwipeExpose>;
+
+export type SwipeThemeVars = {
+  swipeIndicatorSize?: string;
+  swipeIndicatorMargin?: string;
+  swipeIndicatorActiveOpacity?: number | string;
+  swipeIndicatorInactiveOpacity?: number | string;
+  swipeIndicatorActiveBackground?: string;
+  swipeIndicatorInactiveBackground?: string;
+};

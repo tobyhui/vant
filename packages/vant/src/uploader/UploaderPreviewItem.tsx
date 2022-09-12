@@ -1,15 +1,16 @@
-import { PropType, defineComponent } from 'vue';
+import { defineComponent, type PropType } from 'vue';
 
 // Utils
-import { bem, isImageFile } from './utils';
+import { t, bem, isImageFile } from './utils';
 import {
   isDef,
   extend,
-  Interceptor,
   numericProp,
   getSizeStyle,
   callInterceptor,
   makeRequiredProp,
+  type Numeric,
+  type Interceptor,
 } from '../utils';
 
 // Components
@@ -28,7 +29,9 @@ export default defineComponent({
     imageFit: String as PropType<ImageFit>,
     lazyLoad: Boolean,
     deletable: Boolean,
-    previewSize: numericProp,
+    previewSize: [Number, String, Array] as PropType<
+      Numeric | [Numeric, Numeric]
+    >,
     beforeDelete: Function as PropType<Interceptor>,
   },
 
@@ -70,9 +73,20 @@ export default defineComponent({
 
     const renderDeleteIcon = () => {
       if (props.deletable && props.item.status !== 'uploading') {
+        const slot = slots['preview-delete'];
         return (
-          <div class={bem('preview-delete')} onClick={onDelete}>
-            <Icon name="cross" class={bem('preview-delete-icon')} />
+          <div
+            role="button"
+            class={bem('preview-delete', { shadow: !slot })}
+            tabindex={0}
+            aria-label={t('delete')}
+            onClick={onDelete}
+          >
+            {slot ? (
+              slot()
+            ) : (
+              <Icon name="cross" class={bem('preview-delete-icon')} />
+            )}
           </div>
         );
       }
@@ -90,18 +104,18 @@ export default defineComponent({
     };
 
     const renderPreview = () => {
-      const { item } = props;
+      const { item, lazyLoad, imageFit, previewSize } = props;
 
       if (isImageFile(item)) {
         return (
           <Image
             v-slots={{ default: renderCover }}
-            fit={props.imageFit}
+            fit={imageFit}
             src={item.content || item.url}
             class={bem('preview-image')}
-            width={props.previewSize}
-            height={props.previewSize}
-            lazyLoad={props.lazyLoad}
+            width={Array.isArray(previewSize) ? previewSize[0] : previewSize}
+            height={Array.isArray(previewSize) ? previewSize[1] : previewSize}
+            lazyLoad={lazyLoad}
             onClick={onPreview}
           />
         );

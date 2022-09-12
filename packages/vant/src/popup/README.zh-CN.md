@@ -118,19 +118,21 @@ export default {
 | overlay-class | 自定义遮罩层类名 | _string \| Array \| object_ | - |
 | overlay-style | 自定义遮罩层样式 | _object_ | - |
 | duration | 动画时长，单位秒，设置为 0 可以禁用动画 | _number \| string_ | `0.3` |
+| z-index | 将弹窗的 z-index 层级设置为一个固定值 | _number \| string_ | `2000+` |
 | round | 是否显示圆角 | _boolean_ | `false` |
 | lock-scroll | 是否锁定背景滚动 | _boolean_ | `true` |
 | lazy-render | 是否在显示弹层时才渲染节点 | _boolean_ | `true` |
 | close-on-popstate | 是否在页面回退时自动关闭 | _boolean_ | `false` |
 | close-on-click-overlay | 是否在点击遮罩层后关闭 | _boolean_ | `true` |
 | closeable | 是否显示关闭图标 | _boolean_ | `false` |
-| close-icon | 关闭[图标名称](#/zh-CN/icon)或图片链接 | _string_ | `cross` |
+| close-icon | 关闭图标名称或图片链接，等同于 Icon 组件的 [name 属性](#/zh-CN/icon#props) | _string_ | `cross` |
 | close-icon-position | 关闭图标位置，可选值为 `top-left`<br>`bottom-left` `bottom-right` | _string_ | `top-right` |
 | before-close `v3.1.4` | 关闭前的回调函数，返回 `false` 可阻止关闭，支持返回 Promise | _(action: string) => boolean \| Promise\<boolean\>_ | - |
 | icon-prefix `v3.0.18` | 图标类名前缀，等同于 Icon 组件的 [class-prefix 属性](#/zh-CN/icon#props) | _string_ | `van-icon` |
 | transition | 动画类名，等价于 [transition](https://v3.cn.vuejs.org/api/built-in-components.html#transition) 的 `name` 属性 | _string_ | - |
 | transition-appear | 是否在初始渲染时启用过渡动画 | _boolean_ | `false` |
 | teleport | 指定挂载的节点，等同于 Teleport 组件的 [to 属性](https://v3.cn.vuejs.org/api/built-in-components.html#teleport) | _string \| Element_ | - |
+| safe-area-inset-top | 是否开启[顶部安全区适配](#/zh-CN/advanced-usage#di-bu-an-quan-qu-gua-pei) | _boolean_ | `false` |
 | safe-area-inset-bottom | 是否开启[底部安全区适配](#/zh-CN/advanced-usage#di-bu-an-quan-qu-gua-pei) | _boolean_ | `false` |
 
 ### Events
@@ -157,7 +159,12 @@ export default {
 组件导出以下类型定义：
 
 ```ts
-import type { PopupPosition, PopupCloseIconPosition } from 'vant';
+import type {
+  PopupProps,
+  PopupPosition,
+  PopupInstance,
+  PopupCloseIconPosition,
+} from 'vant';
 ```
 
 ## 主题定制
@@ -166,13 +173,12 @@ import type { PopupPosition, PopupCloseIconPosition } from 'vant';
 
 组件提供了下列 CSS 变量，可用于自定义样式，使用方法请参考 [ConfigProvider 组件](#/zh-CN/config-provider)。
 
-| 名称 | 默认值 | 描述 |
-| --- | --- | --- |
-| --van-popup-background-color | _var(--van-white)_ | - |
-| --van-popup-transition | _transform var(--van-animation-duration-base)_ | - |
-| --van-popup-round-border-radius | _16px_ | - |
-| --van-popup-close-icon-size | _22px_ | - |
-| --van-popup-close-icon-color | _var(--van-gray-5)_ | - |
-| --van-popup-close-icon-active-color | _var(--van-gray-6)_ | - |
-| --van-popup-close-icon-margin | _16px_ | - |
-| --van-popup-close-icon-z-index | _1_ | - |
+| 名称                           | 默认值                               | 描述 |
+| ------------------------------ | ------------------------------------ | ---- |
+| --van-popup-background         | _var(--van-background-2)_            | -    |
+| --van-popup-transition         | _transform var(--van-duration-base)_ | -    |
+| --van-popup-round-radius       | _16px_                               | -    |
+| --van-popup-close-icon-size    | _22px_                               | -    |
+| --van-popup-close-icon-color   | _var(--van-gray-5)_                  | -    |
+| --van-popup-close-icon-margin  | _16px_                               | -    |
+| --van-popup-close-icon-z-index | _1_                                  | -    |
